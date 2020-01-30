@@ -84,14 +84,14 @@ class Login extends Component<Props, State> {
             </Grid>
             
             <Grid item xs={12}>
-              <a href="">아이디</a>
+              <a href="/">아이디</a>
               <span>/</span>
-              <a href="">비밀번호</a>
+              <a href="/">비밀번호</a>
               <span> 찾기</span>
             </Grid>
             
             <Grid item xs={12}>
-              <div><a href="">회원 가입</a></div>
+              <div><a href="/">회원 가입</a></div>
             </Grid>
             
           </Grid>
