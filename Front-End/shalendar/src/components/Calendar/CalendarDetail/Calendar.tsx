@@ -7,21 +7,30 @@ interface State{
   year: number;
   month: number;
   day: number;
+  weekday: number;
+  test: Array<any>;
+  days: Array<any>;
+
 }
 
 class Calendar extends Component<Props, State>{
   constructor(props: Props) {
     super(props)
     this.state = {
+      weekday: new Date().getDay(),
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       day: new Date().getDate(),
+      test: [<td>0</td>,<td>0</td>,<td>1</td>,<td>2</td>],
+      days: [],
     }
   }
 
   // 컴포넌트가 만들어지고 첫 렌더링을 다 마친 후 실행
   componentDidMount() {
     this.getCalendarDayList()
+    console.log(this.state.days);
+    // console.log(this.state.test);
   }
 
   // 윤년 여부
@@ -62,18 +71,47 @@ class Calendar extends Component<Props, State>{
     }
   }
 
-  // 2차원 배열에 당월 날짜 넣기
+  // 펼침연산 알아보기
+  // const trList = [];
+  // const tt = tdList.reduce((acc, cur, idx) => {
+  //   if(idx % 6 === 0) {
+  //     trList.push(<tr>{...acc}</tr>);
+  //     return [];
+  //   }
+  //   else acc.push(cur);
+
+  //   return acc;
+  // }, []);
+
+  // 날짜(숫자)에 table 태그 걸어서 state에 있는 배열에 추가
   getCalendarDayList() {
-    // const finishMonth: number = this.getMonthLength()
-    // const lastDayOfLastMonth: number = new Date(this.state.year, this.state.month, 0).getDay()
-    const startPoint: number = this.getMonthLength(this.state.month)
-    // const displayDay: number = 0
-    const days: number[] = []
-    console.log(startPoint)
-    for (let i = 1; i < startPoint+1; i++) {
-      days.push(i)
+    const days: Array<any> = []
+    const finishMonth: number = this.state.weekday  // 이번 달 시작 요일 인덱스
+    const endPoint: number = this.getMonthLength(this.state.month)  // 며칠까지 있는지
+    let resultDaysHtml: Array<any> = []
+    
+    // console.log('hit');
+
+    for (let j=0; j < finishMonth; j++) {
+      this.state.days.push(<td>{0}</td>)
     }
-    return days
+
+    for (let i = 1; i < endPoint+1; i++) {
+      this.state.days.push(<tr>{i}</tr>)
+    }
+
+    days.reduce((acc, cur, idx) => {
+      if (idx % 6 === 0) {
+        resultDaysHtml.push(<tr>{acc}</tr>);
+        return [];
+      }
+      else {acc.push(cur)};
+      return acc;
+    }, []);
+
+    // this.setState({
+    //   days: days
+    // });
   }
   
   // 다음 달 버튼 눌렀을 때
@@ -135,20 +173,9 @@ class Calendar extends Component<Props, State>{
           <th>금</th>
           <th>토</th>
         </tr>
-
-        <tr>
-          <td>
-            {/* 날짜 한줄 */}
-            1
-          </td>
-        </tr>
-        <tr>
-          <td>
-            {/* 날짜 한줄 */}
-          </td>
-        </tr>
       <tbody>
-        {/* {this.getCalendarDayList()} */}
+        {this.state.days}
+        {this.state.test}
       </tbody>
     </table>
     </>
