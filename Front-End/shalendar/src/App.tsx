@@ -17,7 +17,7 @@ class App extends Component<Props, State> {
   constructor(props: Props){
     super(props);
     this.state = {
-      mode:'mainPage',
+      mode:'loginPage',
     }
   }
 
