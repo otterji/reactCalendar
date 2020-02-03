@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 
+
 const Button = styled.button`
   background: white;
   width: 24px;
@@ -15,6 +16,9 @@ interface Props {
 interface State{
   year: number;
   month: number;
+  day: number;
+  weekday: number;
+  days: Array<any>;
   arr: number[][];
 }
 
@@ -22,8 +26,11 @@ class Calendar extends Component<Props, State>{
   constructor(props: Props) {
     super(props)
     this.state = {
+      weekday: new Date().getDay(),
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
+      day: new Date().getDate(),
+      days: [],
       arr: [],
     }
   }
@@ -71,43 +78,51 @@ class Calendar extends Component<Props, State>{
   getCalendarDayList() {
     const days: Array<any> = [];
     const endPoint: number = this.getMonthLength(this.state.month);  // 며칠까지 있는지
+    let resultDaysHtml: Array<any> = [];
     let startpoint: Date = new Date(this.state.year, this.state.month - 1, 1);
     let init: number = startpoint.getDay();
-    let arr: number[][] = [];
+    let arr: number[][] = []
     let temp: number = 0
 
-
     for (let j=0; j < init; j++) {
-      days.push(0)
+      days.push(<td>{""}</td>)
     }
 
     for (let i = 1; i <= endPoint; i++) {
-      days.push(i)
+      days.push(<td>{i}</td>)
     }
 
     if (days.length > 30) {
       for (let k=0; k < endPoint; k++) {
-        days.push(0)
+        days.push(<td>{""}</td>)
       }
     }
     
     for (var i = 0; i < 6; i++) {
       arr[i] = []
       for (var j=0; j < 7; j++) {
-        if (j < init) {
-          arr[i][j] = 0
-        }
         arr[i][j] = days[j+temp]
+        temp += 7;
       }
-      temp += 7;
     }
 
+    console.log(arr)
+
+    days.reduce((acc, cur, idx) => {
+      if (idx % 7 === 0) {
+        resultDaysHtml.push(<tr>{acc}</tr>);
+        return [cur];
+      } else {
+        acc.push(cur);
+      } 
+      return acc;
+    }, []);
+
+
     this.setState({
-      arr: arr
+      days: resultDaysHtml
     });
   }
-
-  
   
   showNextMonth() {
     if (this.state.month === 12) {
@@ -185,13 +200,7 @@ class Calendar extends Component<Props, State>{
             <th>금</th>
             <th style={fontBlue}>토</th>
           </tr>
-          {this.state.arr.map((row, index_1) => (
-              <tr key={row.join("")}>
-                {row.map((day, index_2) => (
-                  day ? <td key={day+index_2}>{day}</td> : <td key={day+index_2}>{""}</td>
-                ))}
-                </tr>
-            ))}
+          {this.state.days}
         </tbody>
       </table>
       </>
