@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { loginState } from './App';
 import { Box, Grid, } from '@material-ui/core';
-import Calendar from './components/Calendar/CalendarDetail/Calendar';
+import { Calendar} from './components/Calendar';
 import Navbar from './components/Navbar/Navbar';
 
 interface State {
