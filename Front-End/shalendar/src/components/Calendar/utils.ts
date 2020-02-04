@@ -1,3 +1,5 @@
+
+                                                                                                                                                                                                                                       
 const showPrevMonthFn = (self: any) => {
     const isNewYear = self.state.month === 1 ? true : false;
     const params = isNewYear 
@@ -5,11 +7,11 @@ const showPrevMonthFn = (self: any) => {
         : { ...self.state, month: self.state.month - 1 };
 
     self.setState(params, () => getCalendarDayListFn(self));
-}
+};
 
 const getMonthLengthFn = (year:number, month: number) => {
     if (month === 2) {
-        if (isYoonYear(year)) {
+        if (isLeafYear(year)) {
         return 29
         } else {
         return 28
@@ -29,12 +31,12 @@ const getMonthLengthFn = (year:number, month: number) => {
         }
         }
     }
-}
+};
 
-const isYoonYear = (year: number) => {
+const isLeafYear = (year: number) => {
     const isLeaf: boolean = (year % 4 === 0 && year % 100 > 0) || (year % 400 === 0 && year % 3200 > 0);
     return isLeaf;
-}
+};
 
 const getCalendarDayListFn = (self: any) => {
   const days: Array<any> = [];
@@ -52,12 +54,11 @@ const getCalendarDayListFn = (self: any) => {
     days.push(i)
   }
 
-  if (days.length > 30) {
-    for (let k=0; k < endPoint; k++) {
+  for (let k=0; k < endPoint; k++) {
       days.push(0)
-    }
   }
-  
+
+
   for (let i = 0; i < 6; i++) {
     arr[i] = []
     for (let j=0; j < 7; j++) {
@@ -68,11 +69,12 @@ const getCalendarDayListFn = (self: any) => {
     }
     temp += 7;
   }
-
+  
   self.setState({
     arr: arr
   });
-}
+  console.log(arr);
+};
 
 const showNextMonthFn = (self: any) => {
   if (self.state.month === 12) {
@@ -90,6 +92,20 @@ const showNextMonthFn = (self: any) => {
     }
     )
   }
-}
+};
+
+// Modal.setAppElement('#App')
+
+// const popupModal = (e:any, year:number, month:number, day:number) => {
+//   console.log('no modal...')
+//   return Modal
+// };
+
+// const onClickDayFn = (e:any, year:number, month:number, day:number) => {
+//   // stopPropagation 은 부모태그로의 이벤트 전파를 stop 중지하라는 의미입니다.
+//   // preventDefault 는 a 태그 처럼 클릭 이벤트 외에 별도의 브라우저 행동을 막기 위해 사용됩니다.
+//   console.log(e, year, month, day);
+//   popupModal(e, year, month, day);
+// };
 
 export { showPrevMonthFn, getCalendarDayListFn, showNextMonthFn };

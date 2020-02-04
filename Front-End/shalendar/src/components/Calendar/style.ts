@@ -6,7 +6,7 @@ const Button = styled.button`
   height: 24px;
   top: 15px;
   border: none;
-  display: inline-block,
+  display: inline-block;
 `;
 
 const Table = styled.table`

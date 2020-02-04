@@ -6,4 +6,5 @@ export interface State{
   year: number;
   month: number;
   arr: number[][];
+  isModalOpen: boolean;
 }

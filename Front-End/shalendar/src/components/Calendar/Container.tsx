@@ -1,7 +1,15 @@
 import React, { Component } from 'react';
 import { Button, Table } from './style';
 import { Props, State } from './_types/calendar';
-import {showPrevMonthFn, getCalendarDayListFn, showNextMonthFn } from './utils';
+import './Modal.scss';
+import Modal from "../../../../../../../../../Users/multicampus/Desktop/reactCalendar/Front-End/shalendar/src/components/Calendar/Modal";
+
+import {
+  showPrevMonthFn, 
+  getCalendarDayListFn, 
+  showNextMonthFn,
+ } from './utils';
+
 
 class Container extends Component<Props, State>{
   constructor(props: Props) {
@@ -10,6 +18,7 @@ class Container extends Component<Props, State>{
       year: new Date().getFullYear(),
       month: new Date().getMonth() + 1,
       arr: [],
+      isModalOpen: false,
     }
   }
 
@@ -18,7 +27,7 @@ class Container extends Component<Props, State>{
 /** 
  *  useEffect(() => {
  *    setYear(year + 1);
- * }, [month]) 
+ * }, [month])
  * 
  * useEffect(() => {
  *  setMonth(month + 1);
@@ -33,6 +42,28 @@ class Container extends Component<Props, State>{
   getCalendarDayList = () => getCalendarDayListFn(this);
   showNextMonth = () => showNextMonthFn(this);
   showPrevMonth = () => showPrevMonthFn(this);
+  // showModal = () => showModalFn(this);
+  // changeModalFalg = () => {
+  //   this.setState({ isModalOpen: true });
+  //   console.log(this.state.isModalOpen);
+
+  //   this.showModal();
+  // };
+
+  // setStateAsync(state:object) {
+  //   return new Promise((resolve) => {
+  //     this.setState(state, resolve)
+  //   });
+  // }
+
+  openModal = () => {
+    this.setState({ isModalOpen: true });
+  }
+
+  closeModal = () => {
+    this.setState({ isModalOpen: false }); 
+  }
+
 
   render() {
     return (
@@ -58,7 +89,18 @@ class Container extends Component<Props, State>{
           {this.state.arr.map((row, idx) => (
               <tr key={idx}>
                 {row.map((day, idx2) => (
-                  day ? <td key={idx2}>{day}</td> : <td key={idx2}>{""}</td>
+                  day 
+                  ? <td key={idx2}>
+                        <div onClick= {this.openModal}>{day}</div>
+                        <Modal 
+                        isOpen={this.state.isModalOpen} 
+                        close={this.closeModal}
+                        year={this.state.year}
+                        month={this.state.month}
+                        day = {day}
+                        />
+                    </td>
+                  : <td key={idx2}>{""}</td>
                 ))}
                 </tr>
             ))}
