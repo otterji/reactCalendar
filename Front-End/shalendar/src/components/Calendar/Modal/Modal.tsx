@@ -21,9 +21,12 @@ const Modal = ({ isOpen, close, year, month, day }: any) => {
           setisView={setisView}
           />
         : <AddForm 
-          close={close}
-          isView={isView}
-          setisView={setisView}
+        close={close}
+        year={year}
+        month={month}
+        day={day}
+        isView={isView}
+        setisView={setisView}
         />
       } </>
     : <></>
