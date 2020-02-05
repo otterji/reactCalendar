@@ -7,4 +7,5 @@ export interface State{
   month: number;
   arr: number[][];
   isModalOpen: boolean;
+  curDay: number;
 }

@@ -1,30 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Modal.scss';
+import View from './View';
+import AddForm from '../PostCalendar/AddForm';
+
 
 const Modal = ({ isOpen, close, year, month, day }: any) => {
+
   return (
     <React.Fragment>
+      {/* {console.log('Modal 들어왔슈', isOpen)} */}
     {
       isOpen ?
       <React.Fragment>
-        {/* {console.log('hit')}
-        굉장히 많은 hit 이 한번에 렌더링.. 5시간동안 고치려다 삽질만함.. */}
         <div className="Modal-overlay" onClick={close} />
         <div className="Modal">
-          <p className="title">일정 추가</p>
+          <p className="title">{year}년 {month}월 {day}일</p>
           <div className="content">
-            <p>
-              {year}년 {month}월 {day}일 의
-              일정을 입력해 주세요
-            </p>
+          <p>
+             일정 목록이 표시됩니다.
+          </p>
+          <button onClick={test}>+</button>
+
           </div>
           <div className="button-wrap">
             <button onClick={close}>완료</button>
           </div>
         </div>
       </React.Fragment>
-      :
-      null
+      :<>
+        {/* {console.log('false 조건 걸렸슈', isOpen)} */}
+      </>
     }
     </React.Fragment>
   )

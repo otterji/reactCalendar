@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Table } from './style';
 import { Props, State } from './_types/calendar';
-import './Modal.scss';
-import Modal from "../../../../../../../../../Users/multicampus/Desktop/reactCalendar/Front-End/shalendar/src/components/Calendar/Modal";
+import './Modal/Modal.scss';
+import Modal from "./Modal/Modal";
 
 import {
   showPrevMonthFn, 
   getCalendarDayListFn, 
   showNextMonthFn,
  } from './utils';
-
 
 class Container extends Component<Props, State>{
   constructor(props: Props) {
@@ -19,6 +18,7 @@ class Container extends Component<Props, State>{
       month: new Date().getMonth() + 1,
       arr: [],
       isModalOpen: false,
+      curDay: 0,
     }
   }
 
@@ -56,14 +56,23 @@ class Container extends Component<Props, State>{
   //   });
   // }
 
-  openModal = () => {
+  openModal = (day:number) => {
     this.setState({ isModalOpen: true });
+    this.setState({ curDay: day });
   }
 
-  closeModal = () => {
-    this.setState({ isModalOpen: false }); 
-  }
+  closeModal = () => { this.setState({ isModalOpen: false }); }
 
+  // showModal = () => {
+  //   render( <Modal
+  //   isOpen={this.state.isModalOpen}
+  //   close={this.closeModal}
+  //   year={this.state.year}
+  //   month={this.state.month}
+  //   // day = {day}
+  //   />)
+  //   render(<>{console.log("showModal")}</>)
+  // }
 
   render() {
     return (
@@ -86,26 +95,29 @@ class Container extends Component<Props, State>{
             <th>금</th>
             <th style={{color: 'blue'}}>토</th>
           </tr>
+          {/* Calendar 렌더링 부분 */}
           {this.state.arr.map((row, idx) => (
               <tr key={idx}>
                 {row.map((day, idx2) => (
-                  day 
+                  day
                   ? <td key={idx2}>
-                        <div onClick= {this.openModal}>{day}</div>
-                        <Modal 
-                        isOpen={this.state.isModalOpen} 
-                        close={this.closeModal}
-                        year={this.state.year}
-                        month={this.state.month}
-                        day = {day}
-                        />
+                    {/* 여기에 component 를 넣는 식으로 만들기 props 넘겨서 */}
+                        <span onClick= {() => this.openModal(day)}>{day}</span>
                     </td>
-                  : <td key={idx2}>{""}</td>
-                ))}
+                  : <td key={idx2}>{""}</td>))}
                 </tr>
             ))}
         </tbody>
       </Table>
+      { this.state.isModalOpen ? 
+        <Modal
+        isOpen={this.state.isModalOpen}
+        close={this.closeModal}
+        year={this.state.year}
+        month={this.state.month}
+        day = {this.state.curDay}
+        />
+        : null}
       </>
     )
   }
