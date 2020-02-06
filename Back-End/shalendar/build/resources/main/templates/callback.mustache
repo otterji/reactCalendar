@@ -1,0 +1,14 @@
+{{>layout/header}}
+
+<h1>콜백이다</h1>
+{{#memberName}}
+    Logged in as: <span id="user">{{memberName}}</span>
+    <br>
+    <span id="user">{{memberEmail}}</span>
+    <br>
+    <span id="user">{{memberPicture}}</span>
+    <br>
+    <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+{{/memberName}}
+
+{{>layout/footer}}

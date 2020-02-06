@@ -20,9 +20,19 @@ public class IndexController {
     public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
         if (user != null) {
-            model.addAttribute("userName", user.getName());
+            model.addAttribute("memberName", user.getName());
         }
         return "index";
+    }
+
+    @GetMapping("/callback")
+    public String callback(Model model, @LoginUser SessionUser user) {
+        if (user != null) {
+            model.addAttribute("memberName", user.getName());
+            model.addAttribute("memberEmail", user.getEmail());
+            model.addAttribute("memberPicture", user.getPicture());
+        }
+        return "callback";
     }
 
     @GetMapping("/posts/save")
