@@ -68,7 +68,7 @@ interface State{
 }
 
 let initList: any;
-const _url:string = 'http://70.12.246.48:8080';
+const _url:string = 'http://52.79.117.94:8080';
 
 class AccountsForm extends Component<any, State> {
   constructor(props:any){
@@ -286,7 +286,7 @@ class AccountsForm extends Component<any, State> {
           },
         });
         alert(JSON.stringify(res.data, null, 2));
-        if(res.data.state === 'SUCCESS') {
+        if(res.data.status) {
           window.sessionStorage.setItem('id', _id);
           window.sessionStorage.setItem('pw', _pw);
           this.props.onLogin();

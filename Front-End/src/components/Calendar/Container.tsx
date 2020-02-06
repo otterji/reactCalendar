@@ -3,13 +3,11 @@ import { Button, Table, Th, Td, Title } from './style';
 import { Props, State } from './_types/calendar';
 import './Modal/Modal.scss';
 import Modal from "./Modal/Modal";
-
-
-
 import {
   showPrevMonthFn, 
   getCalendarDayListFn, 
   showNextMonthFn,
+  getHttpXXXList
  } from './utils';
 
 class Container extends Component<Props, State>{
@@ -21,12 +19,32 @@ class Container extends Component<Props, State>{
       arr: [],
       isModalOpen: false,
       curDay: 0,
+      xxxList: [],
+      list: [] as any
     }
   }
 
-  componentDidMount() {
-    this.getCalendarDayList()
-    console.log(sessionStorage.getItem('id'));
+  // setTestState = (callback) => {
+  //   this.setState({...callbak});
+  // }
+
+  async componentDidMount() {
+    const reqRet: any[] = await getHttpXXXList();
+    const xxxList = reqRet.sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
+    this.getCalendarDayList();
+    this.setState({xxxList});
+
+    const list: any = this.state.arr.map((e: any) => ({
+      days: e,
+      xxx: xxxList.filter(ein => {
+        const inDay = new Date(ein.startAt).getDate();
+        return e.includes(inDay) ? ein : null;
+      })
+    }));
+
+    this.setState({list});
+    
+    console.log(this.state.list)
   }
 
   getCalendarDayList = () => getCalendarDayListFn(this);
@@ -39,7 +57,6 @@ class Container extends Component<Props, State>{
   }
 
   closeModal = () => { this.setState({ isModalOpen: false }); }
-
 
   render() {
     return (
@@ -63,22 +80,20 @@ class Container extends Component<Props, State>{
             <th style={{color: 'blue'}}>토</th>
           </tr>
           {/* Calendar 렌더링 부분 */}
-          {this.state.arr.map((row, idx) => (
+          {this.state.list.map((row, idx) => (
               <tr key={idx}>
-                {row.map((day, idx2) => (
-                  day
-                  ? <Td key={idx2}>
-                    
-                    {/* 여기에 component 를 넣는 식으로 만들기 props 넘겨서 */}
-                        <span onClick= {() => this.openModal(day)}>{day}</span>
-                        <p>일정</p>
-                        <p>일정</p>
-                        <p>일정</p>
-                        <p>일정</p>
-                    </Td>
-                  : <Td key={idx2}>{""}</Td>))}
-                </tr>
-            ))}
+                {
+                  row.days.map((day, idx2) => (
+                    day
+                    ? <Td>
+                      {day}
+                  {row.xxx.map(xe => <p key={idx2}>{day}{xe.title}</p>)}
+                  </Td>
+                    : null
+                  ))
+                }
+              </tr>
+          ))}
         </tbody>
       </Table>
       { this.state.isModalOpen ? 
@@ -88,6 +103,8 @@ class Container extends Component<Props, State>{
         year={this.state.year}
         month={this.state.month}
         day = {this.state.curDay}
+        xxxList={this.state.xxxList}
+        selectedDate={new Date(`${this.state.year}-${this.state.month}-${this.state.curDay}`)}
         />
         : null}
       </>

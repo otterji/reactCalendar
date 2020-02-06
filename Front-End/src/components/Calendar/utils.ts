@@ -1,9 +1,11 @@
+import Axios from 'axios';
 
-                                                                                                                                                                                                                                       
+const SERVER_URL = 'http://localhost:3000';
+
 const showPrevMonthFn = (self: any) => {
     const isNewYear = self.state.month === 1 ? true : false;
     const params = isNewYear 
-        ? { ...self.state, year: self.state.year - 1, month: 12 } 
+        ? { ...self.state, year: self.state.year - 1, month: 12 }
         : { ...self.state, month: self.state.month - 1 };
 
     self.setState(params, () => getCalendarDayListFn(self));
@@ -69,11 +71,10 @@ const getCalendarDayListFn = (self: any) => {
     }
     temp += 7;
   }
-  
+
   self.setState({
-    arr: arr
+    arr
   });
-  console.log(arr);
 };
 
 const showNextMonthFn = (self: any) => {
@@ -109,13 +110,22 @@ const showNextMonthFn = (self: any) => {
 // };
 
 // 0 붙이는 연산
-  const addZero = (n:string) => {
-    return n.length >= 2 ? n : '0' + n;
-  }
+const addZero = (n:string) => {
+  return n.length === 1 ? '0' + n : n;
+}
 
 // 0 빼는 연산
-  const subZero = (n:string) => {
-    return n[0] === '0' ? n[1] : n
-  }
+const subZero = (n:string) => {
+  return n[0] === '0' ? n[1] : n
+}
 
-export { showPrevMonthFn, getCalendarDayListFn, showNextMonthFn, addZero, subZero };
+const getHttpXXXList = async () => {
+  try {
+    const res = await Axios.get(`${SERVER_URL}/findAllSchedules`, {});
+    return res.data;
+  }catch(e) {
+    console.error(e);
+  }
+}
+
+export { showPrevMonthFn, getCalendarDayListFn, showNextMonthFn, addZero, subZero, SERVER_URL, getHttpXXXList };

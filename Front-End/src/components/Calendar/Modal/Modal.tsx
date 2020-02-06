@@ -3,22 +3,26 @@ import './Modal.scss';
 import View from './View';
 import AddForm from '../PostCalendar/AddForm';
 
-const Modal = ({ isOpen, close, year, month, day }: any) => {
+const Modal = (params: any) => {
+  const { isOpen, close, year, month, day, selectedDate, xxxList } = params;
   const [isView, setisView] = useState(true);
+  const qparams = {
+      year,
+      month,
+      day,
+      isView,
+      xxxList,
+      setisView,
+      selectedDate,
+  }
+
   return (
-    <>
-    {
-      isOpen ?
       <> 
       {
         isView
         ? <View 
           close={close}
-          year={year}
-          month={month}
-          day={day}
-          isView={isView}
-          setisView={setisView}
+          qparams={qparams}
           />
         : <AddForm 
         close={close}
@@ -27,11 +31,9 @@ const Modal = ({ isOpen, close, year, month, day }: any) => {
         day={day}
         isView={isView}
         setisView={setisView}
+        selectedDate={selectedDate}
         />
       } </>
-    : <></>
-    }
-    </>
   )
 }
 export default Modal;

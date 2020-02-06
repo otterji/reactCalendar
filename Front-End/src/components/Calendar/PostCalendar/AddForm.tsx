@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, EffectCallback } from 'react';
 import './Modal.scss';
 import '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -8,79 +8,108 @@ import { ThemeProvider } from "@material-ui/styles";
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
 import axios from "axios";
+import { startOfToday } from 'date-fns';
 
+const SERVER_URL = 'http://localhost:3000';
+// const SERVER_URL = 'http://52.79.117.94:8080';
 
-const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
+type ReqData = {
+  contents: string,
+  attendants: string,
+  place: string,
+  title: string,
+  startAt: Date,
+  endAt: Date
+};
+
+const AddForm = ({ close, selectedDate, day, isView, setisView }:any) => {
   // `{${year}-${month}-${day}T00:00:00}`
-  const [selectedStartDate, handleStartDateChange] = useState<any>(new Date(`${year}-${month}-${day}`));
+  const [selectedStartDate, handleStartDateChange] = useState(selectedDate);
 
   const changeStartDate = (_date: Date|null) => {
     handleStartDateChange(_date)
   }
 
-  const [selectedEndDate, handleEndDateChange] = useState<any>(new Date(`${year}-${month}-${day}`));
+  const [selectedEndDate, handleEndDateChange] = useState(selectedDate);
 
-  const changeEndDate = (_date: Date|null) => {
-    handleEndDateChange(_date)
+  const changeEndDate = (_date: Date | null) => {
+    handleEndDateChange(_date);
+  }
+
+  const [data, setData] = useState({} as ReqData);
+  const onChangeInput = (e: any) => {
+    const id = e.target.id;
+    const value = e.target.value;
+
+    setData({
+      ...data,
+      [id]: value
+    });
   }
   
   const onSubmit = async () => {
-    setisView = true;  // View 화면(일정목록)으로 바뀜
     try{
-      const res = await axios({
-        method: 'post',
-        url: 'http://70.12.246.45:8080/makeSchedules',
-        data: {
-          attendants: "string",
-          contents: "string",
-          endDate: "string",
-          endTime: "string",
-          id: sessionStorage.getItem('id'),
-          place: "string",
-          startDate: "string",
-          startTime: "string",
-          title: "string" 
-        }
-      })
+      const reqData: ReqData = {
+        ...data,
+        startAt: selectedStartDate,
+        endAt: selectedEndDate
+      }
+
+      if(!reqData.title || !reqData.startAt || !reqData.endAt) {
+        alert("wft");
+        return;
+      }
+
+      const res = await axios.post(`${SERVER_URL}/makeSchedules`, data);
       
-      alert(JSON.stringify(res.data, null, 2));
-    }
-    catch(err){
-      alert(err);
+      if(![200, 201, 301].includes(res.status)) {
+        alert('wtf server');
+        return;
+      };
+      // alert(JSON.stringify(res.data, null, 2));
+      setisView(true);
+
+      // const keyLength = (Object.keys(reqData)).length;
+      // if(VALIDATION_LENGTH !== keyLength) {
+      //   alert('empty data');
+      //   return;
+      // }
+    } catch(err){
+      alert(err); // WTF?
     }
   }
+
   return (
     <>
-    
       <div className="Modal-overlay" onClick={close} />
       <div className="Modal">
-      <input placeholder="제목을 입력하세요" className="title"></input>
+      <input placeholder="제목을 입력하세요" className="title" id="title" onChange={onChangeInput} />
         <div className="content">
-        <ThemeProvider theme={defaultMaterialTheme}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <DateTimePicker
-              value={selectedStartDate}
-              disablePast
-              onChange={changeStartDate}
-              label="시작일"
-              showTodayButton
-            />
-            <DateTimePicker
-              value={selectedEndDate}
-              disablePast
-              onChange={changeEndDate}
-              label="종료일"
-              showTodayButton
-            />
-          </MuiPickersUtilsProvider>
-        </ThemeProvider> <br></br>
-        내용 : <input value="contents"></input> <br></br>
-        참석자:   <input></input> <br></br>
-        장소:   <input></input> <br></br>
+          <ThemeProvider theme={defaultMaterialTheme}>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <DateTimePicker
+                value={selectedStartDate}
+                disablePast
+                onChange={changeStartDate}
+                label="시작일"
+                showTodayButton
+              />
+              <DateTimePicker
+                value={selectedEndDate}
+                disablePast
+                onChange={changeEndDate}
+                label="종료일"
+                showTodayButton
+              />
+            </MuiPickersUtilsProvider>
+          </ThemeProvider> <br />
+        내용 : <input id="contents" onChange={onChangeInput} /> <br />
+        참석자:   <input id="attendants" onChange={onChangeInput} /> <br />
+        장소:   <input id="place" onChange={onChangeInput} /> <br />
         </div>
         <div className="button-wrap">
           <button 
-          onClick={() => onSubmit}
+          onClick={onSubmit}
           >추가</button>
         </div>
       </div>
@@ -90,7 +119,7 @@ const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
 export default AddForm ;
 
 const defaultMaterialTheme = createMuiTheme({
-    palette: {
-      primary: {main:'#8cebd1'},
-    },
-  });
+  palette: {
+    primary: {main:'#8cebd1'},
+  },
+});

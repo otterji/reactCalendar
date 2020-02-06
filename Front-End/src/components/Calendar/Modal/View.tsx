@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import './Modal.scss';
 
-const View = ({ close, year, month, day, isView, setisView }: any) => {
+const View = (params: any) => {
+  const { close, qparams } = params;
+  const { year, month, day, isView, setisView, selectedDate, xxxList } = qparams;
+  
   return(
   <React.Fragment>
       <div className="Modal-overlay" onClick={close} />
