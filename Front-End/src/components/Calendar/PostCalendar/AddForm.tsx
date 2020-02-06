@@ -2,28 +2,27 @@ import React, { useState } from 'react';
 import './Modal.scss';
 import '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import styled, { css, } from 'styled-components';
 import { createMuiTheme, 
     } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
-import { DateTimePicker, KeyboardDateTimePicker } from "@material-ui/pickers";
+import { DateTimePicker } from "@material-ui/pickers";
 
 
 const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
+  // `{${year}-${month}-${day}T00:00:00}`
+  const [selectedStartDate, handleStartDateChange] = useState<any>(new Date(`${year}-${month}-${day}`));
 
-  const onChangeEndDate = (_date: Date | null) => {
-    // const [endDate, setendDate] = useState(_date);
-    console.log('바뀜');
-  };
+  const changeStartDate = (_date: Date|null) => {
+    handleStartDateChange(_date)
+  }
 
-  // const [startDate, setStartDate] = useState(new Date());
+  const [selectedEndDate, handleEndDateChange] = useState<any>(new Date(`${year}-${month}-${day}`));
 
-  // const handleDateChange = () => {
-  //   const [selectedDate, handleDateChange] = useState(new Date("2018-01-01T00:00:00.000Z"));
-  // }
+  const changeEndDate = (_date: Date|null) => {
+    handleEndDateChange(_date)
+  }
 
-  const [selectedDate, handleDateChange] = useState(new Date());
   return (
     <>
       <div className="Modal-overlay" onClick={close} />
@@ -32,25 +31,19 @@ const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
         <div className="content">
         <ThemeProvider theme={defaultMaterialTheme}>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDateTimePicker
-              variant="inline"
-              ampm={false}
+            <DateTimePicker
+              value={selectedStartDate}
+              disablePast
+              onChange={changeStartDate}
               label="시작일"
-              value={selectedDate}
-              onChange={() => handleDateChange}
-              onError={console.log}
-              disablePast
-              format="yyyy/MM/dd HH:mm"
+              showTodayButton
             />
-            <KeyboardDateTimePicker
-              variant="inline"
-              ampm={false}
-              label="종료일"
-              value={selectedDate}
-              onChange={() => handleDateChange}
-              onError={console.log}
+            <DateTimePicker
+              value={selectedEndDate}
               disablePast
-              format="yyyy/MM/dd HH:mm"
+              onChange={changeEndDate}
+              label="종료일"
+              showTodayButton
             />
           </MuiPickersUtilsProvider>
         </ThemeProvider> <br></br>
@@ -72,66 +65,3 @@ const defaultMaterialTheme = createMuiTheme({
       primary: {main:'#8cebd1'},
     },
   });
-
-const StyledDatePicker = styled(KeyboardDatePicker)<any>`
-  .MuiIconButton-root{
-    color: black;
-    padding: 0px;
-  }
-
-  ${props => props.validate === 'invalid' && css`
-    & label {
-      color: red;    
-    }
-    & label.Mui-focused{
-      color: red;
-    }
-    & .MuiOutlinedInput-root {      
-      svg {
-          color: red;
-        }
-      & fieldset {
-        border-color: red;
-      }
-      &:hover fieldset {
-        border-color: red;
-      }
-      &.Mui-focused {
-        & fieldset{
-          border-color: red;
-        }
-      }
-  `}
-
-  ${props => props.validate === 'valid' && css`
-    & label {
-      color: #8cebd1;    
-    }
-    & .MuiOutlinedInput-root {      
-      svg {
-          color: #8cebd1;
-        }
-      & fieldset {
-        border-color: #8cebd1;
-      }
-    }
-  `
-  }
-
-  & label.Mui-focused {
-    color: #8cebd1;      
-  }
-  & .MuiOutlinedInput-root {
-    &:hover fieldset {
-      border-color: #8cebd1;
-    }
-    &.Mui-focused {
-      svg {
-        color: #8cebd1;
-      }
-      & fieldset{
-        border-color: #8cebd1;
-      }
-    }
-  } 
-`
