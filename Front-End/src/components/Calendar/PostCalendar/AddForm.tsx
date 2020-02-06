@@ -74,7 +74,7 @@ const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
             />
           </MuiPickersUtilsProvider>
         </ThemeProvider> <br></br>
-        내용 : <input></input> <br></br>
+        내용 : <input value="contents"></input> <br></br>
         참석자:   <input></input> <br></br>
         장소:   <input></input> <br></br>
         </div>
