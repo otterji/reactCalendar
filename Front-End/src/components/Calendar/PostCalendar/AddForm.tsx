@@ -7,6 +7,7 @@ import { createMuiTheme,
 import { ThemeProvider } from "@material-ui/styles";
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
+import axios from "axios";
 
 
 const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
@@ -22,9 +23,35 @@ const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
   const changeEndDate = (_date: Date|null) => {
     handleEndDateChange(_date)
   }
-
+  
+  const onSubmit = async () => {
+    setisView = true;  // View 화면(일정목록)으로 바뀜
+    try{
+      const res = await axios({
+        method: 'post',
+        url: 'http://70.12.246.45:8080/makeSchedules',
+        data: {
+          attendants: "string",
+          contents: "string",
+          endDate: "string",
+          endTime: "string",
+          id: sessionStorage.getItem('id'),
+          place: "string",
+          startDate: "string",
+          startTime: "string",
+          title: "string" 
+        }
+      })
+      
+      alert(JSON.stringify(res.data, null, 2));
+    }
+    catch(err){
+      alert(err);
+    }
+  }
   return (
     <>
+    
       <div className="Modal-overlay" onClick={close} />
       <div className="Modal">
       <input placeholder="제목을 입력하세요" className="title"></input>
@@ -52,7 +79,9 @@ const AddForm = ({ close, year, month, day, isView, setisView }:any) => {
         장소:   <input></input> <br></br>
         </div>
         <div className="button-wrap">
-          <button onClick={() => setisView(true)}>추가</button>
+          <button 
+          onClick={() => onSubmit}
+          >추가</button>
         </div>
       </div>
     </>

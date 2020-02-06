@@ -24,39 +24,14 @@ class Container extends Component<Props, State>{
     }
   }
 
-//   const [year, setYear] = useState(new Date().getFullYear());
-//   const [month, setMonth] = useState(new Date().getMonth() + 1);
-/** 
- *  useEffect(() => {
- *    setYear(year + 1);
- * }, [month])
- * 
- * useEffect(() => {
- *  setMonth(month + 1);
- * }, [next]);
- * 
- * */ 
-
   componentDidMount() {
     this.getCalendarDayList()
+    console.log(sessionStorage.getItem('id'));
   }
 
   getCalendarDayList = () => getCalendarDayListFn(this);
   showNextMonth = () => showNextMonthFn(this);
   showPrevMonth = () => showPrevMonthFn(this);
-  // showModal = () => showModalFn(this);
-  // changeModalFalg = () => {
-  //   this.setState({ isModalOpen: true });
-  //   console.log(this.state.isModalOpen);
-
-  //   this.showModal();
-  // };
-
-  // setStateAsync(state:object) {
-  //   return new Promise((resolve) => {
-  //     this.setState(state, resolve)
-  //   });
-  // }
 
   openModal = (day:number) => {
     this.setState({ isModalOpen: true });
@@ -65,16 +40,6 @@ class Container extends Component<Props, State>{
 
   closeModal = () => { this.setState({ isModalOpen: false }); }
 
-  // showModal = () => {
-  //   render( <Modal
-  //   isOpen={this.state.isModalOpen}
-  //   close={this.closeModal}
-  //   year={this.state.year}
-  //   month={this.state.month}
-  //   // day = {day}
-  //   />)
-  //   render(<>{console.log("showModal")}</>)
-  // }
 
   render() {
     return (
@@ -128,6 +93,7 @@ class Container extends Component<Props, State>{
       </>
     )
   }
+  
 }
 
 export { Container };

@@ -8,9 +8,16 @@ const View = ({ close, year, month, day, isView, setisView }: any) => {
       <div className="Modal">
       <p className="title">{year}년 {month}월 {day}일</p>
       <div className="content">
-      <p>
-          밥먹기
-      </p>
+      <li>
+          일정
+          <button>수정</button>
+          <button>삭제</button>
+      </li>
+      <li>
+          일정
+          <button>수정</button>
+          <button>삭제</button>
+      </li>
 
       <button onClick={() => setisView(false)}>+</button>
 
