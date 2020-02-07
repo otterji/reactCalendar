@@ -26,4 +26,5 @@ export interface State{
   xxxList: any[];
   list: any;
   preventRefreshList: any;
+  retArr: any;
 }

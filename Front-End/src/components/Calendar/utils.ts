@@ -14,7 +14,6 @@ const showPrevMonthFn = (self: any) => {
 
 
 const showNextMonthFn = (self: any) => {
-  console.log('다음달')
   if (self.state.month === 12) {
     self.setState({
       year: self.state.year + 1,
@@ -96,10 +95,35 @@ const getCalendarDayListFn = (self: any) => {
   }
   
   self.setState({
-    arr
+    retArr: arr
   });
+  console.log('getDaylist arr', arr)
+  // console.log('retData in gtCal()', self.state.retArr)
   return arr
 };
+
+const prepareRenderingFn = (self: any) => {
+  const xxxList = [
+    { title: "밥먹기", startAt: "2020-02-01" },
+    { title: "싸피가기", startAt: "2020-02-03" },
+    { title: "공부하기", startAt: "2020-02-03" },
+    { title: "놀기", startAt: "2020-02-04" }
+  ];
+  self.setState({ xxxList });
+  const list: any[] = (self.state.retArr).map((e: any[]) => {
+    return e.map((ein:any) => {
+      const filters = xxxList.filter(
+        (ein2:any) => new Date(ein2.startAt).getDate() === ein
+      );
+      return {
+        days: ein,
+        xxx: filters
+      };
+    });
+  });
+  self.setState({ list });
+  console.log('list', list)
+}
 
 
 
@@ -141,4 +165,13 @@ const getHttpXXXList = async ()=> {
   }
 }
 
-export { showPrevMonthFn, getCalendarDayListFn, showNextMonthFn, addZero, subZero, SERVER_URL, getHttpXXXList };
+export { 
+  showPrevMonthFn, 
+  getCalendarDayListFn, 
+  showNextMonthFn, 
+  addZero,
+  subZero, 
+  SERVER_URL, 
+  getHttpXXXList,
+  prepareRenderingFn,
+};
