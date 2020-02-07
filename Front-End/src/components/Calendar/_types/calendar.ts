@@ -24,5 +24,5 @@ export interface State{
   isModalOpen: boolean;
   curDay: number;
   xxxList: any[];
-  list: arrElement[]
+  list: any;
 }
