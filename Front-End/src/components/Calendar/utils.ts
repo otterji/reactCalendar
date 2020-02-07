@@ -1,15 +1,38 @@
 import Axios from 'axios';
 
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://70.12.246.45:8080';
 
 const showPrevMonthFn = (self: any) => {
-    const isNewYear = self.state.month === 1 ? true : false;
-    const params = isNewYear 
-        ? { ...self.state, year: self.state.year - 1, month: 12 }
-        : { ...self.state, month: self.state.month - 1 };
+  const isNewYear = self.state.month === 1 ? true : false;
+  const params = isNewYear 
+      ? { ...self.state, year: self.state.year - 1, month: 12 }
+      : { ...self.state, month: self.state.month - 1 };
 
-    self.setState(params, () => getCalendarDayListFn(self));
+  self.setState(params, () => getCalendarDayListFn(self));
+  console.log(self)
 };
+
+
+const showNextMonthFn = (self: any) => {
+  console.log('다음달')
+  if (self.state.month === 12) {
+    self.setState({
+      year: self.state.year + 1,
+      month: 1
+    }, () => {
+      getCalendarDayListFn(self)
+    })
+  } else {
+    self.setState({
+      month: self.state.month + 1
+    }, () => {
+      getCalendarDayListFn(self)
+    }
+    )
+  }
+  console.log(self)
+};
+
 
 const getMonthLengthFn = (year:number, month: number) => {
     if (month === 2) {
@@ -47,7 +70,7 @@ const getCalendarDayListFn = (self: any) => {
   const init: number = startpoint.getDay();
   let arr: number[][] = [];
   let temp: number = 0
-
+  
   for (let j=0; j < init; j++) {
     days.push(0)
   }
@@ -71,29 +94,14 @@ const getCalendarDayListFn = (self: any) => {
     }
     temp += 7;
   }
-
+  
   self.setState({
     arr
   });
+  return arr
 };
 
-const showNextMonthFn = (self: any) => {
-  if (self.state.month === 12) {
-    self.setState({
-      year: self.state.year + 1,
-      month: 1
-    }, () => {
-      getCalendarDayListFn(self)
-    })
-  } else {
-    self.setState({
-      month: self.state.month + 1
-    }, () => {
-      getCalendarDayListFn(self)
-    }
-    )
-  }
-};
+
 
 // Modal.setAppElement('#App')
 
@@ -119,12 +127,17 @@ const subZero = (n:string) => {
   return n[0] === '0' ? n[1] : n
 }
 
-const getHttpXXXList = async () => {
+const getHttpXXXList = async ()=> {
+  const _id = window.sessionStorage.getItem('id');
+  const _yymm = '2020-02'
   try {
-    const res = await Axios.get(`${SERVER_URL}/findAllSchedules`, {});
-    return res.data;
+    const res = await Axios.get(`${SERVER_URL}/getSchedules/${_id}/${_yymm}`);
+    // alert(JSON.stringify(res.data, null, 2));
+    // console.log(JSON.stringify(res.data, null, 2))
+    const returnList:any[] = res.data;
+    return returnList;
   }catch(e) {
-    console.error(e);
+    alert(e);
   }
 }
 

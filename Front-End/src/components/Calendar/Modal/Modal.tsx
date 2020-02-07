@@ -4,7 +4,7 @@ import View from './View';
 import AddForm from '../PostCalendar/AddForm';
 
 const Modal = (params: any) => {
-  const { isOpen, close, year, month, day, selectedDate, xxxList } = params;
+  const { isOpen, close, year, month, day, selectedDate, xxxList, preventRefreshList } = params;
   const [isView, setisView] = useState(true);
   const qparams = {
       year,
@@ -14,6 +14,7 @@ const Modal = (params: any) => {
       xxxList,
       setisView,
       selectedDate,
+      preventRefreshList,
   }
 
   return (
@@ -24,6 +25,7 @@ const Modal = (params: any) => {
           close={close}
           qparams={qparams}
           />
+          
         : <AddForm 
         close={close}
         year={year}
@@ -32,6 +34,7 @@ const Modal = (params: any) => {
         isView={isView}
         setisView={setisView}
         selectedDate={selectedDate}
+        preventRefreshList={preventRefreshList}
         />
       } </>
   )

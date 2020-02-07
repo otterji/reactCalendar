@@ -5,12 +5,11 @@ import DateFnsUtils from '@date-io/date-fns';
 import { createMuiTheme, 
     } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
-import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
 import axios from "axios";
-import { startOfToday } from 'date-fns';
 
-const SERVER_URL = 'http://localhost:3000';
+const SERVER_URL = 'http://70.12.246.45:8080';
 // const SERVER_URL = 'http://52.79.117.94:8080';
 
 type ReqData = {
@@ -19,22 +18,22 @@ type ReqData = {
   place: string,
   title: string,
   startAt: Date,
-  endAt: Date
+  endAt: Date,
+  id: any,
 };
 
-const AddForm = ({ close, selectedDate, day, isView, setisView }:any) => {
+const AddForm = ({ close, selectedDate, day, isView, setisView, preventRefreshList }:any) => {
   // `{${year}-${month}-${day}T00:00:00}`
   const [selectedStartDate, handleStartDateChange] = useState(selectedDate);
-
   const changeStartDate = (_date: Date|null) => {
     handleStartDateChange(_date)
   }
 
   const [selectedEndDate, handleEndDateChange] = useState(selectedDate);
-
   const changeEndDate = (_date: Date | null) => {
     handleEndDateChange(_date);
   }
+
 
   const [data, setData] = useState({} as ReqData);
   const onChangeInput = (e: any) => {
@@ -43,24 +42,30 @@ const AddForm = ({ close, selectedDate, day, isView, setisView }:any) => {
 
     setData({
       ...data,
-      [id]: value
-    });
+      [id]: value,
+    },);
+    
   }
-  
+
   const onSubmit = async () => {
+    
     try{
+      // 보내는 Data 를 펼쳤을때 이런 것들이 있다고 정의
       const reqData: ReqData = {
         ...data,
         startAt: selectedStartDate,
-        endAt: selectedEndDate
+        endAt: selectedEndDate,
+        id: window.sessionStorage.getItem('id'),
       }
-
+      console.log(reqData)
+      // Validation error cut
       if(!reqData.title || !reqData.startAt || !reqData.endAt) {
         alert("wft");
         return;
       }
 
-      const res = await axios.post(`${SERVER_URL}/makeSchedules`, data);
+      const res = await axios.post(`${SERVER_URL}/makeSchedules`, reqData);
+
       
       if(![200, 201, 301].includes(res.status)) {
         alert('wtf server');
@@ -68,7 +73,10 @@ const AddForm = ({ close, selectedDate, day, isView, setisView }:any) => {
       };
       // alert(JSON.stringify(res.data, null, 2));
       setisView(true);
-
+      console.log('preventRefreshList', preventRefreshList)
+      console.log('reqData', reqData)
+      preventRefreshList.push(reqData)
+      
       // const keyLength = (Object.keys(reqData)).length;
       // if(VALIDATION_LENGTH !== keyLength) {
       //   alert('empty data');
@@ -89,14 +97,12 @@ const AddForm = ({ close, selectedDate, day, isView, setisView }:any) => {
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DateTimePicker
                 value={selectedStartDate}
-                disablePast
                 onChange={changeStartDate}
                 label="시작일"
                 showTodayButton
               />
               <DateTimePicker
                 value={selectedEndDate}
-                disablePast
                 onChange={changeEndDate}
                 label="종료일"
                 showTodayButton

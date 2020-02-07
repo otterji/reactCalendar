@@ -25,4 +25,5 @@ export interface State{
   curDay: number;
   xxxList: any[];
   list: any;
+  preventRefreshList: any;
 }

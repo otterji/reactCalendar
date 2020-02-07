@@ -31,31 +31,39 @@ class Container extends Component<Props, State> {
       isModalOpen: false,
       curDay: 0,
       xxxList: [],
-      list: [] as any
+      list: [] as any,
+      preventRefreshList: []
     };
   }
 
   // setTestState = (callback) => {
   //   this.setState({...callbak});
   // }
+  
+  async componentDidMount() {
+    const reqRet:any = await getHttpXXXList();
+    console.log('req', reqRet)
 
-  componentDidMount() {
-    // const reqRet: any[] = await getHttpXXXList();
-    // const xxxList = reqRet.sort((a, b) => Date.parse(a.startAt) - Date.parse(b.startAt));
-    // WTF? Empty Data
-    const xxxList = [
-      { title: "hit", startAt: "2020-01-01" },
-      { title: "hit2", startAt: "2020-01-03" },
-      { title: "hit3", startAt: "2020-01-03" },
-      { title: "hit4", startAt: "2020-01-04" }
-    ];
+    this.setState({
+      preventRefreshList: reqRet
+    })
+    console.log('바뀌냐?', this.state.preventRefreshList)
+
+
+    const xxxList = reqRet.sort((a:any, b:any) => Date.parse(a.startAt) - Date.parse(b.startAt));
+    // WTF? Empty Data 
+    // const xxxList = [
+    //   { title: "밥먹기", startAt: "2020-02-01" },
+    //   { title: "싸피가기", startAt: "2020-02-03" },
+    //   { title: "공부하기", startAt: "2020-02-03" },
+    //   { title: "놀기", startAt: "2020-02-04" }
+    // ];
     const retArr = this.getCalendarDayList();
     this.setState({ xxxList });
-
     const list: any[] = retArr.map((e: any[]) => {
-      return e.map(ein => {
+      return e.map((ein:any) => {
         const filters = xxxList.filter(
-          ein2 => new Date(ein2.startAt).getDate() === ein
+          (ein2:any) => new Date(ein2.startAt).getDate() === ein
         );
         return {
           days: ein,
@@ -63,11 +71,10 @@ class Container extends Component<Props, State> {
         };
       });
     });
-
     this.setState({ list });
-
-    // console.log(list2, this.state);
+    console.log(list)
   }
+  
 
   getCalendarDayList = () => getCalendarDayListFn(this);
   showNextMonth = () => showNextMonthFn(this);
@@ -108,13 +115,14 @@ class Container extends Component<Props, State> {
               <tr key={idx}>
                 {row.map((ele: any, idx2: any) =>
                   ele.days ? (
-                    <Td key={idx2}>
-                      {ele.days}
+                    <Td key={idx2} onClick={() => this.openModal(ele.days)} className="plzHover">
+                      <Th>{ele.days}</Th>
                       {ele.xxx.length > 0
                         ? ele.xxx.map((xel: any, idx3: any) => (
                             <span key={idx3} style={{ display: "block" }}>
                               {xel.title}
                             </span>
+                            
                           ))
                         : null}
                     </Td>
@@ -139,8 +147,10 @@ class Container extends Component<Props, State> {
                 `${this.state.year}-${this.state.month}-${this.state.curDay}`
               )
             }
+            preventRefreshList={this.state.preventRefreshList}
+            // preventRerenderingList={this.state.preventRefreshList}
           />
-        ) : null}
+        ) : console.log(this.state.preventRefreshList)}
       </>
     );
   }
