@@ -68,7 +68,7 @@ interface State{
 }
 
 let initList: any;
-const _url:string = 'http://70.12.246.45:8080';
+const _url:string = 'http://52.79.117.94:8080';
 
 class AccountsForm extends Component<any, State> {
   constructor(props:any){
