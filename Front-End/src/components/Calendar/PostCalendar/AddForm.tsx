@@ -22,7 +22,7 @@ type ReqData = {
   id: any,
 };
 
-const AddForm = ({ close, selectedDate, day, isView, setisView, preventRefreshList }:any) => {
+const AddForm = ({ close, selectedDate, setisView }:any) => {
   // `{${year}-${month}-${day}T00:00:00}`
   const [selectedStartDate, handleStartDateChange] = useState(selectedDate);
   const changeStartDate = (_date: Date|null) => {
@@ -73,9 +73,6 @@ const AddForm = ({ close, selectedDate, day, isView, setisView, preventRefreshLi
       };
       // alert(JSON.stringify(res.data, null, 2));
       setisView(true);
-      console.log('preventRefreshList', preventRefreshList)
-      console.log('reqData', reqData)
-      preventRefreshList.push(reqData)
       
       // const keyLength = (Object.keys(reqData)).length;
       // if(VALIDATION_LENGTH !== keyLength) {

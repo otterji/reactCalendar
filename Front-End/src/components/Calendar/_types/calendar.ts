@@ -1,30 +1,34 @@
-
-export interface Props {
+// dataList
+export type DateData = {
+    days: Date | number;
+    schedules: ServerData[];
 }
 
-type xxx = {
-  attendants?: string
-  contents?:string;
-startAt: Date
-endAt: Date
-id?: string
-place?: string
-title: string
+export type ServerData = {
+    title: string;
+    contents?: string;
+    startAt: Date;
+    endAt: Date;
+    place?: string;
+    attendants?: string;
+    schNo?: number;
+    oneDay?: boolean;
 }
 
-type arrElement = {
-  days: number[],
-  xxx: xxx[]
+export type ModalData = {
+    days: Date;
+    schedules: ServerData[];
+    type: string;
+}
+export type ModalProps = {
+    close: () => void;
+    data: ModalData;
 }
 
-export interface State{
-  year: number;
-  month: number;
-  arr: number[][];
-  isModalOpen: boolean;
-  curDay: number;
-  xxxList: any[];
-  list: any;
-  preventRefreshList: any;
-  retArr: any;
+export type OpenModal = {
+    openModal: (data: ModalData) => void;
 }
+
+export interface CalendarProps extends OpenModal {
+    list: DateData[];
+};

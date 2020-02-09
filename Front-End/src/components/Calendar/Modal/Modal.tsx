@@ -1,42 +1,24 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import './Modal.scss';
-import View from './View';
 import AddForm from '../PostCalendar/AddForm';
+import { ModalProps } from '../_types/calendar';
+import { TYPE_DETAIL, TYPE_ADD } from '../utils/CONST';
+import { DetailScheduleModal } from './DetailScheduleModal';
 
-const Modal = (params: any) => {
-  const { isOpen, close, year, month, day, selectedDate, xxxList, preventRefreshList } = params;
-  const [isView, setisView] = useState(true);
-  const qparams = {
-      year,
-      month,
-      day,
-      isView,
-      xxxList,
-      setisView,
-      selectedDate,
-      preventRefreshList,
-  }
+const Modal = (params: ModalProps) => {
+  const { close, data } = params;
+  const { type  } = data;
+
+  const typeObj = useMemo(() => ({
+    [TYPE_DETAIL]: <DetailScheduleModal close={close} data={data} />,
+    [TYPE_ADD]: <AddForm close={close} />,
+  }), [])
+  
 
   return (
-      <> 
-      {
-        isView
-        ? <View 
-          close={close}
-          qparams={qparams}
-          />
-          
-        : <AddForm 
-        close={close}
-        year={year}
-        month={month}
-        day={day}
-        isView={isView}
-        setisView={setisView}
-        selectedDate={selectedDate}
-        preventRefreshList={preventRefreshList}
-        />
-      } </>
+    // @ts-ignore HACK: WTF?
+      <>{typeObj[type] || <div>hi</div>}</>
   )
 }
+
 export default Modal;
