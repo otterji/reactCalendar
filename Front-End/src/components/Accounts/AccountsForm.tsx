@@ -3,7 +3,7 @@ import { withRouter, } from 'react-router-dom';
 import axios from "axios";
 import DateFnsUtils from '@date-io/date-fns';
 //mycomp
-
+import { url as _url } from "../../url";
 //styles 
 import styled, { css, } from 'styled-components';
 import { Button, TextField, InputAdornment, Avatar, createMuiTheme, 
@@ -15,6 +15,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/picke
 
 const regExp = {
   email: /^(([^<>()\\[\].,;:\s@"]+(\.[^<>()\\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
+  // pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
   pw: /^[A-Za-z0-9]{6,15}$/,
   name: /^[A-Za-z가-힣]{2,}$/,
   nickname: /^[A-Za-z0-9가-힣]{2,10}$/,
@@ -51,14 +52,6 @@ interface State{
   link: string,
   linkValid: string,
 
-  // interests:{
-  //   게임: boolean,
-  //   스포츠: boolean,
-  //   봉사: boolean,
-  //   공연전시: boolean,
-  //   영화: boolean,
-  //   취업: boolean,
-  // }
   interests:object,
   interestsValid: string,
   interestsLabel: string,
@@ -68,7 +61,6 @@ interface State{
 }
 
 let initList: any;
-const _url:string = 'http://52.79.117.94:8080';
 
 class AccountsForm extends Component<any, State> {
   constructor(props:any){
@@ -113,8 +105,7 @@ class AccountsForm extends Component<any, State> {
     }
   }
   
-  componentWillMount(){
-    // console.log('will mount')
+  componentDidMount(){
     if(this.props.moreInfo){
       this.getAllInterests()
       .then(()=>{
@@ -127,7 +118,7 @@ class AccountsForm extends Component<any, State> {
     try{
       const res = await axios({
         method: 'get',
-        url: 'http://70.12.246.48:8080/interest/getAllInterests',
+        url: `${_url}/interest/getAllInterests`,
         responseType: 'json'
       });
       console.log(res);
@@ -252,7 +243,11 @@ class AccountsForm extends Component<any, State> {
               this.state.pwValid === 'valid' &&
               this.state.pwCheckValid === 'valid') ? true : false;
     }
-    else if(this.props.moreInfo){
+    else if(this.props.moreInfo && this.state.isChannel){
+      return (this.state.nicknameValid === 'valid' && 
+              this.state.interestsValid === 'valid') ? true : false;
+    }
+    else if(this.props.moreInfo && !this.state.isChannel){
       return (this.state.birthValid === 'valid' &&
               this.state.nameValid === 'valid' &&
               this.state.nicknameValid === 'valid' && 
@@ -267,9 +262,6 @@ class AccountsForm extends Component<any, State> {
     }
   }
 
-  onLogin = (_id:string, _pw:string) => {
-  }
-
   onSubmit = async () => {
     if(this.props.login){
       const _id = this.state.email;
@@ -277,20 +269,19 @@ class AccountsForm extends Component<any, State> {
       try{
         const res = await axios({
           method:'post',
-          // url: 'http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/member/signup',
-          // url: 'http://52.79.117.94:8080/member/login',
           url: `${_url}/member/login`,
           data:{
             id: _id,
             pw: _pw,
           },
         });
-        alert(JSON.stringify(res.data, null, 2));
+        console.log(res)
+        // alert(JSON.stringify(res.data, null, 2));
         if(res.data.status) {
           window.sessionStorage.setItem('id', _id);
           window.sessionStorage.setItem('pw', _pw);
           this.props.onLogin();
-          this.props.history.push('/');
+          this.props.history.push(`/mainPage`);
         }
       }
       catch(err){
@@ -324,26 +315,29 @@ class AccountsForm extends Component<any, State> {
     else if(this.props.moreInfo && this.state.isChannel){
       const _id = window.sessionStorage.getItem('id');
       const _pw = window.sessionStorage.getItem('pw');
-      const formData = new FormData();
-      formData.append('file', this.state.imgFile);
-      
-      try{
-        let res = await axios(
-          {
-            method: 'post',
-            url: `${_url}/member/uploadImage/${_id}`,
-            data: formData,
-            headers: {'content-Type': 'multipart/form-data' }
-          }
-        );
+      let _img = null;
 
-        const _img = null;
+      try{
+        if(this.state.imgBase64 !== ''){
+          const formData = new FormData();
+          formData.append('file', this.state.imgFile);
+          await axios(
+            {
+              method: 'post',
+              url: `${_url}/member/uploadImage/${_id}`,
+              data: formData,
+              headers: {'content-Type': 'multipart/form-data' }
+            }
+          );
+          _img = _id;
+        }
+
         const _nickname = this.state.nickname;
         const _link = this.state.link;
         const _msg = ''
         const _interests = this.initList();
 
-        res = await axios(
+        const res = await axios(
           {
             method: 'post',
             url: `${_url}/member/signup/`,
@@ -360,7 +354,7 @@ class AccountsForm extends Component<any, State> {
         )
         if(res.data.state === 'SUCCESS') {      
           this.props.onLogin();
-          this.props.history.push('/');
+          this.props.history.push(`/mainPage`);
         }
       }
       catch(err){
@@ -370,28 +364,31 @@ class AccountsForm extends Component<any, State> {
     else if(this.props.moreInfo && !this.state.isChannel){
       const _id = window.sessionStorage.getItem('id');
       const _pw = window.sessionStorage.getItem('pw');
-      const formData = new FormData();
-      formData.append('file', this.state.imgFile);
-      
+      let _img = null;
+
       try{
-        let res = await axios(
-          {
-            method: 'post',
-            url: `${_url}/member/uploadImage/${_id}`,
-            data: formData,
-            headers: {'content-Type': 'multipart/form-data' }
-          }
-        );
+        if(this.state.imgBase64 !== ''){
+          const formData = new FormData();
+          formData.append('file', this.state.imgFile);
+          await axios(
+            {
+              method: 'post',
+              url: `${_url}/member/uploadImage/${_id}`,
+              data: formData,
+              headers: {'content-Type': 'multipart/form-data' }
+            }
+          );
+          _img = _id;
+        }
 
         const _name = this.state.nickname;
         const _birth = this.state.birth;
         const _nickname = this.state.nickname;
-        const _img = null;
         const _link = this.state.link;
         const _msg = ''
         const _interests = this.initList();
 
-        res = await axios(
+        const res = await axios(
           {
             method: 'post',
             url: `${_url}/member/signup/`,
@@ -408,10 +405,11 @@ class AccountsForm extends Component<any, State> {
             }
           }
         )
+        // alert(JSON.stringify(res.data, null, 2));
+        console.log(JSON.stringify(res.data, null, 2));
         if(res.data.state === 'SUCCESS') {      
-          // alert(JSON.stringify(res.data, null, 2));
           this.props.onLogin();
-          this.props.history.push('/');
+          this.props.history.push(`/mainPage`);
         }
       }
       catch(err){
@@ -454,7 +452,7 @@ class AccountsForm extends Component<any, State> {
   }
 
   renderInterest = ():Array<any> => {
-    let renderList:any[] = []
+    let renderList:any[] = [];
     const keyList = Object.keys(this.state.interests);
     const valueList = Object.values(this.state.interests);
     for(let i = 0; i < keyList.length; i++ ){
@@ -646,15 +644,15 @@ class AccountsForm extends Component<any, State> {
 
             <StyledBtnContainer>
               <StyledBtn 
+                onClick={this.onBack}
+                >
+                뒤로가기
+              </StyledBtn>
+              <StyledBtn
                 disabled={!this.isValid()}
                 onClick={this.onSubmit}
                 >
                 제출              
-              </StyledBtn>
-              <StyledBtn 
-                onClick={this.onBack}
-                >
-                뒤로가기
               </StyledBtn>
             </StyledBtnContainer>
           </StyledForm>
@@ -721,7 +719,8 @@ class AccountsForm extends Component<any, State> {
               null
             }
             <StyledBtnContainer>
-              <StyledBtn 
+              <StyledBtn
+                fixedWidth
                 disabled={!this.isValid()}
                 onClick={this.onSubmit}
                 >
@@ -740,6 +739,17 @@ class AccountsForm extends Component<any, State> {
   }
 }
 export default withRouter(AccountsForm); 
+
+const StyledForm = styled.form`
+  align-items: center;
+  border: 0.1rem solid gray;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 1rem;
+  padding-top: 1rem;
+`
 
 const StyledInputSet = styled.div<any>`
   label{
@@ -813,6 +823,7 @@ const StyledRadio = styled(FormControlLabel)<any>`
 `
 
 const StyledInterestContainer = styled(FormControl)<any>`
+  /* width: 70%; */
   margin: 1rem;
   margin-left: 3rem;
   margin-right: 3rem;
@@ -871,17 +882,6 @@ const StyledInterestContainer = styled(FormControl)<any>`
 const StyledFormGroup = styled(FormGroup)`
   display: flex;
   justify-content: center;
-`
-
-const StyledForm = styled.form`
-  align-items: center;
-  border: 0.1rem solid gray;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 1rem;
-  padding: 1rem;  
 `
 
 // interface textfieldProps {
@@ -1016,16 +1016,16 @@ const StyledBtnContainer = styled.div`
   display: grid;
   grid-auto-flow: column;
   grid-column-gap: 10px;
-  margin: 1rem;
+  /* margin: 1rem; */
+  margin: 1rem 0 1rem 0;
 `
 
-const StyledBtn = styled(Button)`
+const StyledBtn = styled(Button)<any>`
   background-color: ${props => (props.disabled ? 'gray' : 'black')};
   color: white;
   font-size: 100%;
   font-weight: 600;
-  width: 200px;
-  /* width: auto; */
+  width: ${props => (props.fixedWidth ? '200px' : '34vw')};
   
   /* padding-right: 80px;
   padding-left: 80px; */
@@ -1036,5 +1036,9 @@ const StyledBtn = styled(Button)`
   
   &:hover{
     background-color: #8cebd1;
+  }
+
+  @media screen and (min-width: 600px){
+    width: 200px;    
   }
 `

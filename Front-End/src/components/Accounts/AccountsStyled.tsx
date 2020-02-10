@@ -1,9 +1,5 @@
 import styled from 'styled-components';
 
-// interface divProps{
-//   browserWidth: number;
-//   browserHeight: number;
-// }
 export const div = styled.div<any>`
   box-sizing: border-box;
   /* height: 90vh; */
@@ -19,7 +15,7 @@ export const div = styled.div<any>`
   
   @media screen and (min-width: 600px){
     width: 584px;    
-    margin-left: ${props => {return (props.browserWidth - 600) / 2}}px;
+    /* margin-left: ${props => {return (props.browserWidth - 600) / 2}}px; */
   }
 `
 

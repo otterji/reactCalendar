@@ -1,16 +1,14 @@
 import React, { Component, } from "react";
 import { Link } from 'react-router-dom';
 //mycomp
-import { loginState } from "../../../App"
-import AccountsForm from "../AccountsForm"
+import { loginState } from "../../App"
+import AccountsForm from "./AccountsForm"
 //styles
-import * as Styled from "../AccountsStyled";
-import { Grid } from "@material-ui/core";
+import * as Styled from "./AccountsStyled";
+import { Grid, Slide } from "@material-ui/core";
 
 interface State{
   mode:string,
-  browserWidth: number,
-  browserHeight: number,
 }
 
 class MoreInfo extends Component<any, State> {
@@ -18,32 +16,17 @@ class MoreInfo extends Component<any, State> {
     super(props);    
     this.state = {
       mode:'moreInfo',
-      browserWidth: window.innerWidth,
-      browserHeight: window.innerHeight,
     }
-  }
-
-  currentSize = () => {
-    this.setState({browserWidth: window.innerWidth});
-    this.setState({browserHeight: window.innerHeight});
-  }
-  componentDidMount(){
-    window.addEventListener("resize", this.currentSize);
-  }
-  componentWillUnmount(){
-    window.removeEventListener("resize", this.currentSize)
   }
 
   render() {
     return (
       <>
-        <Styled.div 
-          browserWidth={this.state.browserWidth} 
-          browserHeight={this.state.browserHeight}
-        >
+      <Slide direction="left" in={true}>
+        <Styled.div>
           <Grid container spacing={2} justify="center" alignItems="center">
             <Grid item xs={12}>
-              <Link to="/"><Styled.logo src={"images/logo_full.png"}/></Link>
+              <Link to="/mainPage"><Styled.logo src={"images/logo_full.png"}/></Link>
             </Grid>
 
             <Grid item xs={12}>
@@ -62,6 +45,7 @@ class MoreInfo extends Component<any, State> {
           </Grid>
 
         </Styled.div>
+      </Slide>
       </>
     );
   }

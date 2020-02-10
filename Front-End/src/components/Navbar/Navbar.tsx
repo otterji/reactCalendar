@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import Search from '../common/Search/Search';
-import * as Styled from './StyledNavbar';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import Search from "../common/Search/Search";
+import * as Styled from "./StyledNavbar";
 import {
   NotificationsRounded,
   AccountCircleRounded,
@@ -10,15 +10,16 @@ import {
   ExitToApp,
   DateRangeRounded,
   ChatRounded
-} from '@material-ui/icons';
+} from "@material-ui/icons";
 import {
   Button,
   IconButton,
   ListItemIcon,
   ListItemText,
   Tooltip,
+  Grid,
   Box
-} from '@material-ui/core';
+} from "@material-ui/core";
 
 interface State {
   anchorEl: any;
@@ -30,6 +31,12 @@ class Navbar extends Component<any, State> {
     this.state = {
       anchorEl: null
     };
+  }
+
+  changeMode = (e: any) => {
+    const _name= e.currentTarget.name;
+    console.log(_name);
+    this.props.changeMode(_name);
   }
 
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -52,38 +59,44 @@ class Navbar extends Component<any, State> {
             m={1}
           >
             {/* logo */}
-            <Link to="/" style={{ margin: '1rem 1rem' }}>
+            {/* <Link to="/" style={{ margin: "1rem 1rem" }}> */}
+            <Link to="/mainPage" style={{ margin: "1rem 1rem" }}>
               <img
                 src="images/logo_full.png"
-                alt="logo img"
+                alt="images/logo_full.png"
                 width="200px"
                 height="auto"
               />
             </Link>
             {/* 일정보기, 피드보기 버튼 */}
             {this.props.isLogin ? (
-              <Box>
-                <Box p={1}>
+              <Grid container direction="row">
+                <Grid item>
                   <Tooltip title="일정보기">
-                    <IconButton aria-label="일정보기">
-                      <Link to="/schedule">
-                        <DateRangeRounded fontSize="large" />
-                      </Link>
+                    <IconButton 
+                      aria-label="일정보기" 
+                      name="calendar" 
+                      onClick={this.changeMode}
+                    >
+                      <DateRangeRounded />
                     </IconButton>
                   </Tooltip>
-                </Box>
-                <Box p={1}>
+                </Grid>
+                <Grid item>
                   <Tooltip title="피드보기">
-                    <IconButton aria-label="피드보기">
-                      <Link to="/feed">
-                        <ChatRounded fontSize="large" />
-                      </Link>
+                    <IconButton 
+                      aria-label="피드보기"
+                      name="feed"
+                      onClick={this.changeMode}
+                    >
+                      <ChatRounded />
                     </IconButton>
                   </Tooltip>
-                </Box>
-              </Box>
+                </Grid>
+              </Grid>
             ) : null}
           </Box>
+
           {/* 메뉴 버튼 */}
           {this.props.isLogin ? (
             // 로그인 시 검색, 알림, 마이메뉴 버튼
@@ -105,6 +118,7 @@ class Navbar extends Component<any, State> {
                 >
                   <AccountCircleRounded />
                 </IconButton>
+
                 <Styled.StyledMenu
                   id="customized-menu"
                   anchorEl={this.state.anchorEl}
@@ -124,18 +138,14 @@ class Navbar extends Component<any, State> {
                     </ListItemIcon>
                     <ListItemText primary="환경 설정" />
                   </Styled.StyledMenuItem>
-                  {this.props.isLogin ? (
-                    <Styled.StyledMenuItem
-                      onClick={() => {
-                        window.sessionStorage.clear();
-                      }}
-                    >
-                      <ListItemIcon>
-                        <ExitToApp fontSize="small" />
-                      </ListItemIcon>
-                      <ListItemText primary="Log Out" />
-                    </Styled.StyledMenuItem>
-                  ) : null}
+
+                  <Styled.StyledMenuItem onClick={this.props.onLogout}>
+                    <ListItemIcon>
+                      <ExitToApp fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText primary="Log Out" />
+                  </Styled.StyledMenuItem>
+
                 </Styled.StyledMenu>
               </Styled.Li>
             </Styled.Ul>
@@ -147,9 +157,9 @@ class Navbar extends Component<any, State> {
                   aria-controls="customized-menu"
                   aria-haspopup="true"
                   variant="contained"
-                  style={{ backgroundColor: '#80cbc4', color: 'white' }}
+                  style={{ backgroundColor: "#80cbc4", color: "white" }}
                 >
-                  <Link to="/loginPage" style={{ color: 'white' }}>
+                  <Link to="/loginPage" style={{ color: "white" }}>
                     <ListItemText primary="로그인" />
                   </Link>
                 </Button>
@@ -159,9 +169,9 @@ class Navbar extends Component<any, State> {
                   aria-controls="customized-menu"
                   aria-haspopup="true"
                   variant="contained"
-                  style={{ backgroundColor: '#80cbc4', color: 'white' }}
+                  style={{ backgroundColor: "#80cbc4", color: "white" }}
                 >
-                  <Link to="/signupPage" style={{ color: 'white' }}>
+                  <Link to="/signupPage" style={{ color: "white" }}>
                     <ListItemText primary="회원가입" />
                   </Link>
                 </Button>

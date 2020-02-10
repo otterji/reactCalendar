@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import './App.css';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import Loading from './Loading';
 import Main from './Main';
-import LoginPage from './components/Accounts/Login/LoginPage';
-import SignupPage from './components/Accounts/Signup/SignupPage';
-import MoreInfo from './components/Accounts/Signup/MoreInfo';
+import LoginPage from './components/Accounts/LoginPage';
+import SignupPage from './components/Accounts/SignupPage';
+import MoreInfo from './components/Accounts/MoreInfo';
 
 interface State {
   isLogin:boolean,
@@ -30,12 +30,8 @@ class App extends Component<any, State>{
 
   componentDidMount(){
     const _id = window.sessionStorage.getItem('id');
-    // console.log(_id);
     if(_id){
       this.onLogin();
-    }
-    else{
-      this.onLogout();
     }
   }
 
@@ -43,27 +39,32 @@ class App extends Component<any, State>{
     this.setState({isLogin:true});
   }
   onLogout = () => {
-    this.setState({isLogin:false});
+    let _confirm = window.confirm('로그아웃 하시겠습니까?');
+    if(_confirm){
+      sessionStorage.clear();
+      this.setState({isLogin:false});
+      this.props.history.push('/mainPage')
+    }
   }
 
   render(){
     return(
       <div className="app">
         <loginState.Provider value={this.state}>
-          <Switch>
-            {/* <Route exact path="/"><Main isLogin={this.state.isLogin} _login={this._login}/></Route>
-            <Route path="/loginPage"><LoginPage _login={this._login}/></Route>
-            <Route path="/signupPage"><SignupPage _login={this._login}/></Route> */}
+          <Route exact path="/" component={Loading}/>
 
-            <Route exact path="/" component={Main}/>
-            <Route path="/loginPage" component={LoginPage}/>
-            <Route path="/signupPage" component={SignupPage}/>
-            <Route path="/moreInfoPage" component={MoreInfo}/>
+          <Switch>
+            <Route path="/mainPage" component={Main}/>
           </Switch>
+          
+          <Route path="/loginPage" component={LoginPage}/>
+          <Route path="/signupPage" component={SignupPage}/>
+          <Route path="/moreInfoPage" component={MoreInfo}/>
         </loginState.Provider>
       </div>
     )
   }
 }
 
-export default App;
+export default withRouter(App);
+
