@@ -1,4 +1,4 @@
-import React, { useState, EffectCallback } from 'react';
+import React, { useState } from 'react';
 import './Modal.scss';
 import '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -8,9 +8,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
 import axios from "axios";
+import { url as _url } from '../../../url';
 
-const SERVER_URL = 'http://52.79.117.94:8080';
-// const SERVER_URL = 'http://52.79.117.94:8080';
 
 type ReqData = {
   contents: string,
@@ -22,14 +21,14 @@ type ReqData = {
   id: any,
 };
 
-const AddForm = ({ close, selectedDate, setisView }:any) => {
+const AddForm = ({ close, dayData, rerenderHandler }:any) => {
   // `{${year}-${month}-${day}T00:00:00}`
-  const [selectedStartDate, handleStartDateChange] = useState(selectedDate);
+  const [selectedStartDate, handleStartDateChange] = useState(dayData);
   const changeStartDate = (_date: Date|null) => {
     handleStartDateChange(_date)
   }
 
-  const [selectedEndDate, handleEndDateChange] = useState(selectedDate);
+  const [selectedEndDate, handleEndDateChange] = useState(dayData);
   const changeEndDate = (_date: Date | null) => {
     handleEndDateChange(_date);
   }
@@ -57,33 +56,28 @@ const AddForm = ({ close, selectedDate, setisView }:any) => {
         endAt: selectedEndDate,
         id: window.sessionStorage.getItem('id'),
       }
-      console.log(reqData)
+      console.log('요청보내는거', reqData)
       // Validation error cut
       if(!reqData.title || !reqData.startAt || !reqData.endAt) {
         alert("wft");
         return;
       }
 
-      const res = await axios.post(`${SERVER_URL}/makeSchedules`, reqData);
-
+      const res = await axios.post(`${_url}/makeSchedules`, reqData);
+      console.log('받은거', res)
       
       if(![200, 201, 301].includes(res.status)) {
         alert('wtf server');
         return;
       };
-      // alert(JSON.stringify(res.data, null, 2));
-      setisView(true);
+
+      close();
       
-      // const keyLength = (Object.keys(reqData)).length;
-      // if(VALIDATION_LENGTH !== keyLength) {
-      //   alert('empty data');
-      //   return;
-      // }
     } catch(err){
       alert(err); // WTF?
     }
   }
-
+  
   return (
     <>
       <div className="Modal-overlay" onClick={close} />
@@ -113,6 +107,7 @@ const AddForm = ({ close, selectedDate, setisView }:any) => {
         <div className="button-wrap">
           <button 
           onClick={onSubmit}
+          // 이후 close 해야함
           >추가</button>
         </div>
       </div>

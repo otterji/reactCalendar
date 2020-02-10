@@ -3,16 +3,10 @@ import './Modal.scss';
 import styled from 'styled-components';
 import { ModalProps } from '../_types/calendar';
 import { StyledButton } from '../style';
-import { TYPE_SHARE } from '../utils/CONST'
 
-const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
-  const { close, data, openModal } = props;
+const ShareForm: FunctionComponent<ModalProps> = props => {
+  const { close, data } = props;
   const { title, contents, startAt, endAt, place, attendants } = data.schedules[0];
-
-  const shareHandler = () => {
-    console.log('share');
-    // openModal({data:data, close:close, type: TYPE_SHARE});
-  }
 
   return (
     <>
@@ -27,7 +21,7 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
         <ContentsDiv >태그: {attendants}</ContentsDiv>
       </div>
       <StyledButton>수정</StyledButton>
-      <StyledButton onClick={shareHandler}>공유</StyledButton>
+      <StyledButton>공유</StyledButton>
       </div>
     </>
   )
@@ -38,4 +32,4 @@ const ContentsDiv = styled.div`
   display: block;
 `;
 
-export { DetailScheduleModal };
+export { ShareForm };

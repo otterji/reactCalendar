@@ -20,7 +20,7 @@ export type ModalData = {
     schedules: ServerData[];
     type: string;
 }
-export type ModalProps = {
+export interface ModalProps extends OpenModal{
     close: () => void;
     data: ModalData;
 }

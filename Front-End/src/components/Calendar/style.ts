@@ -9,6 +9,12 @@ const Button = styled.button`
   display: inline-block;
 `;
 
+// 일정 눌렀을때 나오는 모달 안에서 상세정보 보기 했을때 누르는 수정 버튼
+const StyledButton = styled.button`
+  background: gray;
+  text-align: right;
+`
+
 const Title = styled.div`
   text-align: 'center';
 `
@@ -24,7 +30,7 @@ interface TdBorder {
 }
 
 const StyledTd = styled.td<TdBorder>`
-  border: ${((props: any) => props.isDisplay ? `1px solid gray;` : `none`)}
+  border: ${((props: any) => props.isDisplay ? `1px solid gray;` : `none`)};
   width: 200px;
   height: 100px;
   vertical-align: top;
@@ -58,9 +64,9 @@ const StyledScheduleLi = styled.li`
   color: rgba(0, 0, 0, 0.7);
 
   &:hover {
-    color: green;
+    background-color: lightgrey;
     cursor: pointer;
   }
 `;
 
-export { Button, Table, StyledTd, Title, StyledTdDay, TdStart, StyledScheduleLi, StyledScheduleUi };
+export { Button, Table, StyledTd, Title, StyledTdDay, TdStart, StyledScheduleLi, StyledScheduleUi, StyledButton };

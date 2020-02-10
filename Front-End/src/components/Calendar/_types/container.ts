@@ -5,11 +5,11 @@ export interface Props {
 type xxx = {
   attendants?: string
   contents?:string;
-startAt: Date
-endAt: Date
-id?: string
-place?: string
-title: string
+  startAt: Date
+  endAt: Date
+  id?: string
+  place?: string
+  title: string
 }
 
 type arrElement = {

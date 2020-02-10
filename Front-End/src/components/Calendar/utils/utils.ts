@@ -1,8 +1,7 @@
 import Axios from 'axios';
 import {ServerData,DateData} from '../_types/calendar';
-import { EffectCallback} from 'react';
+import { url as _url } from '../../../url';
 
-const SERVER_URL = 'http://52.79.117.94:8080';
 
 const getPrevMonthDate = (viewDate: Date) => {
   const year = viewDate.getFullYear();
@@ -16,6 +15,19 @@ const getPrevMonthDate = (viewDate: Date) => {
   const ret = new Date(`${computedYear}-${computedMonth}`);
   return ret;
 };
+
+const getNextMonthDate = (viewDate: Date) => {
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth() + 1;
+  const isNewYear = month === 12 ? true : false;
+  const {computedYear, computedMonth} = {
+    computedYear: isNewYear ? year + 1 : year,
+    computedMonth: isNewYear ? 1 : month + 1
+}
+
+const ret = new Date(`${computedYear}-${computedMonth}`);
+return ret;
+}
 
 const getCalendarDayList = (curDate: Date) => {
   const year = curDate.getFullYear();
@@ -123,7 +135,7 @@ const getHttpXXXList = async (params: { _yymm: number })=> {
   const _id = window.sessionStorage.getItem('id');
   
   try {
-    const res = await Axios.get(`${SERVER_URL}/getSchedules/${_id}/${_yymm}`);
+    const res = await Axios.get(`${_url}/getSchedules/${_id}/${_yymm}`);
     // alert(JSON.stringify(res.data, null, 2));
     const returnList:ServerData[] = res.data;
 
@@ -167,5 +179,6 @@ export {
   getCalendarDayList, 
   getHttpXXXList,
   getPrevMonthDate,
-  fetchData
+  fetchData,
+  getNextMonthDate
 };
