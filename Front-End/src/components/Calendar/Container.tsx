@@ -14,14 +14,14 @@ const Container: FunctionComponent<{}> = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
   const [dataList, setDataList] = useState([] as DateData[]);
-  const [isRerender, setisRerender] = useState(false);
+  const [toggleRender, setToggleRender] = useState(false);
   const [modalData, setModalData] = useState({} as ModalData);
   
   // 보여지고 있는 달력의 데이터가 변경될 때마다 훅스가 실행
   // @ts-ignore
   useEffect(() => {
     fetchData({viewDate, setDataList});
-  }, [viewDate]);
+  }, [viewDate, isModalOpen, toggleRender]);
 
   const showPrevMonthHandler = () => {
     const prevDate: Date = getPrevMonthDate(viewDate);
@@ -34,12 +34,11 @@ const Container: FunctionComponent<{}> = () => {
   }
 
   const openModalHandler = (data: ModalData) => {
-    setModalData(data)
+    setModalData(data);
     setIsModalOpen(true);
   }
   const closeModalHandler = () => setIsModalOpen(false);
-
-  // const rerenderHandler = () => setisRerender(true);
+  const reloadHandler = () => setToggleRender(!toggleRender);
 
   return (
     <>
@@ -51,7 +50,7 @@ const Container: FunctionComponent<{}> = () => {
         <Button onClick={showNextMonthHandler}> &gt; </Button>
       </Title>
 
-      <Calendar list={dataList} openModal={openModalHandler} />
+      <Calendar list={dataList} openModal={openModalHandler} reload={reloadHandler} />
 
       {isModalOpen ? (
         <Modal

@@ -14,7 +14,7 @@ const Modal = (params: ModalProps) => {
     [TYPE_DETAIL]: <DetailScheduleModal close={close} data={data} openModal={openModal} />,
     [TYPE_ADD]: <AddForm close={close} dayData={data.days} openModal={openModal} />,
     [TYPE_SHARE]: <ShareForm close={close} data={data} openModal={openModal}/>,
-  }), [close, data, openModal])
+  }), [close, data, openModal]);
 
   return (
     // @ts-ignore HACK: WTF?

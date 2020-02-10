@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import ClearIcon from '@material-ui/icons/Clear';
 
 const Button = styled.button`
   background: white;
@@ -57,11 +58,26 @@ const StyledScheduleUi = styled.ul`
   padding-inline-start: 22px;
 `;
 
-const StyledScheduleLi = styled.li`
+const StyledScheduleLi = styled.li`  
   margin: 0 auto;
   padding: 0;
   font-size: 0.8em;
   color: rgba(0, 0, 0, 0.7);
+`;
+
+const StyledClearIcon = styled(ClearIcon)`
+  color: red;
+  float: right;
+  padding: 3px 3px;
+
+  &:hover {
+    color: black;
+    cursor: pointer;
+  }
+`;
+
+const StyledLiTitle = styled.div`
+  display: inline-block;
 
   &:hover {
     background-color: lightgrey;
@@ -69,4 +85,14 @@ const StyledScheduleLi = styled.li`
   }
 `;
 
-export { Button, Table, StyledTd, Title, StyledTdDay, TdStart, StyledScheduleLi, StyledScheduleUi, StyledButton };
+const StartLabel = styled.div`
+  color: #ffffff;
+  font-size: 10px;
+	font-family: 나눔고딕,NanumGothic,돋움,Dotum;
+  background-color: #FF6813;
+  margin: 2px 3px 0px 0px;
+  width: 14px;
+  height: 14px;
+`;
+
+export { Button, Table, StyledTd, Title, StyledTdDay, TdStart, StyledScheduleLi, StyledScheduleUi, StyledButton, StyledClearIcon, StyledLiTitle, StartLabel };

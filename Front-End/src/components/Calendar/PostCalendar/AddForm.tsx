@@ -47,7 +47,6 @@ const AddForm = ({ close, dayData, rerenderHandler }:any) => {
   }
 
   const onSubmit = async () => {
-    
     try{
       // 보내는 Data 를 펼쳤을때 이런 것들이 있다고 정의
       const reqData: ReqData = {
@@ -56,7 +55,6 @@ const AddForm = ({ close, dayData, rerenderHandler }:any) => {
         endAt: selectedEndDate,
         id: window.sessionStorage.getItem('id'),
       }
-      console.log('요청보내는거', reqData)
       // Validation error cut
       if(!reqData.title || !reqData.startAt || !reqData.endAt) {
         alert("wft");
@@ -64,7 +62,6 @@ const AddForm = ({ close, dayData, rerenderHandler }:any) => {
       }
 
       const res = await axios.post(`${_url}/makeSchedules`, reqData);
-      console.log('받은거', res)
       
       if(![200, 201, 301].includes(res.status)) {
         alert('wtf server');

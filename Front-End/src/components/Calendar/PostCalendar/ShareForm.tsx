@@ -12,7 +12,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
     <>
       <div className="Modal-overlay" onClick={close} />
       <div className="Modal">
-      <p className="title">{title}</p>
+      <p className="title">SHAREFORM!!!! {title}</p>
       <div className="content">
         <ContentsDiv >시작일: {startAt}</ContentsDiv>
         <ContentsDiv >종료일: {endAt}</ContentsDiv>

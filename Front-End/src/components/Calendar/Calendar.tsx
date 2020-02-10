@@ -4,23 +4,24 @@ import { DateData, CalendarProps } from './_types/calendar';
 import {Td} from './Table';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
-  const { openModal, list } = props;
+  const { openModal, list, reload } = props;
 
   // XXX: How can i fix?
   const trList: any[] = [];
   const tdList: any[] = [];
+  let cnt = 100;
 
   list.map((data: DateData, idx: number) => {
     if (idx !== 0 && idx % 7 === 0) {
-      trList.push(<tr key={idx}>{tdList.map(e => e)}</tr>);
+      trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);
       tdList.length = 0;
     }
 
     tdList.push(
-      <Td days={data.days} schedules={data.schedules} openModal={openModal} />
+      <Td key={++cnt} days={data.days} schedules={data.schedules} openModal={openModal} reload={reload} />
     );
   });
-  trList.push(...tdList);
+  trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);
 
   return (
     <Table>
