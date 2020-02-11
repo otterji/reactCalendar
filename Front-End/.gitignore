@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 /package-lock.json
+
+# 인텔리제이 실행환경
+.idea

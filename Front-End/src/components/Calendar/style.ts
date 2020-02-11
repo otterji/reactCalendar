@@ -71,7 +71,7 @@ const StyledClearIcon = styled(ClearIcon)`
   padding: 3px 3px;
 
   &:hover {
-    color: black;
+    background-color: lightgrey;
     cursor: pointer;
   }
 `;

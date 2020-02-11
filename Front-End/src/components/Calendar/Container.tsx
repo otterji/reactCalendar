@@ -40,6 +40,8 @@ const Container: FunctionComponent<{}> = () => {
   const closeModalHandler = () => setIsModalOpen(false);
   const reloadHandler = () => setToggleRender(!toggleRender);
 
+  // const rerenderHandler = () => setisRerender(true);
+
   return (
     <>
       <Title>

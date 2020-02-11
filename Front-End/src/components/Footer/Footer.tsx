@@ -14,7 +14,7 @@ class Footer extends Component {
         style={{
           marginTop: "1rem",
           padding: "3rem",
-          backgroundColor: "#b2dfdb"
+          backgroundColor: "#eff5f5"
         }}
       >
         <Grid container item spacing={1} justify="center">

@@ -282,6 +282,8 @@ class AccountsForm extends Component<any, State> {
           window.sessionStorage.setItem('pw', _pw);
           this.props.onLogin();
           this.props.history.push(`/mainPage`);
+        } else {
+          alert('안됨')
         }
       }
       catch(err){

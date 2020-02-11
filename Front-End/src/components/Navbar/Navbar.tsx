@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Search from "../common/Search/Search";
 import * as Styled from "./StyledNavbar";
 import {
-  NotificationsRounded,
   AccountCircleRounded,
   SettingsRounded,
   EditRounded,
@@ -34,10 +33,10 @@ class Navbar extends Component<any, State> {
   }
 
   changeMode = (e: any) => {
-    const _name= e.currentTarget.name;
+    const _name = e.currentTarget.name;
     console.log(_name);
     this.props.changeMode(_name);
-  }
+  };
 
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.state.anchorEl === null) {
@@ -73,9 +72,9 @@ class Navbar extends Component<any, State> {
               <Grid container direction="row">
                 <Grid item>
                   <Tooltip title="일정보기">
-                    <IconButton 
-                      aria-label="일정보기" 
-                      name="calendar" 
+                    <IconButton
+                      aria-label="일정보기"
+                      name="calendar"
                       onClick={this.changeMode}
                     >
                       <DateRangeRounded />
@@ -84,7 +83,7 @@ class Navbar extends Component<any, State> {
                 </Grid>
                 <Grid item>
                   <Tooltip title="피드보기">
-                    <IconButton 
+                    <IconButton
                       aria-label="피드보기"
                       name="feed"
                       onClick={this.changeMode}
@@ -102,13 +101,6 @@ class Navbar extends Component<any, State> {
             // 로그인 시 검색, 알림, 마이메뉴 버튼
             <Styled.Ul>
               <Search />
-              <Styled.Li>
-                <IconButton aria-label="notifications">
-                  <Link to="#">
-                    <NotificationsRounded />
-                  </Link>
-                </IconButton>
-              </Styled.Li>
               <Styled.Li>
                 <IconButton
                   aria-controls="customized-menu"
@@ -145,7 +137,6 @@ class Navbar extends Component<any, State> {
                     </ListItemIcon>
                     <ListItemText primary="Log Out" />
                   </Styled.StyledMenuItem>
-
                 </Styled.StyledMenu>
               </Styled.Li>
             </Styled.Ul>

@@ -99,10 +99,10 @@ export default Feed;
 
 const StFeedCont = styled.div`
   position: relative;
-  margin: 10px;
-  padding: 10px;
-  border: 5px solid #8cebd1;
-  border-radius: 5px;
+  margin: 20px;
+  padding: 15px;
+  border-radius: 12px;
+  background-color: #e6fff7;
 `
 
 const StUserCont = styled.div`
