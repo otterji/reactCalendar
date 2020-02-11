@@ -114,7 +114,9 @@ class UserDetail extends Component<any, State> {
         </Grid>
 
         {/* Subscribe list */}
-        <Grid item>{/* <ItemList lists={this.state.subscribes} /> */}</Grid>
+        <Grid item>
+          {/* <ItemList lists={this.state.subscribes} /> */}
+        </Grid>
       </Grid>
     );
   }

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { loginState } from "../../App"
 import AccountsForm from "./AccountsForm"
 //styles
-import * as Styled from "./AccountsStyled";
+import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
 
 interface State{

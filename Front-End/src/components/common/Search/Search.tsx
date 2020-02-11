@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as Styled from './StyledSearch';
-import { SearchRounded } from '@material-ui/icons';
-import { TextField, IconButton } from '@material-ui/core';
+import { SearchRounded,  } from '@material-ui/icons';
+import { TextField, IconButton, Tooltip, Grow, InputAdornment } from '@material-ui/core';
 
 interface State {
   searchAnchorEl: any;
@@ -10,32 +10,59 @@ interface State {
 class Search extends Component<any, State> {
   constructor(props: any) {
     super(props);
-    this.state = { searchAnchorEl: null };
+    this.state = { 
+      searchAnchorEl: null,
+    };
   }
 
   searchHandleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.state.searchAnchorEl === null) {
-      this.setState({ searchAnchorEl: event.currentTarget });
+      this.setState({ 
+        searchAnchorEl: event.currentTarget,
+      });
     } else {
-      this.setState({ searchAnchorEl: null });
+      this.setState({ 
+        searchAnchorEl: null,
+      });
     }
   };
 
   render() {
     return (
-      <Styled.Li>
-        {this.state.searchAnchorEl ? (
-          <TextField
-            id="total-search-bar"
-            label="일정 및 유저 검색"
-            size="small"
+      <Styled.StSearch>
+      {
+        this.state.searchAnchorEl ?
+        <Grow in={true}>
+          <Styled.StTextField
+          autoFocus={true}
+          variant="outlined"
+          margin="dense"
+          label="채널검색"
+          size="small"          
           />
-        ) : null}
-
-        <IconButton aria-label="search" onClick={this.searchHandleClick}>
-          <SearchRounded />
+        </Grow>
+        : 
+        <Grow in={false}>
+          <Styled.StTextField
+          autoFocus={true}
+          variant="outlined"
+          margin="dense"
+          label="채널검색"
+          size="small"/>
+        </Grow>
+      }
+      <Tooltip title="채널검색">
+        <IconButton aria-label="채널검색" onClick={this.searchHandleClick}>
+          {
+            this.state.searchAnchorEl === null ? 
+            <SearchRounded />  
+            :
+            <SearchRounded style={{color:"#8cebd1"}}/>
+          }
+          {/* <SearchRounded /> */}
         </IconButton>
-      </Styled.Li>
+      </Tooltip>
+      </Styled.StSearch>
     );
   }
 }

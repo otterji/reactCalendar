@@ -4,6 +4,10 @@ import { withRouter } from 'react-router-dom';
 import styled, { css, } from 'styled-components';
 import { Button, } from '@material-ui/core/';
 
+
+const urlKakao = 'http://70.12.246.61:8080/oauth2/authorization/kakao'; //카카오 상엽
+
+
 interface State{
   mode:string;
 
@@ -48,7 +52,7 @@ class SocialLogin extends Component<any, State> {
         <a href="http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver" style={{textDecoration:"none"}}>
           <SocialBtn provider="naver">Naver</SocialBtn>
         </a>
-        <a href="https://kauth.kakao.com/oauth/authorize?client_id=335deeb2f9ffe02f4dd501098e8674e2&redirect_uri=http://70.12.246.61:8080/member/callbackKakao&response_type=code" style={{textDecoration:"none"}}>
+        <a href={`${urlKakao}`} style={{textDecoration:"none"}}>
           <SocialBtn provider="kakao">Kakao</SocialBtn>
         </a>
         

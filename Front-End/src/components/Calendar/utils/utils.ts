@@ -84,53 +84,8 @@ const isLeafYear = (year: number) => {
 };
 
 
-// const prepareRenderingFn = (self: any) => {
-//   const xxxList = [
-//     { title: "밥먹기", startAt: "2020-02-01" },
-//     { title: "싸피가기", startAt: "2020-02-03" },
-//     { title: "공부하기", startAt: "2020-02-03" },
-//     { title: "놀기", startAt: "2020-02-04" }
-//   ];
-//   self.setState({ xxxList });
-//   const list: any[] = (self.state.retArr).map((e: any[]) => {
-//     return e.map((ein:any) => {
-//       const filters = xxxList.filter(
-//         (ein2:any) => new Date(ein2.startAt).getDate() === ein
-//       );
-//       return {
-//         days: ein,
-//         xxx: filters
-//       };
-//     });
-//   });
-//   self.setState({ list });
-// }
 
-
-
-// // Modal.setAppElement('#App')
-
-// // const popupModal = (e:any, year:number, month:number, day:number) => {
-// //   return Modal
-// // };
-
-// // const onClickDayFn = (e:any, year:number, month:number, day:number) => {
-// //   // stopPropagation 은 부모태그로의 이벤트 전파를 stop 중지하라는 의미입니다.
-// //   // preventDefault 는 a 태그 처럼 클릭 이벤트 외에 별도의 브라우저 행동을 막기 위해 사용됩니다.
-// //   popupModal(e, year, month, day);
-// // };
-
-// // 0 붙이는 연산
-// const addZero = (n:string) => {
-//   return n.length === 1 ? '0' + n : n;
-// }
-
-// // 0 빼는 연산
-// const subZero = (n:string) => {
-//   return n[0] === '0' ? n[1] : n
-// }
-
-const getHttpXXXList = async (params: { _yymm: number })=> {
+const getHttpXXXList = async (params: { _yymm: string })=> {
   const {_yymm} = params;
   const _id = window.sessionStorage.getItem('id');
   
@@ -138,6 +93,7 @@ const getHttpXXXList = async (params: { _yymm: number })=> {
     const res = await Axios.get(`${_url}/getSchedules/${_id}/${_yymm}`);
     // alert(JSON.stringify(res.data, null, 2));
     const returnList:ServerData[] = res.data;
+    console.log(returnList)
 
     return returnList;
   }catch(e) {
@@ -148,8 +104,14 @@ const getHttpXXXList = async (params: { _yymm: number })=> {
 const fetchData = async (params: {viewDate: Date, setDataList: any}) => {
   const {viewDate, setDataList} = params;
 
+  const addZero = (n:string) => {
+    return n.length === 1 ? '0' + n : n;
+  }
+
+  const mm = addZero(`${viewDate.getMonth()+1}`)
+
   const qparams = {
-    _yymm: viewDate.getMonth() + 1
+    _yymm: `${viewDate.getFullYear()}-${mm}`
   };
 
   let reqRet: ServerData[] = [] 

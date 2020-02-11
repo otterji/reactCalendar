@@ -1,4 +1,30 @@
 import styled from 'styled-components';
+import { TextField } from '@material-ui/core';
+
+export const StSearch = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+export const StTextField = styled(TextField)<any>`  
+  width: 180px;
+  & label.Mui-focused {
+    color: #8cebd1;      
+  }
+  & .MuiOutlinedInput-root {
+    &:hover fieldset {
+      border-color: #8cebd1;
+    }
+    &.Mui-focused {
+      svg {
+        color: #8cebd1;
+      }
+      & fieldset{
+        border-color: #8cebd1;
+      }
+    }
+  } 
+`
 
 export const Li = styled.li`
   flex: 0 0 auto;

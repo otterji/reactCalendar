@@ -5,7 +5,7 @@ import { loginState } from "../../App"
 import AccountsForm from "./AccountsForm"
 import SocialLogin from "./SocialLogin";
 //styles
-import * as Styled from "./AccountsStyled";
+import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
 
 interface State{

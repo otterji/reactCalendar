@@ -10,7 +10,7 @@ class Loading extends Component<any> {
   goMain = () => {
     setTimeout(() => {
       this.props.history.push('/mainPage');
-    }, 8100);
+    }, 9000);
   }
 
   render() {
@@ -41,7 +41,7 @@ const Animation = styled.div`
   align-items: center;
   border-radius: 15px;
   transform: translateY(22vh);
-  animation: backColor 8s;
+  animation: backColor 7s;
   animation-delay: 6s;
   @keyframes backColor{
     0% {
@@ -86,7 +86,7 @@ const Animation = styled.div`
 
     .word{
       opacity: 0;
-      animation: motion 8s;
+      animation: motion 6s;
       position: absolute;
       font-size: 3rem;
     }

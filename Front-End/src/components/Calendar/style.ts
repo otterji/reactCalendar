@@ -31,7 +31,7 @@ interface TdBorder {
 }
 
 const StyledTd = styled.td<TdBorder>`
-  border: ${((props: any) => props.isDisplay ? `1px solid gray;` : `none`)};
+  border: ${((props: any) => props.isDisplay ? `1px dotted #f2f2f2;` : `none`)};
   width: 200px;
   height: 100px;
   vertical-align: top;
@@ -40,7 +40,7 @@ const StyledTd = styled.td<TdBorder>`
 const StyledTdDay = styled.span`
   display: block;
   padding: 5px;
-  background-color: rgba(0, 255, 0, 0.1);
+  background-color: #eff5f5;
 
   &:hover {
     cursor: pointer;

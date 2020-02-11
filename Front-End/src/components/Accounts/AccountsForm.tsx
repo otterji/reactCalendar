@@ -233,6 +233,34 @@ class AccountsForm extends Component<any, State> {
     }
   }
 
+  checkDuple = async () => {
+    const _nickname = this.state.nickname;
+    if(_nickname !== '' && this.state.isChannel){
+      try{
+        let res = await axios({
+          method: 'get',
+          url: `${_url}/channel/isExistingNickName/${_nickname}`,
+        })
+        // alert(JSON.stringify(res.data, null ,2))
+        if(res.data.state === 'FAIL'){
+          this.setState({ nicknameValid: 'invalid', nicknameLabel: '닉네임이 중복됩니다.' });
+        }
+
+        // res = await axios({
+        //   method: 'get',
+        //   url: `${_url}/channel/isExistingNickName/${_nickname}`,
+        // })
+        // // alert(JSON.stringify(res.data, null ,2))
+        // if(res.data.state === 'FAIL'){
+        //   this.setState({ nicknameValid: 'invalid', nicknameLabel: '닉네임이 중복됩니다.' });
+        // }
+      }
+      catch(err){
+        alert(err);
+      }
+    }
+  }
+
   isValid = ():boolean => {
     if(this.props.login){
       return (this.state.emailValid === 'valid' && 
@@ -275,15 +303,17 @@ class AccountsForm extends Component<any, State> {
             pw: _pw,
           },
         });
-        console.log(res)
-        // alert(JSON.stringify(res.data, null, 2));
+        console.log(res.data)
+        // alert(JSON.stringify(res.data, null, 2))
         if(res.data.status) {
           window.sessionStorage.setItem('id', _id);
           window.sessionStorage.setItem('pw', _pw);
+          window.sessionStorage.setItem('jwt', res.data.jwt);
           this.props.onLogin();
           this.props.history.push(`/mainPage`);
-        } else {
-          alert('안됨')
+        }
+        else{
+          alert('계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요.' )
         }
       }
       catch(err){
@@ -304,6 +334,7 @@ class AccountsForm extends Component<any, State> {
         if(res.data.state === 'SUCCESS'){
           window.sessionStorage.setItem('id', _id);
           window.sessionStorage.setItem('pw', _pw);
+          window.sessionStorage.setItem('jwt', res.data.jwt);
           this.props.history.push('/moreInfoPage');
         }
         else if(res.data.state === 'FAIL'){
@@ -326,14 +357,14 @@ class AccountsForm extends Component<any, State> {
           await axios(
             {
               method: 'post',
-              url: `${_url}/member/uploadImage/${_id}`,
+              url: `${_url}/channel/uploadImage/${_id}`,
               data: formData,
               headers: {'content-Type': 'multipart/form-data' }
             }
           );
           _img = _id;
         }
-
+        console.log(_img)
         const _nickname = this.state.nickname;
         const _link = this.state.link;
         const _msg = ''
@@ -342,11 +373,12 @@ class AccountsForm extends Component<any, State> {
         const res = await axios(
           {
             method: 'post',
-            url: `${_url}/member/signup/`,
+            url: `${_url}/channel/signup/`,
             data:{
               id: _id,
               pw: _pw,
               img: _img,
+              name: 'channel',
               nickname: _nickname,
               link: _link,
               msg: _msg,
@@ -597,6 +629,7 @@ class AccountsForm extends Component<any, State> {
               validate={this.state.nicknameValid}
               label={this.state.nicknameLabel}
               onChange={this.checkValid}
+              onBlur={this.checkDuple}
               variant="outlined"
               margin="dense"
               InputProps={{

@@ -40,16 +40,14 @@ const Container: FunctionComponent<{}> = () => {
   const closeModalHandler = () => setIsModalOpen(false);
   const reloadHandler = () => setToggleRender(!toggleRender);
 
-  // const rerenderHandler = () => setisRerender(true);
-
   return (
     <>
       <Title>
-        <Button onClick={showPrevMonthHandler}> &lt; </Button>
+        <Button style={{cursor: "pointer"}} onClick={showPrevMonthHandler}> &lt; </Button>
         <h4 style={{ display: "inline-block" }}>
           {viewDate.getFullYear()}년 {viewDate.getMonth() + 1}월
         </h4>
-        <Button onClick={showNextMonthHandler}> &gt; </Button>
+        <Button style={{cursor: "pointer"}} onClick={showNextMonthHandler}> &gt; </Button>
       </Title>
 
       <Calendar list={dataList} openModal={openModalHandler} reload={reloadHandler} />

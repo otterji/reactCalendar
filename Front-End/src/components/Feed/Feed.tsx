@@ -12,8 +12,6 @@ interface State {
   isInterest: boolean;
   isAdd: boolean;
   isOpen: boolean;
-  sDate: Date;
-  eDate: Date;
 }
 
 class Feed extends Component<any, State>{
@@ -23,8 +21,6 @@ class Feed extends Component<any, State>{
       isInterest: false,
       isAdd: false,
       isOpen: false,
-      sDate: new Date('2020-3-27'),
-      eDate: new Date('2020-3-31'),
     }
   }
 
@@ -53,14 +49,16 @@ class Feed extends Component<any, State>{
         <StFeedCont>
 
           <StUserCont>
-            <Avatar/>
-            <Link to=''>채널이름</Link>
+            <Avatar src=''/>
+            <Link to=''>{this.props.info.schedules.nickName}</Link>
           </StUserCont>
 
           <StContentCont>
-            <div>
-              내용내용
-              내용내용내용
+            <h3 className="title">
+              {this.props.info.schedules.title}
+            </h3>
+            <div className="contents">
+              {this.props.info.schedules.contents}
             </div>
           </StContentCont>
 
@@ -117,14 +115,22 @@ const StUserCont = styled.div`
 const StContentCont = styled.div`
   margin: 10px 0 10px 0;
   padding: 10px;
-  background-color: #e6fff7;
+  background-color: white;
   border-radius: 5px;
-  display: flex;
-  justify-content: center;
+  /* display: flex; */
+  display: inline-block;
+  align-content: center;
+  /* justify-content: center; */
+  
   
   div {
     width: 100%;
     height: 40%;
+  }
+
+  .title {
+    margin-top: 0;
+    font-weight: bold;
   }
 `
 

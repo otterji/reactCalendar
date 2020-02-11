@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import AccountsForm from "./AccountsForm"
 import SocialLogin from "./SocialLogin";
 //styles
-import * as Styled from "./AccountsStyled";
+import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
 
 interface State{
@@ -31,7 +31,7 @@ class SignupPage extends Component<any, State> {
             </Grid>
 
             <Grid item xs={12}>
-              <div style={{fontSize:"30px", fontFamily:"Gothic"}}>회원가입</div>
+              <div style={{fontSize:"30px"}}>회원가입</div>
               <AccountsForm signup mode={this.state.mode}/>
             </Grid>
 
