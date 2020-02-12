@@ -103,60 +103,60 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   }
 
 
-  return (
-    <>
-      <div className="Modal-overlay" onClick={close} />
-      <div className="Modal">
-        <table style={{ width: "90%" }}>
-          <tr>
-            <td>제목</td>
-            <td colSpan={2}><p className="title">{isEdit ?
-              <input type="text" name="title" value={detailData.title}
-                onChange={changeHandler} /> : detailData.title}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>기간</td>
-            <td><ContentsDiv>{isEdit ?
-              <input type="date" name="startAt"
-                onChange={changeHandler} /> : detailData.startAt}</ContentsDiv></td>
-            <td><ContentsDiv>{isEdit ?
-              <input type="date" name="endAt" onChange={changeHandler} /> : detailData.endAt}</ContentsDiv>
-            </td>
-          </tr>
-          <tr>
-            <td>내용</td>
-            <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} id="textarea" name="contents"
-              onChange={changeHandler} /> : upgradedContents}</ContentsDiv>
-            </td>
-          </tr>
-          <tr>
-            <td>장소</td>
-            <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
-              onChange={changeHandler} /> : detailData.place}</ContentsDiv>
-            </td>
-          </tr>
-          <tr>
-            <td>태그</td>
-            <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
-              onChange={changeHandler} /> : detailData.attendants}</ContentsDiv>
-            </td>
-          </tr>
-        </table>
+    return (
+        <>
+            <div className="Modal-overlay" onClick={close}/>
+            <div className="Modal">
+                <table style={{width: "90%"}}>
+                    <tr>
+                        <td>제목</td>
+                        <td colSpan={2}><p className="title">{isEdit ?
+                            <input type="text" name="title" value={detailData.title}
+                                   onChange={changeHandler}/> :detailData.title}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>기간</td>
+                        <td><ContentsDiv>시작일: {isEdit ?
+                            <input type="date" name="startAt"
+                                   onChange={changeHandler}/> : detailData.startAt}</ContentsDiv></td>
+                        <td><ContentsDiv>종료일: {isEdit ?
+                            <input type="date" name="endAt" onChange={changeHandler}/> :  '<br>'+ detailData.endAt}</ContentsDiv>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>내용</td>
+                        <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
+                                                                         onChange={changeHandler}/> : detailData.contents}</ContentsDiv>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>장소</td>
+                        <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
+                                                                      onChange={changeHandler}/> : detailData.place}</ContentsDiv>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>태그</td>
+                        <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
+                                                                      onChange={changeHandler}/> : detailData.attendants}</ContentsDiv>
+                        </td>
+                    </tr>
+                </table>
 
-        {isEdit ?
-          <>
-            <StyledButton onClick={editHandler} data-is-edit={false}>수정하지않기</StyledButton>
-            <StyledButton onClick={submitHandler}>완료</StyledButton>
-          </>
-          :
-          <>
-            <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
-            <StyledButton onClick={shareHandler}>공유</StyledButton>
-          </>}
-      </div>
-    </>
-  )
+                {isEdit ?
+                    <>
+                        <StyledButton onClick={editHandler} data-is-edit={false}>수정하지않기</StyledButton>
+                        <StyledButton onClick={submitHandler}>완료</StyledButton>
+                    </>
+                    :
+                    <>
+                        <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
+                        <StyledButton onClick={shareHandler}>공유</StyledButton>
+                    </>}
+            </div>
+        </>
+    )
 
 }
 

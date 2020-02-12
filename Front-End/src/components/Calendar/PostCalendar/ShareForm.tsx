@@ -5,29 +5,49 @@ import { ModalProps } from '../_types/calendar';
 import { StyledButton } from '../style';
 import axios from 'axios';
 import { url as _url } from '../../../url';
-
 import { Avatar } from "@material-ui/core";
-
-
-
 
 
 const ShareForm: FunctionComponent<ModalProps> = props => {
   const { close, data } = props;
   const { title, contents, startAt, endAt, place, attendants, schNo } = data.schedules[0];
 
+  // content 는 새로 입력하는 값! contents랑 헷갈리지 말자ㅠ
+  const [ content, setContent ] = useState('')
+  const [ selectedImgFile, setSelecctedImgFile ] = useState('')
+  const [ selectedVideoFile, setSelecctedVideoFile ] = useState('')
+
+  const handleImgFileInput = (e: any) => {
+    setSelecctedImgFile(e.target.files[0])
+    console.log(e.target.files)
+  }
+
+  const handleVideoFileInput = (e: any) => {
+    setSelecctedVideoFile(e.target.files[0])
+  }
+
+  const handleContentInput = (e: any) => {
+    setContent(e.target.value)
+  }
+
   const submitHandler = async () => {
-    console.log('되냐')
-    const params = {
-      ...data,
-        content: title,
-        id: window.sessionStorage.getItem('id'),
-        img: "string",
-        schNo: schNo,
-        video: "string"
-    };
+    
+    const reqData = {
+      content: content,
+      id: window.sessionStorage.getItem('id'),
+      img: selectedImgFile,
+      video: selectedVideoFile,
+      schNo: schNo,
+    }
+    console.log('reqData', reqData)
     try {
-      const res = await axios.post(`${_url}/feed/save`, params);
+      console.log(selectedImgFile)
+      if (selectedImgFile !== '') {
+        const formData = new FormData();
+        formData.append('file', selectedImgFile);
+        console.log('formData', formData)
+      }
+      // const res = await axios.post(`${_url}/feed/save`, params);
       alert('피드에 공유되었습니다 >_< 야호!')
       close();
     } catch (e) {
@@ -35,31 +55,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
     }
   }
 
-  // const [ imgBase64, setImgBase ] = useState(imgBase64);
-
-  // const [ imgFile, setImgFile ] = useState(imgFile)
   
-
-  // const onChangePreview = (e:any) => {
-  //   let reader = new FileReader();
-
-  //   reader.onloadend = () => {
-  //     // 2. 읽기가 완료되면 아래코드가 실행됩니다.
-  //     const base64 = reader.result;
-  //     if (base64) {
-  //       // console.log(base64)
-  //       // this.setState({imgBase64: base64.toString()}); // 파일 base64 상태 업데이트
-  //       setImgBase(base64.toString())
-  //     }
-  //   }
-
-  //   // accountsForm 35번째줄
-  //   if (e.target.files[0]) {
-  //     reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
-  //     // this.setState({imgFile: e.target.files[0]}); // 파일 상태 업데이트
-  //     setImgFile(e.target.files[0])
-  //   }
-  // }
 
   return (
     <>
@@ -73,13 +69,22 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
         <ContentsDiv >장소: {place}</ContentsDiv>
         <ContentsDiv >태그: {attendants}</ContentsDiv>
 
-        <input id="content" type="textarea" placeholder="피드에 올릴 부가설명을 입력해주세요" />
+        <input 
+          id="content" 
+          type="textarea" 
+          placeholder="피드에 올릴 부가설명을 입력해주세요"
+          onChange={handleContentInput}
+          />
+        
+        <StyledInputSet >
+          <label htmlFor="imageUpload">사진 업로드</label>
+          <input id="imageUpload" type="file" onChange={handleImgFileInput}/>
+        </StyledInputSet>
 
-        {/* <Avatar src={imgBase64} style={{width:"150px", height:"150px"}}/>
-          <StyledInputSet isUploaded={!(imgBase64 === '')}>
-            <label htmlFor="imageUpload">사진 업로드</label>
-            <input id="imageUpload" type="file" onChange={}/>
-        </StyledInputSet> */}
+        <StyledInputSet >
+          <label htmlFor="imageUpload">동영상 업로드</label>
+          <input id="imageUpload" type="file" onChange={handleVideoFileInput}/>
+        </StyledInputSet>
 
       </div>
       <StyledButton>수정</StyledButton>

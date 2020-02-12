@@ -8,8 +8,8 @@ const getPrevMonthDate = (viewDate: Date) => {
   const month = viewDate.getMonth() + 1;
   const isNewYear = month === 1 ? true : false;
   const {computedYear, computedMonth} = {
-      computedYear: isNewYear ? year - 1 : year,
-      computedMonth: isNewYear ? 12 : month - 1
+    computedYear: isNewYear ? year - 1 : year,
+    computedMonth: isNewYear ? 12 : month - 1
   }
 
   const ret = new Date(`${computedYear}-${computedMonth}`);
@@ -23,10 +23,10 @@ const getNextMonthDate = (viewDate: Date) => {
   const {computedYear, computedMonth} = {
     computedYear: isNewYear ? year + 1 : year,
     computedMonth: isNewYear ? 1 : month + 1
-}
+  }
 
-const ret = new Date(`${computedYear}-${computedMonth}`);
-return ret;
+  const ret = new Date(`${computedYear}-${computedMonth}`);
+  return ret;
 }
 
 const getCalendarDayList = (curDate: Date) => {
@@ -36,7 +36,7 @@ const getCalendarDayList = (curDate: Date) => {
   const endPoint: number = getMonthLengthFn(year, month);  // 며칠까지 있는지
   const startPoint: Date = new Date(year, month - 1, 1);
   const init: number = startPoint.getDay();
-  
+
   for (let j=0; j < init; j++) {
     days.push(0)
   }
@@ -79,8 +79,8 @@ const getMonthLengthFn = (year:number, month: number) => {
 };
 
 const isLeafYear = (year: number) => {
-    const isLeaf: boolean = (year % 4 === 0 && year % 100 > 0) || (year % 400 === 0 && year % 3200 > 0);
-    return isLeaf;
+  const isLeaf: boolean = (year % 4 === 0 && year % 100 > 0) || (year % 400 === 0 && year % 3200 > 0);
+  return isLeaf;
 };
 
 
@@ -88,9 +88,12 @@ const isLeafYear = (year: number) => {
 const getHttpXXXList = async (params: { _yymm: string })=> {
   const {_yymm} = params;
   const _id = window.sessionStorage.getItem('id');
-  
+
   try {
+    console.log('try')
+
     const res = await Axios.get(`${_url}/getSchedules/${_id}/${_yymm}`);
+  console.log(res)
     // alert(JSON.stringify(res.data, null, 2));
     const returnList:ServerData[] = res.data;
     console.log(returnList)
@@ -114,8 +117,8 @@ const fetchData = async (params: {viewDate: Date, setDataList: any}) => {
     _yymm: `${viewDate.getFullYear()}-${mm}`
   };
 
-  let reqRet: ServerData[] = [] 
-  try {   
+  let reqRet: ServerData[] = []
+  try {
     reqRet = await getHttpXXXList(qparams) || [];
   } catch(e) {
     console.info('SERVER_ERR!!!', e);
@@ -125,7 +128,7 @@ const fetchData = async (params: {viewDate: Date, setDataList: any}) => {
 
   const list: DateData[] = dayList.map((e: number) => {
     const filters = sortedList.filter(
-      (ein:ServerData) => new Date(ein.startAt).getDate() === e
+        (ein:ServerData) => new Date(ein.startAt).getDate() === e
     );
 
     return {
@@ -137,8 +140,8 @@ const fetchData = async (params: {viewDate: Date, setDataList: any}) => {
   setDataList(list);
 }
 
-export { 
-  getCalendarDayList, 
+export {
+  getCalendarDayList,
   getHttpXXXList,
   getPrevMonthDate,
   fetchData,

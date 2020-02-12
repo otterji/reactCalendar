@@ -20,47 +20,47 @@ interface State {
 }
 
 class Main extends Component<any, State> {
-  constructor(props:any){
-    super(props);
-    this.state = {
-      isLogin: false,
-      mode:'home',
-      winWidth: window.innerWidth,
-      winHeight: window.innerHeight,
-    }
+  constructor(props:any) {
+      super(props);
+      this.state = {
+          isLogin: false,
+          mode: 'home',
+          winWidth: window.innerWidth,
+          winHeight: window.innerHeight,
+      }
   }
+      componentDidMount()
+      {
+          window.addEventListener("resize", this.changeSize);
+      }
 
-    componentDidMount() {
-        window.addEventListener("resize", this.changeSize);
-    }
+      componentWillUnmount()
+      {
+          window.removeEventListener("resize", this.changeSize);
+      }
 
-    componentWillUnmount() {
-        window.removeEventListener("resize", this.changeSize);
-    }
+      changeSize = () => {
+          this.setState({winWidth: window.innerWidth});
+          this.setState({winHeight: window.innerHeight});
+      };
 
-    changeSize = () => {
-        this.setState({winWidth: window.innerWidth});
-        this.setState({winHeight: window.innerHeight});
-    };
+      changeMode = (command: string) => {
+          this.setState({mode: command});
+      };
 
-    changeMode = (command: string) => {
-        this.setState({mode: command});
-    };
-
-  renderByMode = () => {
-    if(this.state.mode === 'calendar'){
-      return (
-        <Container/>
-      )
-    }
-    else if(this.state.mode === 'feed'){
-      return (
-        <FeedList
-        winHeight={this.state.winHeight}
-        />
-      )
-    }
-  }
+      renderByMode = () => {
+          if (this.state.mode === 'calendar') {
+              return (
+                  <Container/>
+              )
+          } else if (this.state.mode === 'feed') {
+              return (
+                  <FeedList
+                      winHeight={this.state.winHeight}
+                  />
+              )
+          }
+      }
 
   render(){
     console.log(this.props.match);
@@ -83,20 +83,31 @@ class Main extends Component<any, State> {
                     :
                     <Grid container spacing={1}>
                       {/* user */}
-                      <Grid item xs={4} sm={4} lg={4}>
-                        <Box border={2} borderColor="violet" textAlign="center">
+                      <Grid item xs={3} sm={3} lg={3}>
+                        <Box border={2} borderColor="white" textAlign="center">
                           <UserDetail/>
                         </Box>
                       </Grid>    
 
                       {/* calendar or feed */}
-                      <Grid item xs={8} sm={8} lg={8}>
-                        <StyledModeContainer>
                         {
-                          this.renderByMode()
+                            this.state.mode === 'calendar' ?
+                                <Grid item xs={9} sm={9} lg={9}>
+                                    <StyledModeContainer>
+                                        {
+                                            this.renderByMode()
+                                        }
+                                    </StyledModeContainer>
+                                </Grid>
+                                :
+                                <>
+                                    <Grid item xs={7} sm={7} lg={7}>
+                                        <StyledModeContainer>{this.renderByMode()}</StyledModeContainer>
+                                    </Grid>
+                                    <Grid item xs={2} sm={2} lg={7}></Grid>
+                                </>
                         }
-                        </StyledModeContainer>
-                      </Grid>
+
                     </Grid>
                   }
                   </>

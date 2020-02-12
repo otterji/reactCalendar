@@ -5,7 +5,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import styled from 'styled-components'
 import { Avatar } from '@material-ui/core'
 import { DatePicker, MuiPickersUtilsProvider, } from '@material-ui/pickers'
-import { Event, StarBorderRounded, StarRounded, 
+import { Event, StarBorderRounded, StarRounded,
   AddRounded, AddCircleRounded, } from '@material-ui/icons'
 
 interface State {
@@ -45,48 +45,48 @@ class Feed extends Component<any, State>{
 
   render() {
     return (
-      <>
-        <StFeedCont>
+        <>
+          <StFeedCont>
 
-          <StUserCont>
-            <Avatar src=''/>
-            <Link to=''>{this.props.info.schedules.nickName}</Link>
-          </StUserCont>
+            <StUserCont>
+              <Avatar src=''/>
+              <Link to=''>{this.props.info.schedules.nickName}</Link>
+            </StUserCont>
 
-          <StContentCont>
-            <h3 className="title">
-              {this.props.info.schedules.title}
-            </h3>
-            <div className="contents">
-              {this.props.info.schedules.contents}
-            </div>
-          </StContentCont>
+            <StContentCont>
+              <h3 className="title">
+                {this.props.info.schedules.title}
+              </h3>
+              <div className="contents">
+                {this.props.info.schedules.contents}
+              </div>
+            </StContentCont>
 
-          <StBtnCont>
-            <div className="schedule">
-              <Event className="calendar" onClick={this.openCalendar}/>              
-            </div>
+            <StBtnCont>
+              <div className="schedule">
+                <Event className="calendar" onClick={this.openCalendar}/>
+              </div>
 
-            <div >
-            {
-              this.state.isAdd ?
-                <AddCircleRounded className="added" onClick={this.exceptSchedule}/>
-                :
-                <AddRounded className="excepted" onClick={this.addSchedule}/>
-            }
+              <div >
+                {
+                  this.state.isAdd ?
+                      <AddCircleRounded className="added" onClick={this.exceptSchedule}/>
+                      :
+                      <AddRounded className="excepted" onClick={this.addSchedule}/>
+                }
 
-            {
-              this.state.isInterest ?
-              <StarRounded className="stared" onClick={this.exceptInterest}/>
-              :
-              <StarBorderRounded className="unstared" onClick={this.addInterest}/>
-            }
-            </div>
-          </StBtnCont>
-        </StFeedCont>
+                {
+                  this.state.isInterest ?
+                      <StarRounded className="stared" onClick={this.exceptInterest}/>
+                      :
+                      <StarBorderRounded className="unstared" onClick={this.addInterest}/>
+                }
+              </div>
+            </StBtnCont>
+          </StFeedCont>
 
-        
-      </>
+
+        </>
     )
   }
 }
@@ -100,7 +100,8 @@ const StFeedCont = styled.div`
   margin: 20px;
   padding: 15px;
   border-radius: 12px;
-  background-color: #e6fff7;
+  background-color: #eff5f5;
+  box-sizing: border-box;
 `
 
 const StUserCont = styled.div`
@@ -118,11 +119,10 @@ const StContentCont = styled.div`
   background-color: white;
   border-radius: 5px;
   /* display: flex; */
-  display: inline-block;
+  display: flex;
   align-content: center;
-  /* justify-content: center; */
-  
-  
+  justify-content: center;
+  flex-direction: column;
   div {
     width: 100%;
     height: 40%;
@@ -173,5 +173,4 @@ const StBtnCont = styled.div`
     &:hover{
       color: black;
     }
-  }
-`
+  }`

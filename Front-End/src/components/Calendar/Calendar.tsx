@@ -25,7 +25,7 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
 
     return (
         <Table>
-            <tbody>
+            <tbody style={{width: "100%"}}>
             <tr style={{backgroundColor: "#80CBC4"}}>
                 <th style={{color: "red", borderRadius: "3px"}}>일</th>
                 <th style={{borderRadius: "3px"}}>월</th>

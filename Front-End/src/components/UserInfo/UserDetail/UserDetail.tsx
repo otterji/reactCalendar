@@ -5,6 +5,7 @@ import * as Styled from "./StyledUserDetail";
 import ItemList from "../../common/ItemList/ItemList";
 import axios from "axios";
 import { url as _url } from "../../../url";
+import { IsChannel } from "../IsChannel";
 
 type subscribeObj = {
   id: string;
@@ -14,10 +15,11 @@ type subscribeObj = {
 
 interface State {
   id: any;
-  userInfoNickname: string;
-  userInfoImg?: string;
-  userInfoLink: string;
-  userInfoMsg: string;
+  isChannel: any;
+  nickname: string;
+  imgFile?: string;
+  link: string;
+  msg: string;
   subscribes: subscribeObj[];
 }
 
@@ -27,10 +29,11 @@ class UserDetail extends Component<any, State> {
     super(props);
     this.state = {
       id: window.sessionStorage.getItem("id"),
-      userInfoNickname: "",
-      userInfoImg: "",
-      userInfoLink: "",
-      userInfoMsg: "",
+      isChannel: "",
+      nickname: "",
+      imgFile: "",
+      link: "",
+      msg: "",
       subscribes: [
         {
           id: "",
@@ -42,39 +45,67 @@ class UserDetail extends Component<any, State> {
   }
 
   async componentDidMount() {
-    try {
-      // 유저정보 가져오기
-      const resUserInfo = await axios({
-        method: "get",
-        url: `${_url}/member/findMemberById/${this.state.id}`,
-        data: {
-          id: this.state.id
-        }
-      });
-      const data = resUserInfo.data;
-      this.setState({
-        userInfoNickname: data.nickname,
-        userInfoImg: `${_url}/img/member/${data.img}.jpg`,
-        userInfoLink: data.link,
-        userInfoMsg: data.msg
-      });
-    } catch (err) {
-      alert(err);
-    }
+    // 유저의 개인/채널 분류 확인하기
+    const _isChannel = await IsChannel(this.state.id);
+    this.setState({
+      isChannel: _isChannel
+    });
 
-    // 구독 리스트 가져오기
-    try {
-      const resSubscribeList = await axios({
-        method: "get",
-        url: `${_url}/member/getSubscribeList/${this.state.id}`,
-        data: {
-          id: this.state.id
-        }
-      });
-      this.setState({ subscribes: resSubscribeList.data });
-      console.log(this.state.subscribes);
-    } catch (err) {
-      alert(err);
+    // 유저정보 가져오기
+    if (this.state.isChannel === "channel") {
+      // 유저가 채널인 경우
+      try {
+        const resUserInfo = await axios({
+          method: "get",
+          url: `${_url}/${this.state.isChannel}/findChannelById/${this.state.id}`,
+          data: {
+            id: this.state.id
+          }
+        });
+        const data = resUserInfo.data;
+        this.setState({
+          imgFile: `${_url}/img/${this.state.isChannel}/${this.state.id}.jpg`,
+          nickname: data.nickname,
+          msg: data.msg,
+          link: data.link
+        });
+      } catch (err) {
+        alert(err);
+      }
+    } else {
+      // 유저가 개인일 경우
+      try {
+        const resUserInfo = await axios({
+          method: "get",
+          url: `${_url}/${this.state.isChannel}/findMemberById/${this.state.id}`,
+          data: {
+            id: this.state.id
+          }
+        });
+        const data = resUserInfo.data;
+        this.setState({
+          imgFile: `${_url}/img/member/${this.state.id}.jpg`,
+          nickname: data.nickname,
+          msg: data.msg,
+          link: data.link
+        });
+      } catch (err) {
+        alert(err);
+      }
+      // 구독 리스트 가져오기
+      try {
+        const resSubscribeList = await axios({
+          method: "get",
+          url: `${_url}/member/getSubscribeList/${this.state.id}`,
+          data: {
+            id: this.state.id
+          }
+        });
+        this.setState({ subscribes: resSubscribeList.data });
+        console.log(this.state.subscribes);
+      } catch (err) {
+        alert(err);
+      }
     }
   }
 
@@ -90,14 +121,9 @@ class UserDetail extends Component<any, State> {
       >
         {/* profile img and nickname part */}
         <Grid item container alignItems="center" justify="center">
-          <Avatar
-            src={this.state.userInfoImg}
-            alt={this.state.userInfoNickname}
-          />
+          <Avatar src={this.state.imgFile} alt={this.state.nickname} />
           <Grid item>
-            <Styled.profileName>
-              {this.state.userInfoNickname}
-            </Styled.profileName>
+            <Styled.profileName>{this.state.nickname}</Styled.profileName>
           </Grid>
         </Grid>
 
@@ -106,17 +132,19 @@ class UserDetail extends Component<any, State> {
           {/* <Grid item> */}
           <Styled.content>
             <Instagram style={{ fontSize: "20px", margin: "10px" }} />
-            {this.state.userInfoLink}
+            {this.state.link}
           </Styled.content>
         </Grid>
         <Grid item>
-          <Styled.content>{this.state.userInfoMsg}</Styled.content>
+          <Styled.content>{this.state.msg}</Styled.content>
         </Grid>
 
         {/* Subscribe list */}
-        <Grid item>
-          {/* <ItemList lists={this.state.subscribes} /> */}
-        </Grid>
+        {this.state.isChannel === "member" ? (
+          <Grid item>
+            <ItemList lists={this.state.subscribes} />
+          </Grid>
+        ) : null}
       </Grid>
     );
   }

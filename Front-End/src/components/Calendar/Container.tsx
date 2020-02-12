@@ -43,11 +43,11 @@ const Container: FunctionComponent<{}> = () => {
   return (
     <>
       <Title>
-        <Button style={{cursor: "pointer"}} onClick={showPrevMonthHandler}> &lt; </Button>
+        <Button style={{cursor: "pointer", outline: "none"}} onClick={showPrevMonthHandler}> &lt; </Button>
         <h4 style={{ display: "inline-block" }}>
           {viewDate.getFullYear()}년 {viewDate.getMonth() + 1}월
         </h4>
-        <Button style={{cursor: "pointer"}} onClick={showNextMonthHandler}> &gt; </Button>
+        <Button style={{cursor: "pointer", outline: "none"}} onClick={showNextMonthHandler}> &gt; </Button>
       </Title>
 
       <Calendar list={dataList} openModal={openModalHandler} reload={reloadHandler} />

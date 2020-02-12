@@ -24,27 +24,32 @@ const Table = styled.table`
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+  table-layout: fixed;
 `;
 
 interface TdBorder {
-  isDisplay: boolean;
+    isDisplay: boolean;
 }
 
 const StyledTd = styled.td<TdBorder>`
   border: ${((props: any) => props.isDisplay ? `1px dotted #f2f2f2;` : `none`)};
-  width: 200px;
   height: 100px;
+  width: 14%;
   vertical-align: top;
 `;
 
 const StyledTdDay = styled.span`
   display: block;
-  padding: 5px;
+  padding: 2px;
   background-color: #eff5f5;
-
+  text-align: center;
+  font-size: 12px;
+  height: 15px;
   &:hover {
     cursor: pointer;
   }
+  width:100%;
 `;
 
 const TdStart = styled.div`
@@ -53,22 +58,24 @@ const TdStart = styled.div`
   height: 14px;
 `;
 
-const StyledScheduleUi = styled.ul`
+const StyledScheduleUi = styled.div`
   padding: 0;
-  padding-inline-start: 22px;
+  margin-top : 10px;
+  margin-bottom : 10px;
 `;
 
-const StyledScheduleLi = styled.li`  
-  margin: 0 auto;
+const StyledScheduleLi = styled.div`  
   padding: 0;
-  font-size: 0.8em;
+  font-size: 15px;
   color: rgba(0, 0, 0, 0.7);
+  width: 100%;
 `;
 
 const StyledClearIcon = styled(ClearIcon)`
   color: red;
   float: right;
   padding: 3px 3px;
+  vertical-align: top;
 
   &:hover {
     background-color: lightgrey;
@@ -78,21 +85,41 @@ const StyledClearIcon = styled(ClearIcon)`
 
 const StyledLiTitle = styled.div`
   display: inline-block;
-
   &:hover {
     background-color: lightgrey;
     cursor: pointer;
   }
+  width: 80px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  vertical-align: top;
+  padding-left: 7px;
 `;
 
 const StartLabel = styled.div`
+  display: inline-block;
   color: #ffffff;
   font-size: 10px;
-	font-family: 나눔고딕,NanumGothic,돋움,Dotum;
+  font-family: 나눔고딕,NanumGothic,돋움,Dotum;
   background-color: #FF6813;
-  margin: 2px 3px 0px 0px;
   width: 14px;
   height: 14px;
+  vertical-align: top;
+  margin-top : 5px;
 `;
 
-export { Button, Table, StyledTd, Title, StyledTdDay, TdStart, StyledScheduleLi, StyledScheduleUi, StyledButton, StyledClearIcon, StyledLiTitle, StartLabel };
+export {
+    Button,
+    Table,
+    StyledTd,
+    Title,
+    StyledTdDay,
+    TdStart,
+    StyledScheduleLi,
+    StyledScheduleUi,
+    StyledButton,
+    StyledClearIcon,
+    StyledLiTitle,
+    StartLabel
+};
