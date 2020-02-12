@@ -15,6 +15,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
 import { url as _url } from "../../../url"
 
+
 const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
 
   const [isEdit, setIsEdit] = useState(false);
@@ -31,16 +32,21 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
     place: data.schedules[0].place || '-',
     attendants: data.schedules[0].attendants || '-',
     startAt: data.schedules[0].startAt,
-    endAt: data.schedules[0].endAt
+    endAt: data.schedules[0].endAt,
+    schNo: data.schedules[0].schNo
   };
 
+  // 처음 값을 detailData에 저장
   const [detailData, setDetailData] = useState(defaultData);
+  // console.log('디폴트', defaultData);
 
-  console.log('디폴트', defaultData);
-
-  const [selectedStartDate, handleStartDateChange] = useState(detailData.startAt);
-
-  const [selectedEndDate, handleEndDateChange] = useState(detailData.endAt);
+  // 각각 바뀔 애들 state 걸어주기 -> 멍청한짓...
+  // const [editedStartDate, setEditedStartDate] = useState(detailData.startAt);
+  // const [editedEndDate, setEditedEndDate] = useState(detailData.endAt);
+  // const [editedAttendants, setEditedAttendants] = useState(detailData.attendants);
+  // const [editedContents, setEditedContents] = useState(detailData.contents);
+  // const [editedPlace, setEditedPlace] = useState(detailData.place);
+  // const [editedTitle, setEditedTitle] = useState(detailData.title);
 
 
   console.log(detailData)
@@ -51,16 +57,20 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // @ts-ignore
     const { name, value } = e.target as HTMLElement;
-    handleEndDateChange(selectedEndDate)
-    handleStartDateChange(selectedStartDate)
+    // 멍청한 짓 22....
+    // setEditedStartDate(editedStartDate);
+    // setEditedEndDate(editedEndDate);
+    // setEditedTitle(editedTitle);
     // 안되네..
-    setDetailData({ ...detailData, 
+    setDetailData({
+      ...detailData,
       [name]: value
     });
+
   }
 
-  let str = document.getElementById("content")
-  const upgradedContents: any = detailData.contents ? detailData.contents.replace(/(\n|\r\n)/g, `${<br></br>}`) : null
+  // let str = document.getElementById("content")
+  // const upgradedContents: any = detailData.contents ? detailData.contents.replace(/(\n|\r\n)/g, `${<br></br>}`) : null
 
   const shareHandler = () => {
     openModal({ days: data.days, schedules: data.schedules, type: TYPE_SHARE });
@@ -71,6 +81,19 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
     const { attributes } = e.target as HTMLButtonElement;
     const value: boolean = attributes[0].value === "true";
     setIsEdit(value);
+
+    // makeSchedule 할때 랑 똑같은거 보내는데 수정된애만 업데이트 해서 보냄 -> 멍청한짓 33..
+    // const params = {
+    //   ...detailData,
+    //   attendants: editedAttendants,
+    //   contents: editedContents,
+    //   endAt: editedEndDate,
+    //   startAt: editedStartDate,
+    //   place: editedPlace,
+    //   title: editedTitle
+    // };
+    // await axios.post(`${_url}/updateSchedules`, detailData);
+
   }
 
   const submitHandler = async () => {
@@ -84,18 +107,12 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
 
     const params = {
       ...detailData,
-        content: detailData.contents,
-        id: window.sessionStorage.getItem('id'),
-        img: "string",
-        schNo: detailData.schNo,
-        video: "string"
+      id: window.sessionStorage.getItem('id'),
     };
     try {
-      // const res = await axios.post(`${_url}/feed/save`, detailData.schNo);
-      console.log(params, 'params')
-
-      // const res = await Axios.post('', params);
-      // SUCCESS LOGIC
+      console.log(params, '보내는게 params')
+      const res = await axios.put(`${_url}/updateSchedules`, params);
+      console.log(res)
       close();
     } catch (e) {
       alert(e);
@@ -103,60 +120,83 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   }
 
 
-    return (
-        <>
-            <div className="Modal-overlay" onClick={close}/>
-            <div className="Modal">
-                <table style={{width: "90%"}}>
-                    <tr>
-                        <td>제목</td>
-                        <td colSpan={2}><p className="title">{isEdit ?
-                            <input type="text" name="title" value={detailData.title}
-                                   onChange={changeHandler}/> :detailData.title}</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>기간</td>
-                        <td><ContentsDiv>시작일: {isEdit ?
-                            <input type="date" name="startAt"
-                                   onChange={changeHandler}/> : detailData.startAt}</ContentsDiv></td>
-                        <td><ContentsDiv>종료일: {isEdit ?
-                            <input type="date" name="endAt" onChange={changeHandler}/> :  '<br>'+ detailData.endAt}</ContentsDiv>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>내용</td>
-                        <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
-                                                                         onChange={changeHandler}/> : detailData.contents}</ContentsDiv>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>장소</td>
-                        <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
-                                                                      onChange={changeHandler}/> : detailData.place}</ContentsDiv>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>태그</td>
-                        <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
-                                                                      onChange={changeHandler}/> : detailData.attendants}</ContentsDiv>
-                        </td>
-                    </tr>
-                </table>
+  return (
+    <>
+      <div className="Modal-overlay" onClick={close} />
+      <div className="Modal">
+        <table style={{ width: "90%" }}>
+          <tr>
+            <td>제목</td>
+            <td colSpan={2}><p className="title">{isEdit ?
+              <input type="text" name="title" value={detailData.title}
+                onChange={changeHandler} /> : detailData.title}</p>
+            </td>
+          </tr>
+          <tr>
+            <td>기간</td>
+            <td><ContentsDiv>
+              <ThemeProvider theme={defaultMaterialTheme}>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <td>
+                    <DateTimePicker
+                      value={detailData.startAt}
+                      onChange={() => changeHandler}
+                      label="시작일"
+                      showTodayButton
+                    />
+                  </td>
+                </MuiPickersUtilsProvider>
+              </ThemeProvider>
+            </ContentsDiv></td>
+            <td><ContentsDiv>
+              <ThemeProvider theme={defaultMaterialTheme}>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <td>
+                    <DateTimePicker
+                      value={detailData.endAt}
+                      onChange={() => changeHandler}
+                      label="종료일"
+                      showTodayButton
+                    />
+                  </td>
+                </MuiPickersUtilsProvider>
+              </ThemeProvider>
+            </ContentsDiv>
+            </td>
+          </tr>
+        <tr>
+          <td>내용</td>
+          <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
+            onChange={changeHandler} /> : detailData.contents}</ContentsDiv>
+          </td>
+        </tr>
+        <tr>
+          <td>장소</td>
+          <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
+            onChange={changeHandler} /> : detailData.place}</ContentsDiv>
+          </td>
+        </tr>
+        <tr>
+          <td>태그</td>
+          <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
+            onChange={changeHandler} /> : detailData.attendants}</ContentsDiv>
+          </td>
+        </tr>
+        </table>
 
-                {isEdit ?
-                    <>
-                        <StyledButton onClick={editHandler} data-is-edit={false}>수정하지않기</StyledButton>
-                        <StyledButton onClick={submitHandler}>완료</StyledButton>
-                    </>
-                    :
-                    <>
-                        <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
-                        <StyledButton onClick={shareHandler}>공유</StyledButton>
-                    </>}
-            </div>
+      {isEdit ?
+        <>
+          <StyledButton onClick={editHandler} data-is-edit={false}>뒤로가기</StyledButton>
+          <StyledButton onClick={submitHandler}>완료</StyledButton>
         </>
-    )
+        :
+        <>
+          <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
+          <StyledButton onClick={shareHandler}>공유</StyledButton>
+        </>}
+    </div>
+    </>
+  )
 
 }
 

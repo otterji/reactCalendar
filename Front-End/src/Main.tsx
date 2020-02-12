@@ -24,7 +24,7 @@ class Main extends Component<any, State> {
       super(props);
       this.state = {
           isLogin: false,
-          mode: 'home',
+          mode: 'calendar',
           winWidth: window.innerWidth,
           winHeight: window.innerHeight,
       }
