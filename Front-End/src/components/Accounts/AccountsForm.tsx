@@ -513,6 +513,10 @@ class AccountsForm extends Component<any, State> {
     let renderList: any[] = [];
     const keyList = Object.keys(this.state.interests);
     const valueList = Object.values(this.state.interests);
+    console.log("hereherehere");
+    console.log(keyList);
+    console.log(valueList);
+    console.log(this.state.interests);
     for (let i = 0; i < keyList.length; i++) {
       renderList.push(
         <FormControlLabel

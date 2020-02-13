@@ -12,7 +12,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 50%;
+  width: 40%;
   height: 80%;
   border-radius: 10px;
   background-color: white;
@@ -20,19 +20,23 @@
   // box-shadow: 0px 3px 6px #8cebd1;
   border-color: black;
   // border: 1px solid;
-  .button-wrap {
+  .button-wrapDouble {
     bottom: 0;
     position: fixed;
     width: 100%;
+    background-color: #8cebd1;
+    border-radius: 0 0 10px 10px;
     button {
-      width: 100%;
-      padding: 12px 0;
       border-radius: 0 0 10px 10px;
+      width: 50%;
+      padding: 12px 0;
       background-color: #8cebd1;
       font-size: 13pt;
       color: white;
       border: 0;
       cursor: pointer;
+      outline: none;
+      border: 1px solid white;
       &:hover {
         background-color: darkcyan;
       }
@@ -58,4 +62,11 @@
 }
 .plzHover:hover {
   cursor: pointer;
+}
+
+.textA{
+  height: 200px;
+  width: 100%;
+  padding-top: 10px;
+  overflow-y: scroll;
 }

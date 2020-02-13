@@ -11,7 +11,6 @@ export const div = styled.div<any>`
   align-items: center;
   justify-content: center;
   text-align: center;
-  border: 0.2rem solid black;
   overflow: hidden;
   @media screen and (min-width: 600px){
     width: 584px;    

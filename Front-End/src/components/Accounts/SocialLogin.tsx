@@ -1,66 +1,64 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, {Component} from 'react';
+import {withRouter} from 'react-router-dom';
 //style
-import styled, { css, } from 'styled-components';
-import { Button, } from '@material-ui/core/';
-
+import styled, {css,} from 'styled-components';
+import {Button,} from '@material-ui/core/';
+import KakaoLogin from "./KakaoLogin";
 
 const urlKakao = 'http://70.12.246.61:8080/oauth2/authorization/kakao'; //카카오 상엽
 
 
 interface State {
-  mode: string;
+    mode: string;
 
 }
 
 class SocialLogin extends Component<any, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      mode: ''
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            mode: ''
+        }
     }
-  }
 
-  componentDidMount() {
-    if (this.props.login) {
-      this.setState({ mode: '로그인' })
+    componentDidMount() {
+        if (this.props.login) {
+            this.setState({mode: '로그인'})
+        } else if (this.props.signup) {
+            this.setState({mode: '회원가입'})
+        }
     }
-    else if (this.props.signup) {
-      this.setState({ mode: '회원가입' })
+
+    googleLogin = (res: any) => {
+        console.log(res)
     }
-  }
 
-  googleLogin = (res: any) => {
-    console.log(res)
-  }
+    onLoginKakao = (res: any) => {
+        console.log(res.data)
+    }
+    loginFail = (err: any) => {
+        console.log(err)
+    }
 
-  onLoginKakao = (res: any) => {
-    console.log(res.data)
-  }
-  loginFail = (err: any) => {
-    console.log(err)
-  }
+    render() {
+        return (
+            <>
+                <div>다른 계정으로 {this.state.mode}</div>
 
-  render() {
-    return (
-      <>
-        <div>다른 계정으로 {this.state.mode}</div>
-
-        <a href="http://70.12.246.48:8080/oauth2/authorization/google" style={{ textDecoration: "none" }}>
-          <SocialBtn provider="google">Google</SocialBtn>
-        </a>
-        <a href="http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver" style={{ textDecoration: "none" }}>
-          <SocialBtn provider="naver">Naver</SocialBtn>
-        </a>
-        <a href={`${urlKakao}`} style={{ textDecoration: "none" }}>
-          <SocialBtn provider="kakao">Kakao</SocialBtn>
-        </a>
-
-      </>
-    )
-  }
+                <a href="http://70.12.246.48:8080/oauth2/authorization/google" style={{textDecoration: "none"}}>
+                    <SocialBtn provider="google">Google</SocialBtn>
+                </a>
+                <a href="http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver"
+                   style={{textDecoration: "none"}}>
+                    <SocialBtn provider="naver">Naver</SocialBtn>
+                </a>
+                <SocialBtn provider="kakao"><KakaoLogin>Kakao</KakaoLogin></SocialBtn>
+            </>
+        )
+    }
 }
-export default withRouter(SocialLogin)
+
+export default withRouter(SocialLogin);
 
 
 const SocialBtn = styled(Button) <any>`
@@ -76,14 +74,14 @@ const SocialBtn = styled(Button) <any>`
         font-weight: 600;
       }
     `
-  }
+}
   ${props => props.provider === "naver" && css`
       &:hover{
         background-color: #33cc33;
         font-weight: 600;
       }
     `
-  }
+}
   ${props => props.provider === "kakao" && css`
       &:hover{
         color: #4d2600;
@@ -91,5 +89,5 @@ const SocialBtn = styled(Button) <any>`
         font-weight: 600;
       }
     `
-  }
+}
 `

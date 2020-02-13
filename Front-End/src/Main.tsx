@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import queryString from "query-string";
 //
-import { loginState } from './App';
-import Navbar from './components/Navbar/Navbar';
+import { loginState } from "./App";
+import Navbar from "./components/Navbar/Navbar";
 import UserDetail from "./components/UserInfo/UserDetail/UserDetail";
-import { Container } from './components/Calendar/Container';
-import FeedList from './components/Feed/FeedList';
-import Home from './components/Home/Home';
-import Footer from './components/Footer/Footer';
+import { Container } from "./components/Calendar/Container";
+import FeedList from "./components/Feed/FeedList";
+import Home from "./components/Home/Home";
+import Footer from "./components/Footer/Footer";
 //style
 import styled from "styled-components";
 import {Box, Grid, Zoom, Slide} from "@material-ui/core";
@@ -29,7 +29,7 @@ class Main extends Component<any, State> {
           mode: 'calendar',
           winWidth: window.innerWidth,
           winHeight: window.innerHeight,
-          _yymm: `${new Date().getFullYear()}-${new Date().getMonth()+1}`,
+          _yymm: `${new Date().getFullYear()}-0${new Date().getMonth()+1}`,
           test: [],
       }
   }

@@ -25,7 +25,6 @@ const Table = styled.table`
   justify-content: center;
   align-items: center;
   width: 100%;
-  table-layout: fixed;
 `;
 
 interface TdBorder {

@@ -7,6 +7,7 @@ import SocialLogin from "./SocialLogin";
 //styles
 import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
+import KakaoLogin from "./KakaoLogin";
 
 interface State{
   mode:string,
@@ -46,7 +47,16 @@ class LoginPage extends Component<any, State> {
             </Grid>
 
             <Grid item xs={12}>
-              <SocialLogin login/>
+              {/*<SocialLogin login/>*/}
+              <loginState.Consumer>
+                {
+                  (store)=>{
+                    return(
+                       <KakaoLogin login mode={this.state.mode} onLogin={store.actions?.onLogin}>Kakao</KakaoLogin>
+                    )
+                  }
+                }
+              </loginState.Consumer>
             </Grid>
             
             <Grid item xs={12}>

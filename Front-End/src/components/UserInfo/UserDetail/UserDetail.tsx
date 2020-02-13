@@ -94,7 +94,8 @@ class UserDetail extends Component<any, State> {
       }
       // 구독 리스트 가져오기
       try {
-        const resSubscribeList = await axios({
+        let tempList: Array<Object> = [];
+        const resSubscribeList = await axios({ 
           method: "get",
           url: `${_url}/member/getSubscribeList/${this.state.id}`,
           data: {
@@ -102,7 +103,6 @@ class UserDetail extends Component<any, State> {
           }
         });
         this.setState({ subscribes: resSubscribeList.data });
-        console.log(this.state.subscribes);
       } catch (err) {
         alert(err);
       }
@@ -110,6 +110,8 @@ class UserDetail extends Component<any, State> {
   }
 
   render() {
+    console.log("12345687");
+    console.log(this.state.subscribes);
     return (
       <Grid
         item

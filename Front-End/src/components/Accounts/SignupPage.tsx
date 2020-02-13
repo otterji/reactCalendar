@@ -7,6 +7,7 @@ import SocialLogin from "./SocialLogin";
 //styles
 import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
+import KakaoSignUp from "./KakaoSignUp";
 
 interface State{
   mode:string,
@@ -36,7 +37,7 @@ class SignupPage extends Component<any, State> {
             </Grid>
 
             <Grid item xs={12}>
-              <SocialLogin signup/>
+              <KakaoSignUp>카카오 회원가입</KakaoSignUp>
             </Grid>
             
             <Grid item xs={12}>
@@ -49,7 +50,7 @@ class SignupPage extends Component<any, State> {
             <Grid item xs={12}>
               <Link to="/loginPage">로그인</Link>
             </Grid>
-            
+
           </Grid>
 
         </Styled.div>

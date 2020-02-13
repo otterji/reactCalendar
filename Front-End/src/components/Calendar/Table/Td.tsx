@@ -48,6 +48,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
             <>
               {DayLabel}
               <StyledLiTitle onClick={() => onClickHandler(e)}>{e.title}</StyledLiTitle>
+              {/* 여기 분기 넣기 */}
               <StyledClearIcon fontSize="inherit" onClick={() => deleteSchedule(e)} />
             </> : null}
         </StyledScheduleLi>

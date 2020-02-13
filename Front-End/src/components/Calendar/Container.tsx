@@ -34,12 +34,20 @@ const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
   const showPrevMonthHandler = () => {
     const prevDate: Date = getPrevMonthDate(viewDate);
     setViewDate(prevDate);
-    changeYYMM(`${prevDate.getFullYear()}-${prevDate.getMonth()+1}`);
+    const addZero = (n: string) => {
+      return n.length === 1 ? '0' + n : n;
+    };
+    const mm = addZero(`${viewDate.getMonth() + 1}`);
+    changeYYMM(`${prevDate.getFullYear()}-${mm}`);
   }
 
   const showNextMonthHandler = () => {
     const nextDate: Date = getNextMonthDate(viewDate);
     setViewDate(nextDate);
+    const addZero = (n: string) => {
+      return n.length === 1 ? '0' + n : n;
+    };
+    const mm = addZero(`${viewDate.getMonth() + 1}`);
     changeYYMM(`${nextDate.getFullYear()}-${nextDate.getMonth()+1}`);
   }
 
@@ -53,11 +61,15 @@ const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
   return (
     <>
       <Title>
-        <Button style={{ cursor: "pointer", outline: "none" }} onClick={showPrevMonthHandler}> &lt; </Button>
-        <h4 style={{ display: "inline-block" }}>
-          {viewDate.getFullYear()}년 {viewDate.getMonth() + 1}월
-        </h4>
-        <Button style={{ cursor: "pointer", outline: "none" }} onClick={showNextMonthHandler}> &gt; </Button>
+        <Button style={{ cursor: "pointer", outline: "none",  fontSize: "20px"}} onClick={showPrevMonthHandler}> &lt; </Button>
+        <span style={{ display: "inline-block", fontSize: "20px" }}>
+          {viewDate.getFullYear()}년.
+        </span>
+        <span style={{fontSize: "35px", color : "#009689"}}>
+          {viewDate.getMonth() + 1}
+        </span>
+        월
+        <Button style={{ cursor: "pointer", outline: "none", fontSize: "20px"}} onClick={showNextMonthHandler}> &gt; </Button>
       </Title>
 
       <Calendar list={dataList} openModal={openModalHandler} reload={reloadHandler} />
