@@ -1,10 +1,10 @@
-import React, {FunctionComponent} from 'react';
-import {Table} from "./style";
-import {DateData, CalendarProps} from './_types/calendar';
-import {Td} from './Table';
+import React, { FunctionComponent } from 'react';
+import { Table } from "./style";
+import { DateData, CalendarProps } from './_types/calendar';
+import { Td } from './Table';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
-    const {openModal, list, reload} = props;
+    const { openModal, list, reload } = props;
 
     // XXX: How can i fix?
     const trList: any[] = [];
@@ -18,27 +18,27 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
         }
 
         tdList.push(
-            <Td key={++cnt} days={data.days} schedules={data.schedules} openModal={openModal} reload={reload}/>
+            <Td key={++cnt} days={data.days} schedules={data.schedules} openModal={openModal} reload={reload} />
         );
     });
     trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);
 
     return (
         <Table>
-            <tbody style={{width: "100%"}}>
-            <tr style={{backgroundColor: "#80CBC4"}}>
-                <th style={{color: "red", borderRadius: "3px"}}>일</th>
-                <th style={{borderRadius: "3px"}}>월</th>
-                <th style={{borderRadius: "3px"}}>화</th>
-                <th style={{borderRadius: "3px"}}>수</th>
-                <th style={{borderRadius: "3px"}}>목</th>
-                <th style={{borderRadius: "3px"}}>금</th>
-                <th style={{color: "blue", borderRadius: "3px"}}>토</th>
-            </tr>
-            {trList}
+            <tbody style={{ width: "100%" }}>
+                <tr style={{ backgroundColor: "#80CBC4" }}>
+                    <th style={{ color: "red", borderRadius: "3px" }}>일</th>
+                    <th style={{ borderRadius: "3px" }}>월</th>
+                    <th style={{ borderRadius: "3px" }}>화</th>
+                    <th style={{ borderRadius: "3px" }}>수</th>
+                    <th style={{ borderRadius: "3px" }}>목</th>
+                    <th style={{ borderRadius: "3px" }}>금</th>
+                    <th style={{ color: "blue", borderRadius: "3px" }}>토</th>
+                </tr>
+                {trList}
             </tbody>
         </Table>
     )
 }
 
-export {Calendar};
+export { Calendar };

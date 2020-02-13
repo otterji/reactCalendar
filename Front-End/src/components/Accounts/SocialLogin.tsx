@@ -8,83 +8,83 @@ import { Button, } from '@material-ui/core/';
 const urlKakao = 'http://70.12.246.61:8080/oauth2/authorization/kakao'; //카카오 상엽
 
 
-interface State{
-  mode:string;
+interface State {
+  mode: string;
 
 }
 
 class SocialLogin extends Component<any, State> {
-  constructor(props:any){
+  constructor(props: any) {
     super(props);
     this.state = {
       mode: ''
-    }    
+    }
   }
-  
-  componentDidMount(){
-    if(this.props.login){
+
+  componentDidMount() {
+    if (this.props.login) {
       this.setState({ mode: '로그인' })
     }
-    else if(this.props.signup){
+    else if (this.props.signup) {
       this.setState({ mode: '회원가입' })
     }
   }
 
-  googleLogin = (res:any) => {
+  googleLogin = (res: any) => {
     console.log(res)
   }
 
-  onLoginKakao = (res:any) => {
+  onLoginKakao = (res: any) => {
     console.log(res.data)
   }
-  loginFail = (err:any) => {
+  loginFail = (err: any) => {
     console.log(err)
   }
 
-  render(){
-    return(
-      <>        
-        <div>다른 계정으로 {this.state.mode}</div>   
-                   
-        <a href="http://70.12.246.48:8080/oauth2/authorization/google" style={{textDecoration:"none"}}>
+  render() {
+    return (
+      <>
+        <div>다른 계정으로 {this.state.mode}</div>
+
+        <a href="http://70.12.246.48:8080/oauth2/authorization/google" style={{ textDecoration: "none" }}>
           <SocialBtn provider="google">Google</SocialBtn>
         </a>
-        <a href="http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver" style={{textDecoration:"none"}}>
+        <a href="http://ec2-52-79-117-94.ap-northeast-2.compute.amazonaws.com:8080/oauth2/authorization/naver" style={{ textDecoration: "none" }}>
           <SocialBtn provider="naver">Naver</SocialBtn>
         </a>
-        <a href={`${urlKakao}`} style={{textDecoration:"none"}}>
+        <a href={`${urlKakao}`} style={{ textDecoration: "none" }}>
           <SocialBtn provider="kakao">Kakao</SocialBtn>
         </a>
-        
+
       </>
     )
   }
 }
-export default withRouter(SocialLogin);
+export default withRouter(SocialLogin)
 
 
-const SocialBtn = styled(Button)<any>`
+const SocialBtn = styled(Button) <any>`
   background-color: ${props => (props.disabled ? 'gray' : 'black')};
   color: white;
   width: 100px;
   font-size: 70%;
   margin: 0.5rem;
 
-  ${props => props.provider==="google" && css`
+  ${props => props.provider === "google" && css`
       &:hover{
         background-color: blue;        
         font-weight: 600;
       }
     `
   }
-  ${props => props.provider==="naver" && css`
+  ${props => props.provider === "naver" && css`
       &:hover{
         background-color: #33cc33;
         font-weight: 600;
       }
     `
   }
-  ${props => props.provider==="kakao" && css`
+  ${props => props.provider === "kakao" && css`
       &:hover{
         color: #4d2600;
         background-color: yellow;

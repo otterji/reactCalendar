@@ -13,9 +13,9 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
   const { title, contents, startAt, endAt, place, attendants, schNo } = data.schedules[0];
 
   // content 는 새로 입력하는 값! contents랑 헷갈리지 말자ㅠ
-  const [ content, setContent ] = useState('')
-  const [ selectedImgFile, setSelecctedImgFile ] = useState('')
-  const [ selectedVideoFile, setSelecctedVideoFile ] = useState('')
+  const [content, setContent] = useState('')
+  const [selectedImgFile, setSelecctedImgFile] = useState('')
+  const [selectedVideoFile, setSelecctedVideoFile] = useState('')
 
   const handleImgFileInput = (e: any) => {
     setSelecctedImgFile(e.target.files[0])
@@ -31,7 +31,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
   }
 
   const submitHandler = async () => {
-    
+
     const reqData = {
       content: content,
       id: window.sessionStorage.getItem('id'),
@@ -55,40 +55,40 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
     }
   }
 
-  
+
 
   return (
     <>
       <div className="Modal-overlay" onClick={close} />
       <div className="Modal">
-      <p className="title">SHAREFORM!!!! {title}</p>
-      <div className="content">
-        <ContentsDiv >시작일: {startAt}</ContentsDiv>
-        <ContentsDiv >종료일: {endAt}</ContentsDiv>
-        <ContentsDiv >내용: {contents}</ContentsDiv>
-        <ContentsDiv >장소: {place}</ContentsDiv>
-        <ContentsDiv >태그: {attendants}</ContentsDiv>
+        <p className="title">SHAREFORM!!!! {title}</p>
+        <div className="content">
+          <ContentsDiv >시작일: {startAt}</ContentsDiv>
+          <ContentsDiv >종료일: {endAt}</ContentsDiv>
+          <ContentsDiv >내용: {contents}</ContentsDiv>
+          <ContentsDiv >장소: {place}</ContentsDiv>
+          <ContentsDiv >태그: {attendants}</ContentsDiv>
 
-        <input 
-          id="content" 
-          type="textarea" 
-          placeholder="피드에 올릴 부가설명을 입력해주세요"
-          onChange={handleContentInput}
+          <input
+            id="content"
+            type="textarea"
+            placeholder="피드에 올릴 부가설명을 입력해주세요"
+            onChange={handleContentInput}
           />
-        
-        <StyledInputSet >
-          <label htmlFor="imageUpload">사진 업로드</label>
-          <input id="imageUpload" type="file" onChange={handleImgFileInput}/>
-        </StyledInputSet>
 
-        <StyledInputSet >
-          <label htmlFor="imageUpload">동영상 업로드</label>
-          <input id="imageUpload" type="file" onChange={handleVideoFileInput}/>
-        </StyledInputSet>
+          <StyledInputSet >
+            <label htmlFor="imageUpload">사진 업로드</label>
+            <input id="imageUpload" type="file" onChange={handleImgFileInput} />
+          </StyledInputSet>
 
-      </div>
-      <StyledButton>수정</StyledButton>
-      <StyledButton onClick={submitHandler}>완료</StyledButton>
+          <StyledInputSet >
+            <label htmlFor="imageUpload">동영상 업로드</label>
+            <input id="imageUpload" type="file" onChange={handleVideoFileInput} />
+          </StyledInputSet>
+
+        </div>
+        <StyledButton>수정</StyledButton>
+        <StyledButton onClick={submitHandler}>완료</StyledButton>
       </div>
     </>
   )

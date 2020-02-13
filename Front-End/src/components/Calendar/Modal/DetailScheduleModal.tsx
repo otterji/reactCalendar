@@ -14,12 +14,11 @@ import { ThemeProvider } from "@material-ui/styles";
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DateTimePicker } from "@material-ui/pickers";
 import { url as _url } from "../../../url"
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 
 const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
-
   const [isEdit, setIsEdit] = useState(false);
-
   const { close, data, openModal } = props;
 
   // INFO: 글쓴이 api 만들어달라고 하셈: id or sid(시퀀스넘버)
@@ -41,17 +40,14 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   // console.log('디폴트', defaultData);
 
   // 각각 바뀔 애들 state 걸어주기 -> 멍청한짓...
-  // const [editedStartDate, setEditedStartDate] = useState(detailData.startAt);
-  // const [editedEndDate, setEditedEndDate] = useState(detailData.endAt);
-  // const [editedAttendants, setEditedAttendants] = useState(detailData.attendants);
-  // const [editedContents, setEditedContents] = useState(detailData.contents);
-  // const [editedPlace, setEditedPlace] = useState(detailData.place);
-  // const [editedTitle, setEditedTitle] = useState(detailData.title);
+  // const [editedStartDate, setEditedStartDate] = useState((detailData.startAt) as MaterialUiPickersDate);
+  // const [editedEndDate, setEditedEndDate] = useState((detailData.endAt) as MaterialUiPickersDate);
 
-
-  console.log(detailData)
   // isEdit값에 따라 detailData가 defaultData로 업데이트가 됨
   useEffect(() => setDetailData(defaultData), [isEdit]);
+
+  const changeDateStartHandler = (e: MaterialUiPickersDate) => setDetailData({ ...detailData, startAt: (e) as Date });
+  const changeDateEndHandler = (e: MaterialUiPickersDate) => setDetailData({ ...detailData, endAt: (e) as Date });
 
   // onChange를 걸어줘야해서 (value를 강제시키면 input으로 값을 넣는데 값이 바뀌지 않기 때문) detailData에 값을 갱신시켜줌
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -66,7 +62,6 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
       ...detailData,
       [name]: value
     });
-
   }
 
   // let str = document.getElementById("content")
@@ -81,38 +76,15 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
     const { attributes } = e.target as HTMLButtonElement;
     const value: boolean = attributes[0].value === "true";
     setIsEdit(value);
-
-    // makeSchedule 할때 랑 똑같은거 보내는데 수정된애만 업데이트 해서 보냄 -> 멍청한짓 33..
-    // const params = {
-    //   ...detailData,
-    //   attendants: editedAttendants,
-    //   contents: editedContents,
-    //   endAt: editedEndDate,
-    //   startAt: editedStartDate,
-    //   place: editedPlace,
-    //   title: editedTitle
-    // };
-    // await axios.post(`${_url}/updateSchedules`, detailData);
-
   }
 
   const submitHandler = async () => {
-    // const changeStartDate = (_date: Date|null) => {
-    // //   handleStartDateChange(_date)
-    // // }
-
-    // const changeEndDate = (_date: Date | null) => {
-    // //   handleEndDateChange(_date);
-    // // }    
-
     const params = {
       ...detailData,
       id: window.sessionStorage.getItem('id'),
     };
     try {
-      console.log(params, '보내는게 params')
-      const res = await axios.put(`${_url}/updateSchedules`, params);
-      console.log(res)
+      await axios.put(`${_url}/updateSchedules`, params);
       close();
     } catch (e) {
       alert(e);
@@ -125,76 +97,80 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
       <div className="Modal-overlay" onClick={close} />
       <div className="Modal">
         <table style={{ width: "90%" }}>
-          <tr>
-            <td>제목</td>
-            <td colSpan={2}><p className="title">{isEdit ?
-              <input type="text" name="title" value={detailData.title}
-                onChange={changeHandler} /> : detailData.title}</p>
-            </td>
-          </tr>
-          <tr>
-            <td>기간</td>
-            <td><ContentsDiv>
-              <ThemeProvider theme={defaultMaterialTheme}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <td>
-                    <DateTimePicker
-                      value={detailData.startAt}
-                      onChange={() => changeHandler}
-                      label="시작일"
-                      showTodayButton
-                    />
-                  </td>
-                </MuiPickersUtilsProvider>
-              </ThemeProvider>
-            </ContentsDiv></td>
-            <td><ContentsDiv>
-              <ThemeProvider theme={defaultMaterialTheme}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                  <td>
-                    <DateTimePicker
-                      value={detailData.endAt}
-                      onChange={() => changeHandler}
-                      label="종료일"
-                      showTodayButton
-                    />
-                  </td>
-                </MuiPickersUtilsProvider>
-              </ThemeProvider>
-            </ContentsDiv>
-            </td>
-          </tr>
-        <tr>
-          <td>내용</td>
-          <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
-            onChange={changeHandler} /> : detailData.contents}</ContentsDiv>
-          </td>
-        </tr>
-        <tr>
-          <td>장소</td>
-          <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
-            onChange={changeHandler} /> : detailData.place}</ContentsDiv>
-          </td>
-        </tr>
-        <tr>
-          <td>태그</td>
-          <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
-            onChange={changeHandler} /> : detailData.attendants}</ContentsDiv>
-          </td>
-        </tr>
+          <tbody>
+            <tr>
+              <td>제목</td>
+              <td colSpan={2}><p className="title">{isEdit ?
+                <input type="text" name="title" value={detailData.title}
+                  onChange={changeHandler} /> : detailData.title}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>기간</td>
+              <td><ContentsDiv>
+                <ThemeProvider theme={defaultMaterialTheme}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <td>
+                      <DateTimePicker
+                        value={detailData.startAt}
+                        onChange={changeDateStartHandler}
+                        label="시작일"
+                        showTodayButton
+                        name="startAt"
+                      />
+                    </td>
+                  </MuiPickersUtilsProvider>
+                </ThemeProvider>
+              </ContentsDiv></td>
+              <td><ContentsDiv>
+                <ThemeProvider theme={defaultMaterialTheme}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <td>
+                      <DateTimePicker
+                        value={detailData.endAt}
+                        onChange={changeDateEndHandler}
+                        label="종료일"
+                        showTodayButton
+                        name="endAt"
+                      />
+                    </td>
+                  </MuiPickersUtilsProvider>
+                </ThemeProvider>
+              </ContentsDiv>
+              </td>
+            </tr>
+            <tr>
+              <td>내용</td>
+              <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
+                onChange={changeHandler} /> : detailData.contents}</ContentsDiv>
+              </td>
+            </tr>
+            <tr>
+              <td>장소</td>
+              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
+                onChange={changeHandler} /> : detailData.place}</ContentsDiv>
+              </td>
+            </tr>
+            <tr>
+              <td>태그</td>
+              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
+                onChange={changeHandler} /> : detailData.attendants}</ContentsDiv>
+              </td>
+            </tr>
+          </tbody>
         </table>
 
-      {isEdit ?
-        <>
-          <StyledButton onClick={editHandler} data-is-edit={false}>뒤로가기</StyledButton>
-          <StyledButton onClick={submitHandler}>완료</StyledButton>
-        </>
-        :
-        <>
-          <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
-          <StyledButton onClick={shareHandler}>공유</StyledButton>
-        </>}
-    </div>
+        {isEdit ?
+          <>
+            <StyledButton onClick={editHandler} data-is-edit={false}>뒤로가기</StyledButton>
+            <StyledButton onClick={submitHandler}>완료</StyledButton>
+          </>
+          :
+          <>
+            <StyledButton onClick={editHandler} data-is-edit={true}>수정</StyledButton>
+            <StyledButton onClick={shareHandler}>공유</StyledButton>
+          </>}
+      </div>
     </>
   )
 
