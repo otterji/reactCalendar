@@ -103,11 +103,11 @@ const getHttpXXXList = async (params: { _yymm: string }) => {
 };
 
 const fetchData = async (params: {
-  subList;
+  // subList;
   viewDate: Date;
   setDataList: any;
 }) => {
-  const { viewDate, setDataList, subList } = params;
+  const { viewDate, setDataList} = params;
 
   const addZero = (n: string) => {
     return n.length === 1 ? '0' + n : n;
@@ -138,11 +138,7 @@ const fetchData = async (params: {
         new Date(ein.startAt).getDate() <= e &&
         e <= new Date(ein.endAt).getDate()
     );
-    const channelFilters = subList.filter(
-      (ein: ServerData) =>
-        new Date(ein.startAt).getDate() <= e &&
-        e <= new Date(ein.endAt).getDate()
-    );
+    // const channelFilters = subList.filter(s
 
     return {
       days:
@@ -151,7 +147,7 @@ const fetchData = async (params: {
           : new Date(
               `${viewDate.getFullYear()}-${viewDate.getMonth() + 1}-${e}`
             ),
-      schedules: [...filters, ...channelFilters]
+      schedules: [...filters]
     };
   });
 

@@ -19,7 +19,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
 
   const handleImgFileInput = (e: any) => {
     setSelecctedImgFile(e.target.files[0])
-    console.log(e.target.files)
+    console.log('e.target.files', e.target.files[0])
   }
 
   const handleVideoFileInput = (e: any) => {
@@ -32,20 +32,23 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
 
   const submitHandler = async () => {
 
-    const reqData = {
-      content: content,
-      id: window.sessionStorage.getItem('id'),
-      img: selectedImgFile,
-      video: selectedVideoFile,
-      schNo: schNo,
-    }
-    console.log('reqData', reqData)
+
     try {
-      console.log(selectedImgFile)
       if (selectedImgFile !== '') {
         const formData = new FormData();
         formData.append('file', selectedImgFile);
-        console.log('formData', formData)
+        console.log('formData', formData);
+        console.log('file', selectedImgFile);
+
+        const reqData = {
+          content: content,
+          id: window.sessionStorage.getItem('id'),
+          img: formData,
+          video: selectedVideoFile,
+          schNo: schNo,
+        }
+
+        // await axios.post(`${_url}/`);
       }
       // const res = await axios.post(`${_url}/feed/save`, params);
       alert('피드에 공유되었습니다 >_< 야호!')

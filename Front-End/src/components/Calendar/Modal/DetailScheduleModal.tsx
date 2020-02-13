@@ -142,7 +142,9 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
             <tr>
               <td>내용</td>
               <td colSpan={2}><ContentsDiv>{isEdit ? <textarea value={detailData.contents} name="contents"
-                onChange={changeHandler} /> : detailData.contents}</ContentsDiv>
+                onChange={changeHandler} /> : detailData.contents?.split('\n').map( line => {
+                  return (<span>{line}<br/></span>)
+                })}</ContentsDiv>
               </td>
             </tr>
             <tr>

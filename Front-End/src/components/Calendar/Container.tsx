@@ -10,8 +10,14 @@ import {
 import { DateData, ModalData } from './_types/calendar';
 import { Calendar } from './Calendar';
 
-const Container: FunctionComponent<{ data }> = props => {
-  const { sublist } = props;
+
+type changeProps = {
+  changeYYMM: any,
+  subscribeSch: any
+}
+
+
+const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
@@ -22,17 +28,19 @@ const Container: FunctionComponent<{ data }> = props => {
   // 보여지고 있는 달력의 데이터가 변경될 때마다 훅스가 실행
   // @ts-ignore
   useEffect(() => {
-    fetchData({ sublist, viewDate, setDataList });
-  }, [sublist, viewDate, isModalOpen, toggleRender]);
+    fetchData({viewDate, setDataList});
+  }, [viewDate, isModalOpen, toggleRender, subscribeSch]);
 
   const showPrevMonthHandler = () => {
     const prevDate: Date = getPrevMonthDate(viewDate);
     setViewDate(prevDate);
+    changeYYMM(`${prevDate.getFullYear()}-${prevDate.getMonth()+1}`);
   }
 
   const showNextMonthHandler = () => {
     const nextDate: Date = getNextMonthDate(viewDate);
     setViewDate(nextDate);
+    changeYYMM(`${nextDate.getFullYear()}-${nextDate.getMonth()+1}`);
   }
 
   const openModalHandler = (data: ModalData) => {

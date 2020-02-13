@@ -17,6 +17,8 @@ interface State {
     mode: string;
     winWidth: number;
     winHeight: number;
+    _yymm: string;
+    test: any;
 }
 
 class Main extends Component<any, State> {
@@ -27,6 +29,8 @@ class Main extends Component<any, State> {
           mode: 'calendar',
           winWidth: window.innerWidth,
           winHeight: window.innerHeight,
+          _yymm: `${new Date().getFullYear()}-${new Date().getMonth()+1}`,
+          test: [],
       }
   }
       componentDidMount()
@@ -48,10 +52,17 @@ class Main extends Component<any, State> {
           this.setState({mode: command});
       };
 
+      changeYYMM = (yymm: string) => {
+        this.setState({_yymm: yymm})
+      };
+
       renderByMode = () => {
           if (this.state.mode === 'calendar') {
               return (
-                  <Container/>
+                  <Container
+                    changeYYMM = {this.changeYYMM}
+                    subscribeSch = {this.state.test}
+                  />
               )
           } else if (this.state.mode === 'feed') {
               return (
@@ -63,7 +74,7 @@ class Main extends Component<any, State> {
       }
 
   render(){
-    console.log(this.props.match);
+    console.log('이거', this.state._yymm);
     return(
       <StyledMainContainer className="Main" width={this.state.winWidth}>             
           <Grid container spacing={1} direction="column">
