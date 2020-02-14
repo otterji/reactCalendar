@@ -36,7 +36,7 @@ class KakaoLogin extends Component<any> {
     render() {
         return (
             <div>
-                <a onClick={this.loginWithKakao}>카카오로 로그인</a>
+                <button onClick={this.loginWithKakao} style={{backgroundColor:"#F9E000", width: "200px", height: "40px", borderRadius:"8px", border:"0"}}>카카오로 로그인</button>
             </div>
         );
     }

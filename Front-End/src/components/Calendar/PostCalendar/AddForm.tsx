@@ -49,7 +49,7 @@ const AddForm = ({ close, dayData, rerenderHandler }: any) => {
 
   const onSubmit = async () => {
     try {
-      console.log(data)
+      // console.log(data)
       // 보내는 Data 를 펼쳤을때 이런 것들이 있다고 정의
       const text: any = data.contents
 

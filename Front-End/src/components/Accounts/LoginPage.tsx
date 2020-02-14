@@ -8,7 +8,7 @@ import SocialLogin from "./SocialLogin";
 import * as Styled from "./StyledAccounts";
 import { Grid, Slide } from "@material-ui/core";
 import KakaoLogin from "./KakaoLogin";
-
+import GLogin from "./GLogin";
 interface State{
   mode:string,
   // browserWidth: number,
@@ -52,13 +52,26 @@ class LoginPage extends Component<any, State> {
                 {
                   (store)=>{
                     return(
-                       <KakaoLogin login mode={this.state.mode} onLogin={store.actions?.onLogin}>Kakao</KakaoLogin>
+                       <KakaoLogin login mode={this.state.mode} onLogin={store.actions?.onLogin}/>
                     )
                   }
                 }
               </loginState.Consumer>
             </Grid>
-            
+
+            <Grid item xs={12}>
+              {/*<SocialLogin login/>*/}
+              <loginState.Consumer>
+                {
+                  (store)=>{
+                    return(
+                        <GLogin/>
+                    )
+                  }
+                }
+              </loginState.Consumer>
+            </Grid>
+
             <Grid item xs={12}>
               <a href="/">아이디</a>
               <span> / </span>

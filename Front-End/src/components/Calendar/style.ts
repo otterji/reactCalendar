@@ -34,7 +34,8 @@ interface TdBorder {
 const StyledTd = styled.td<TdBorder>`
   border: ${((props: any) => props.isDisplay ? `1px dotted #f2f2f2;` : `none`)};
   height: 100px;
-  width: 14%;
+  width: 14.4%;
+  min-width:140px;
   vertical-align: top;
 `;
 
@@ -55,6 +56,7 @@ const TdStart = styled.div`
   background-color: #ff6813;
   width: 14px;
   height: 14px;
+  border-radius: 3px;
 `;
 
 const StyledScheduleUi = styled.div`
@@ -65,7 +67,7 @@ const StyledScheduleUi = styled.div`
 
 const StyledScheduleLi = styled.div`  
   padding: 0;
-  font-size: 15px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.7);
   width: 100%;
 `;
@@ -88,7 +90,7 @@ const StyledLiTitle = styled.div`
     background-color: lightgrey;
     cursor: pointer;
   }
-  width: 80px;
+  width: 95px;
   overflow:hidden;
   white-space:nowrap;
   text-overflow:ellipsis;
@@ -101,11 +103,41 @@ const StartLabel = styled.div`
   color: #ffffff;
   font-size: 10px;
   font-family: 나눔고딕,NanumGothic,돋움,Dotum;
-  background-color: #FF6813;
+  background-color: #009689;
+  border-radius: 3px;
   width: 14px;
   height: 14px;
+  text-align: center;
   vertical-align: top;
-  margin-top : 5px;
+  margin-top : 4px;
+`;
+
+const EndLabel = styled.div`
+  display: inline-block;
+  color: #ffffff;
+  font-size: 10px;
+  font-family: 나눔고딕,NanumGothic,돋움,Dotum;
+  background-color: #00332d;
+  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  vertical-align: top;
+  margin-top : 4px;
+`;
+
+const DangLabel = styled.div`
+  display: inline-block;
+  color: #ffffff;
+  font-size: 10px;
+  font-family: 나눔고딕,NanumGothic,돋움,Dotum;
+  background-color:  #BDBDBD;
+  border-radius: 3px;
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  vertical-align: top;
+  margin-top : 4px;
 `;
 
 export {
@@ -120,5 +152,7 @@ export {
     StyledButton,
     StyledClearIcon,
     StyledLiTitle,
-    StartLabel
+    StartLabel,
+    EndLabel,
+    DangLabel,
 };

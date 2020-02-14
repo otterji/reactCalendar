@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { TextField } from '@material-ui/core';
+import { TextField, IconButton } from '@material-ui/core';
 
 export const StSearch = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
 `
@@ -24,6 +25,21 @@ export const StTextField = styled(TextField)<any>`
       }
     }
   } 
+`
+
+export const StIconBtn = styled(IconButton)`
+  padding-top: 0;
+  padding-bottom: 0;
+  :hover{
+    background-color: inherit;
+  }
+`
+
+export const StListCont = styled.div`
+  position: absolute;
+  background-color: #8cebd1;
+  width: 100px;
+  height: 100px;
 `
 
 export const Li = styled.li`

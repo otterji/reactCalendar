@@ -1,8 +1,8 @@
-import styled from "styled-components";
-import { Button, Checkbox } from "@material-ui/core";
+import styled, { css } from 'styled-components';
+import { Button, Checkbox } from '@material-ui/core';
 
 export const profileName = styled.p`
-  font-size: 1.2rem;
+  font-size: 23px;
   font-weight: 700;
   margin: 0 0 0 0.5rem;
 `;
@@ -54,9 +54,22 @@ export const btn = styled(Button)<any>`
 `;
 
 export const checkbox = styled(Checkbox)<any>`
-  color: #b2dfdb;
+  ${props =>
+    props.checked &&
+    css`
+      .MuiSvgIcon-root {
+        color: ${props.colorlight};
+      }
+      // .MuiFormControlLabel-root {
+      //   font-color: ${props.colordark};
+      // }
+    `}
+`;
 
-  &:checked {
-    color: #009688;
-  }
+export const div = styled.div`
+  position: absolute;
+  width: 250px;
+  background-color: white;
+  top: center;
+  left: center;
 `;

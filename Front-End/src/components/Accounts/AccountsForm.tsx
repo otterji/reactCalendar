@@ -128,11 +128,13 @@ class AccountsForm extends Component<any, State> {
       isChannel: false
     };
   }
-
-  componentDidMount() {
-    if (this.props.moreInfo) {
-      this.getAllInterests().then(() => {
-        this.setState({ interests: initList });
+  
+  componentDidMount(){
+    // console.log('will mount')
+    if(this.props.moreInfo){
+      this.getAllInterests()
+      .then(()=>{
+        this.setState({ interests: initList })
       });
     }
   }
@@ -335,12 +337,17 @@ class AccountsForm extends Component<any, State> {
             pw: _pw
           }
         });
-        console.log(res.data);
-        // alert(JSON.stringify(res.data, null, 2))
+        // console.log(JSON.stringify(res.data, null, 2))
         if (res.data.status) {
-          window.sessionStorage.setItem("id", _id);
-          window.sessionStorage.setItem("pw", _pw);
-          window.sessionStorage.setItem("jwt", res.data.jwt);
+          sessionStorage.setItem("id", _id);
+          sessionStorage.setItem("jwt", res.data.jwt);
+          if(this.state.isChannel){
+            sessionStorage.setItem("isChannel", "channel");
+          }
+          else{
+            sessionStorage.setItem("isChannel", "member");
+          }
+
           this.props.onLogin();
           this.props.history.push(`/mainPage`);
         } else {
@@ -363,19 +370,20 @@ class AccountsForm extends Component<any, State> {
         });
         // alert(JSON.stringify(res.data, null, 2));
         if (res.data.state === "SUCCESS") {
-          window.sessionStorage.setItem("id", _id);
-          window.sessionStorage.setItem("pw", _pw);
-          window.sessionStorage.setItem("jwt", res.data.jwt);
+          sessionStorage.setItem("id", _id);
+          sessionStorage.setItem("pw", _pw);
+          sessionStorage.setItem("jwt", res.data.jwt);
           this.props.history.push("/moreInfoPage");
         } else if (res.data.state === "FAIL") {
-          alert("이미 존재하는 아이디 입니다");
+          alert("이미 존재하는 계정 입니다");
         }
       } catch (err) {
         console.log(err);
       }
     } else if (this.props.moreInfo && this.state.isChannel) {
-      const _id = window.sessionStorage.getItem("id");
-      const _pw = window.sessionStorage.getItem("pw");
+      const _id = sessionStorage.getItem("id");
+      const _pw = sessionStorage.getItem("pw");
+      sessionStorage.removeItem('pw');
       let _img = null;
 
       try {
@@ -411,16 +419,16 @@ class AccountsForm extends Component<any, State> {
           }
         });
         if (res.data.state === "SUCCESS") {
+          sessionStorage.setItem("isChannel", "channel");
           this.props.onLogin();
-          window.sessionStorage.setItem("isChannel", "channel");
           this.props.history.push(`/mainPage`);
         }
       } catch (err) {
         alert(err);
       }
     } else if (this.props.moreInfo && !this.state.isChannel) {
-      const _id = window.sessionStorage.getItem("id");
-      const _pw = window.sessionStorage.getItem("pw");
+      const _id = sessionStorage.getItem("id");
+      const _pw = sessionStorage.getItem("pw");
       let _img = null;
 
       try {
@@ -459,10 +467,10 @@ class AccountsForm extends Component<any, State> {
           }
         });
         // alert(JSON.stringify(res.data, null, 2));
-        console.log(JSON.stringify(res.data, null, 2));
+        // console.log(JSON.stringify(res.data, null, 2));
         if (res.data.state === "SUCCESS") {
+          sessionStorage.setItem("isChannel", "member");
           this.props.onLogin();
-          window.sessionStorage.setItem("isChannel", "member");
           this.props.history.push(`/mainPage`);
         }
       } catch (err) {
@@ -513,10 +521,6 @@ class AccountsForm extends Component<any, State> {
     let renderList: any[] = [];
     const keyList = Object.keys(this.state.interests);
     const valueList = Object.values(this.state.interests);
-    console.log("hereherehere");
-    console.log(keyList);
-    console.log(valueList);
-    console.log(this.state.interests);
     for (let i = 0; i < keyList.length; i++) {
       renderList.push(
         <FormControlLabel
@@ -798,7 +802,7 @@ class AccountsForm extends Component<any, State> {
             ) : null}
             <StyledBtnContainer>
               <StyledBtn
-                fixedWidth
+                // fixedWidth="true"
                 disabled={!this.isValid()}
                 onClick={this.onSubmit}
               >
@@ -815,7 +819,6 @@ export default withRouter(AccountsForm);
 
 const StyledForm = styled.form`
   align-items: center;
-  border: 0.1rem solid gray;
   border-radius: 20px;
   display: flex;
   flex-direction: column;
