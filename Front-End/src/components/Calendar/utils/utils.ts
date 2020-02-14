@@ -91,10 +91,17 @@ const getHttpXXXList = async (params: { _yymm: string }) => {
     console.log('try');
 
     const res = await Axios.get(`${_url}/getSchedules/${_id}/${_yymm}`);
-    console.log(res);
-    // alert(JSON.stringify(res.data, null, 2));
-    const returnList: ServerData[] = res.data;
-    console.log(returnList);
+    console.log('axios 요청으로 받는애', res);
+
+    const resData = res.data;
+
+    resData.map((e: any, idx: number) => {
+      e.id = _id;
+      e.color = 'null';
+    });
+
+    const returnList: ServerData[] = resData;
+    console.log('이거 고쳐졌남', returnList);
 
     return returnList;
   } catch (e) {
@@ -107,7 +114,7 @@ const fetchData = async (params: {
   viewDate: Date;
   setDataList: any;
 }) => {
-  const { viewDate, setDataList} = params;
+  const { viewDate, setDataList } = params;
 
   const addZero = (n: string) => {
     return n.length === 1 ? '0' + n : n;

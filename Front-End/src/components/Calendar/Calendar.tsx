@@ -2,6 +2,7 @@ import React, { FunctionComponent } from 'react';
 import { Table } from "./style";
 import { DateData, CalendarProps } from './_types/calendar';
 import { Td } from './Table';
+import { IsChannel } from '../common/IsChannel';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
     const { openModal, list, reload } = props;

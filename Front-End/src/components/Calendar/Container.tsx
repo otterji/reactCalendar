@@ -17,7 +17,7 @@ type changeProps = {
 }
 
 
-const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
+const Container: FunctionComponent<any> = ({ changeYYMM, subscribeSch }) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewDate, setViewDate] = useState(new Date());
@@ -28,8 +28,9 @@ const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
   // 보여지고 있는 달력의 데이터가 변경될 때마다 훅스가 실행
   // @ts-ignore
   useEffect(() => {
-    fetchData({viewDate, setDataList});
+    fetchData({ viewDate, setDataList });
   }, [viewDate, isModalOpen, toggleRender, subscribeSch]);
+
 
   const showPrevMonthHandler = () => {
     const prevDate: Date = getPrevMonthDate(viewDate);
@@ -48,7 +49,7 @@ const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
       return n.length === 1 ? '0' + n : n;
     };
     const mm = addZero(`${viewDate.getMonth() + 1}`);
-    changeYYMM(`${nextDate.getFullYear()}-${nextDate.getMonth()+1}`);
+    changeYYMM(`${nextDate.getFullYear()}-${nextDate.getMonth() + 1}`);
   }
 
   const openModalHandler = (data: ModalData) => {
@@ -61,15 +62,15 @@ const Container: FunctionComponent<any> = ({changeYYMM, subscribeSch}) => {
   return (
     <>
       <Title>
-        <Button style={{ cursor: "pointer", outline: "none",  fontSize: "20px"}} onClick={showPrevMonthHandler}> &lt; </Button>
+        <Button style={{ cursor: "pointer", outline: "none", fontSize: "20px" }} onClick={showPrevMonthHandler}> &lt; </Button>
         <span style={{ display: "inline-block", fontSize: "20px" }}>
           {viewDate.getFullYear()}년.
         </span>
-        <span style={{fontSize: "35px", color : "#009689"}}>
+        <span style={{ fontSize: "35px", color: "#009689" }}>
           {viewDate.getMonth() + 1}
         </span>
         월
-        <Button style={{ cursor: "pointer", outline: "none", fontSize: "20px"}} onClick={showNextMonthHandler}> &gt; </Button>
+        <Button style={{ cursor: "pointer", outline: "none", fontSize: "20px" }} onClick={showNextMonthHandler}> &gt; </Button>
       </Title>
 
       <Calendar list={dataList} openModal={openModalHandler} reload={reloadHandler} />

@@ -13,6 +13,7 @@ export type ServerData = {
   attendants?: string;
   schNo?: number;
   oneDay?: boolean;
+  id?: string;
 };
 
 export type ModalData = {
