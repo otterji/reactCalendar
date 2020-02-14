@@ -13,7 +13,7 @@ export type ServerData = {
   attendants?: string;
   schNo?: number;
   oneDay?: boolean;
-  id?: string;
+  csrDto?: any;
 };
 
 export type ModalData = {
@@ -33,4 +33,5 @@ export type OpenModal = {
 export interface CalendarProps extends OpenModal {
   list: DateData[];
   reload: () => void;
+  subscribeSch: any;
 }

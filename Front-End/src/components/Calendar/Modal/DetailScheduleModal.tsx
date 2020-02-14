@@ -143,8 +143,8 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
                                                                        onChange={changeHandler}
                                                                        style={{width: "95%", padding: "10px"}}
                                                                        cols={30}
-                                                                       rows={8}/> : detailData.contents?.split('\n').map(line => {
-                                return (<span>{line}<br/></span>)
+                                                                       rows={8}/> : detailData.contents?.split('\n').map((line, idx) => {
+                                return (<span key={idx}>{line}<br/></span>)
                             })}</div>
                         </td>
                     </tr>

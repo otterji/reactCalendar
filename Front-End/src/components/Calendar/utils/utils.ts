@@ -88,20 +88,13 @@ const getHttpXXXList = async (params: { _yymm: string }) => {
   const _id = window.sessionStorage.getItem('id');
 
   try {
-    console.log('try');
+    // console.log('try');
 
     const res = await Axios.get(`${_url}/getSchedules/${_id}/${_yymm}`);
-    console.log('axios 요청으로 받는애', res);
-
-    const resData = res.data;
-
-    resData.map((e: any, idx: number) => {
-      e.id = _id;
-      e.color = 'null';
-    });
-
-    const returnList: ServerData[] = resData;
-    console.log('이거 고쳐졌남', returnList);
+    // console.log(res);
+    // alert(JSON.stringify(res.data, null, 2));
+    const returnList: ServerData[] = res.data;
+    // console.log(returnList);
 
     return returnList;
   } catch (e) {
@@ -113,9 +106,11 @@ const fetchData = async (params: {
   // subList;
   viewDate: Date;
   setDataList: any;
+  subscribeSch: any;
 }) => {
-  const { viewDate, setDataList } = params;
+  const { viewDate, setDataList, subscribeSch } = params;
 
+  // console.log('fetchData 안의 subList', subscribeSch)
   const addZero = (n: string) => {
     return n.length === 1 ? '0' + n : n;
   };
@@ -132,6 +127,22 @@ const fetchData = async (params: {
   } catch (e) {
     console.info('SERVER_ERR!!!', e);
   }
+
+  // @ts-ignore
+  // console.log('realSubsSch[0][0]' , subscribeSch[0][0])
+  // console.log('시험시험', reqRet)
+  if (subscribeSch !== undefined) {
+    // console.log('realSubsSch[0][0]' , subscribeSch)
+    // console.log('fetch 안의 if문을 돈다')
+    subscribeSch.map((e: any, idx: number) => {
+      e.map((e2: any, idx2: number) => {
+        reqRet.push(e2);
+        return reqRet;
+      });
+      return reqRet;
+    });
+  }
+
   const sortedList = reqRet.sort(
     (a: ServerData, b: ServerData) =>
       Date.parse(JSON.stringify(a.startAt)) -

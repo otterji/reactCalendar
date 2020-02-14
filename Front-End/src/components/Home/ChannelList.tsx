@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import axios from 'axios'
 //
 import { url } from '../../url'
-import { loginState } from '../../App'
 import Channel from './Channel'
 //style
 import styled, { css } from 'styled-components'
@@ -64,20 +63,18 @@ class ChannelList extends Component<any, State> {
   axiosReq = async () => {
     try {
       let _url;
-
-      console.log(this.props.isLogin)
-
+      const _id = sessionStorage.getItem('id');      
       if(this.props.className === 'recom'){
-        if(this.props.isLogin){
-          // _url = `${url}/channel/getPopularChannelsWithId/string`;
+        if(this.props.isLogin && !this.props.isChannel){
+          _url = `${url}/channel/getRecommendedChannelsWithId/${_id}`;
         }
         else{
-          // _url = `${url}/channel/getPopularChannels/`;
+          _url = `${url}/channel/getRecommendedChannels/`;
         }  
       }
       else if(this.props.className === 'popular'){
         if(this.props.isLogin){
-          _url = `${url}/channel/getPopularChannelsWithId/string`;
+          _url = `${url}/channel/getPopularChannelsWithId/${_id}`;
         }
         else{
           _url = `${url}/channel/getPopularChannels/`;
@@ -90,23 +87,17 @@ class ChannelList extends Component<any, State> {
       })
       const resData = res.data;
       // console.log(_url, JSON.stringify(resData, null, 2))
+      console.log(resData);
+      
       if (resData.length === 0) {
         this.setState({ noCh: true })
       }
       else {
         await this.setStateAsync({
           channels: this.state.channels.concat(resData.map((ch: any) => (
-            <loginState.Consumer>
-              {
-                (store) => {
-                  return(<>
-                    <Slide in={true} direction="left" timeout={500}>
-                      <Channel key={ch.ch_no} info={ch} isLogin={store.isLogin}/>
-                    </Slide>
-                  </>)
-                }
-              }
-            </loginState.Consumer>
+            <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
+              <Channel info={ch} isLogin={this.props.isLogin}/>
+            </Slide>
           )))
         })
         .then(() => {
@@ -125,17 +116,17 @@ class ChannelList extends Component<any, State> {
   tempReq = async () => {
     await this.setStateAsync({
       channels: this.state.channels.concat(templist.map((temp: any) => (
-        <loginState.Consumer>
-          {
-            (store) => {
-              return(<>
-                <Slide in={true} direction="left" timeout={500}>
-                  <Channel key={temp.ch_no} info={temp} isLogin={store.isLogin}/>
+        // <loginState.Consumer>
+        //   {
+        //     (store) => {
+        //       return(<>
+                <Slide key={temp.ch_no} in={true} direction="left" timeout={500}>
+                  <Channel info={temp} isLogin={this.props.isLogin}/>
                 </Slide>
-              </>)
-            }
-          }
-        </loginState.Consumer>
+        //       </>)
+        //     }
+        //   }
+        // </loginState.Consumer>
       )))
     })
   }

@@ -10,7 +10,7 @@ class Loading extends Component<any> {
   goMain = () => {
     setTimeout(() => {
       this.props.history.push('/mainPage');
-    }, 9000);
+    }, 6500);
   }
 
   render() {
@@ -41,8 +41,8 @@ const Animation = styled.div`
   align-items: center;
   border-radius: 15px;
   transform: translateY(22vh);
-  animation: backColor 7s;
-  animation-delay: 6s;
+  animation: backColor 6s;
+  animation-delay: 4.5s;
   @keyframes backColor{
     0% {
       background-color: white;
@@ -94,15 +94,15 @@ const Animation = styled.div`
       animation-delay: 0s;
     }
     .word:nth-child(2) {
-      animation-delay: 2s;
+      animation-delay: 1.5s;
     }
     .word:nth-child(3) {
-      animation-delay: 4s;
+      animation-delay: 3s;
     }
     .word:nth-child(4) {
       color: white;
       font-weight: bold;
-      animation-delay: 6s;
+      animation-delay: 4.5s;
     }
   }
 

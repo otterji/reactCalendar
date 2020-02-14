@@ -5,12 +5,14 @@ import { Td } from './Table';
 import { IsChannel } from '../common/IsChannel';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
-    const { openModal, list, reload } = props;
+    const { openModal, list, reload, subscribeSch } = props;
 
     // XXX: How can i fix?
     const trList: any[] = [];
     const tdList: any[] = [];
     let cnt = 100;
+
+    // console.log('Calendar.tsx 안의 subList', subscribeSch)
 
     list.map((data: DateData, idx: number) => {
         if (idx !== 0 && idx % 7 === 0) {

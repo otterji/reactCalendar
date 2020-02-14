@@ -23,7 +23,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
 
     const handleImgFileInput = (e: any) => {
         setSelecctedImgFile(e.target.files[0])
-        console.log('e.target.files', e.target.files[0])
+        // console.log('e.target.files', e.target.files[0])
     }
 
     const handleVideoFileInput = (e: any) => {
@@ -41,7 +41,6 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
             if (selectedImgFile !== '') {
                 const formData = new FormData();
                 formData.append('file', selectedImgFile);
-                console.log('formData', formData);
                 console.log('file', selectedImgFile);
 
                 const reqData = {
@@ -80,8 +79,8 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
                             </tr>
                             <tr>
                                 <td colSpan={2}>
-                                    <div className="textA">{contents?.split('\n').map(line => {
-                                        return (<span>{line}<br/></span>)
+                                    <div className="textA">{contents?.split('\n').map((line, idx) => {
+                                        return (<span key={idx}>{line}<br/></span>)
                                     })}</div>
                                 </td>
                             </tr>
