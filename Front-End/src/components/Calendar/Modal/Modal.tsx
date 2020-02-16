@@ -10,15 +10,16 @@ const Modal = (params: ModalProps) => {
   const { close, data, openModal } = params;
   const { type } = data;
 
+
   const typeObj = useMemo(() => ({
     [TYPE_DETAIL]: <DetailScheduleModal close={close} data={data} openModal={openModal} />,
     [TYPE_ADD]: <AddForm close={close} dayData={data.days} openModal={openModal} />,
-    [TYPE_SHARE]: <ShareForm close={close} data={data} openModal={openModal}/>,
+    [TYPE_SHARE]: <ShareForm close={close} data={data} openModal={openModal} />,
   }), [close, data, openModal]);
 
   return (
     // @ts-ignore HACK: WTF?
-      <>{typeObj[type] || <div>Modal을 띄우는 데 문제가 생겼습니당 ㅜㅠ</div>}</>
+    <>{typeObj[type] || <div>Modal을 띄우는 데 문제가 생겼습니당 ㅜㅠ</div>}</>
   )
 }
 

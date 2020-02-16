@@ -5,6 +5,8 @@ import { TdDay } from './TdDay';
 import { TYPE_DETAIL } from '../utils/CONST';
 import axios from 'axios';
 import { url as _url } from '../../../url';
+import { Server } from 'http';
+import color from '@material-ui/core/colors/amber';
 
 const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
   const { days, schedules, openModal, reload } = props;
@@ -47,15 +49,27 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
     } else {
       DayLabel = <DangLabel key={idx}>{trueIdx.value}</DangLabel>
     }
+
+    const dayColor: any = (e: ServerData) => {
+      let color = ""
+      e.csrDto ? color = e.csrDto.color[0] : color = ""
+      return color
+    }
+
+
     return (
       <>
         <StyledScheduleLi key={idx}>
           {trueIdx.value ?
             <>
               {DayLabel}
-              <StyledLiTitle onClick={() => onClickHandler(e)}>{e.title}</StyledLiTitle>
-              {/* 여기 분기 넣기 */}
-              <StyledClearIcon fontSize="inherit" onClick={() => deleteSchedule(e)} />
+              <StyledLiTitle onClick={() => onClickHandler(e)} style={{ color: dayColor(e) }}>{e.title}</StyledLiTitle>
+              {e.csrDto ?
+                null
+                : <>
+                  <StyledClearIcon fontSize="inherit" onClick={() => deleteSchedule(e)} />
+                </>
+              }
             </> : null}
         </StyledScheduleLi>
       </>
@@ -95,5 +109,6 @@ type isValue = {
   is: boolean;
   value: string | boolean;
 }
+
 
 export { Td };
