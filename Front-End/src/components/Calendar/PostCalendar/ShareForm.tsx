@@ -22,8 +22,8 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
   const [selectedVideoFile, setSelecctedVideoFile] = useState('')
 
   const handleImgFileInput = (e: any) => {
-    setSelecctedImgFile(e.target.files[0])
-    // console.log('e.target.files', e.target.files[0])
+    // setSelecctedImgFile(e.target.files[0])
+    console.log('e.target.files', e.target.files)
   }
 
   const handleVideoFileInput = (e: any) => {
@@ -35,25 +35,45 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
   }
 
   const submitHandler = async () => {
-
-
     try {
+      const params = {
+        content: content,
+        id: window.sessionStorage.getItem('id'),
+        img: null,
+        video: null,
+        schNo: schNo,
+      }
+
+      const res = await axios.post(`${_url}/feed/save`, params);
+      const feedNo = res.data.count
+
       if (selectedImgFile !== '') {
+        console.log(selectedImgFile, 'selectedImgFile')
         const formData = new FormData();
         formData.append('file', selectedImgFile);
         console.log('file', selectedImgFile);
+        console.log(formData)
 
-        const reqData = {
-          content: content,
-          id: window.sessionStorage.getItem('id'),
-          img: formData,
-          video: selectedVideoFile,
-          schNo: schNo,
+        const imgReqData = {
+          feedNo: feedNo,
+          file: selectedImgFile
         }
 
-        // await axios.post(`${_url}/`);
+        // await axios.post(`${_url}/feed/uploadImage/${feedNo}`, imgReqData);
       }
-      // const res = await axios.post(`${_url}/feed/save`, params);
+
+      if (selectedVideoFile !== '') {
+        console.log(selectedVideoFile, 'selectedVideoFile')
+        const formData = new FormData();
+        formData.append('file', selectedVideoFile);
+        console.log('file', selectedVideoFile);
+
+        const videoReqData = {
+          feedNo: feedNo,
+          file: selectedVideoFile
+        }
+        // await axios.post(`${_url}/feed/uploadVideo/${feedNo}`, videoReqData);
+      }
       alert('피드에 공유되었습니다 >_< 야호!')
       close();
     } catch (e) {
@@ -107,6 +127,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
 
             <StyledInputSet>
               <label htmlFor="imageUpload">사진 업로드</label>
+              <p>{selectedImgFile}</p>
               <input id="imageUpload" type="file" onChange={handleImgFileInput} />
             </StyledInputSet>
 

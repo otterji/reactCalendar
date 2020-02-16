@@ -13,7 +13,7 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
     let cnt = 100;
 
     // console.log('Calendar.tsx 안의 subList', subscribeSch)
-
+    // console.log(list)
     list.map((data: DateData, idx: number) => {
         if (idx !== 0 && idx % 7 === 0) {
             trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);

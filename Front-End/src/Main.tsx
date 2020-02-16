@@ -78,16 +78,19 @@ class Main extends Component<any, State> {
   };
 
   changeYYMM = (yymm: string) => {
-    this.setState({_yymm: yymm})
+    const addZero = (n: string) => {
+      return n.length === 6 ? n[0] + n[1] + n[2] + n[3] + n[4] + '0' + n[5] : n;
+    };
+    const mm = addZero(`${yymm}`);
+    this.setState({ _yymm: mm })
   };
 
 
   renderByMode = () => {
     if (this.state.mode === 'calendar') {
-      // console.log('YYMM', this.state._yymm)
       return <Container
-        changeYYMM = {this.changeYYMM}
-        subscribeSch= {this.state.subscribeChannelSch}
+        changeYYMM={this.changeYYMM}
+        subscribeSch={this.state.subscribeChannelSch}
       />;
     } else if (this.state.mode === 'feed') {
       return <FeedList winHeight={this.state.winHeight} />;

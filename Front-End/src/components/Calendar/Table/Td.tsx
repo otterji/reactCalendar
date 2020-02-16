@@ -7,10 +7,11 @@ import axios from 'axios';
 import { url as _url } from '../../../url';
 import { Server } from 'http';
 import color from '@material-ui/core/colors/amber';
+import { grey } from '@material-ui/core/colors';
 
 const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
   const { days, schedules, openModal, reload } = props;
-
+  // console.log(days)
   const onClickHandler = (e: any) => {
     openModal({ days: (days as Date), schedules: [e], type: TYPE_DETAIL });
   }
@@ -28,7 +29,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
     }
   }
 
-
+  // 스케쥴 리스트 그 자체임. 라벨을 포함한.
   const scheduleList = schedules.map((e: ServerData, idx: number) => {
     const selectedDate = typeof days !== 'number' ? (days as Date).getDate() : days;
     const startDate = (new Date(e.startAt.toString())).getDate();
@@ -41,6 +42,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
       { is: (endDate === selectedDate), value: '끝' },
       { is: true, value: false }
     ].find(e => e.is)) as isValue;
+
     let DayLabel;
     if (trueIdx.value == '시') {
       DayLabel = <StartLabel key={idx}>{trueIdx.value}</StartLabel>
@@ -56,6 +58,13 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
       return color
     }
 
+    const hoverRange: any = (e: ServerData) => {
+      // console.log('범위가나 보기', startDate, endDate)
+      // 여기서 시작-끝 에 해당하는 tdDay에 색깔을 입혀주는 효과를 내는 함수를 정의하면됨
+      console.log('reload')
+      reload();
+      return [startDate, endDate]
+    }
 
     return (
       <>
@@ -63,7 +72,12 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
           {trueIdx.value ?
             <>
               {DayLabel}
-              <StyledLiTitle onClick={() => onClickHandler(e)} style={{ color: dayColor(e) }}>{e.title}</StyledLiTitle>
+              <StyledLiTitle
+                onClick={() => onClickHandler(e)}
+                onMouseOver={() => hoverRange(e)}
+                style={{ color: dayColor(e) }}>
+                {e.title}
+              </StyledLiTitle>
               {e.csrDto ?
                 null
                 : <>
@@ -77,15 +91,11 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
   });
 
 
-  // 현재 렌더링되는 일정이 내일정이냐 아니냐만 판단하면 됨!! 내 일정이 아닐때는 삭제표시가 없음
-
-  // const onMouseUpHandler: any = (e: any) => {
-  //   // e_title.target
-  //   console.log(e);
-  //   startDate <= selectedDate && selectedDate <= endDate ?
-  //   // startAt endAt 비교해서 맞는애들 css 속성 주기 / ref. REACT DOM 에 있는것의 스타일 CSS 건드리기
-
-  // }
+  const onMouseUpHandler: any = (e: any) => {
+    console.log(e);
+    // e.startDate <= selectedDate && selectedDate <= e.endDate ?
+    // startAt endAt 비교해서 맞는애들 css 속성 주기 / ref. REACT DOM 에 있는것의 스타일 CSS 건드리기
+  }
 
 
   return (
@@ -93,7 +103,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
       {days === 0 ? null
         : (
           <>
-            <TdDay days={(days) as Date} openModal={openModal} />
+            <TdDay days={(days) as Date} openModal={openModal} onMouseHover={null} />
             <StyledScheduleUi>{scheduleList}</StyledScheduleUi>
           </>
         )
