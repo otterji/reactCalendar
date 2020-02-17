@@ -44,15 +44,8 @@ class ChannelList extends Component<any, State> {
   }
   
   componentDidMount() {
-    this.axiosReq();
     // this.tempReq();
-    // const _height = document.getElementsByClassName(`${this.props.className}`)[0].scrollHeight;
-    // this.setState({
-    //   height: _height,
-    // })
-  }
-  componentDidUpdate() {
-
+    this.getChannels()
   }
   setStateAsync(state: object) {
     return new Promise((resolve) => {
@@ -60,7 +53,7 @@ class ChannelList extends Component<any, State> {
     });
   }
 
-  axiosReq = async () => {
+  getChannels = async () => {
     try {
       let _url;
       const _id = sessionStorage.getItem('id');      
@@ -86,8 +79,7 @@ class ChannelList extends Component<any, State> {
         url: `${_url}`,
       })
       const resData = res.data;
-      // console.log(_url, JSON.stringify(resData, null, 2))
-      console.log(resData);
+      // console.log(JSON.stringify(resData, null, 2))
       
       if (resData.length === 0) {
         this.setState({ noCh: true })
@@ -96,7 +88,7 @@ class ChannelList extends Component<any, State> {
         await this.setStateAsync({
           channels: this.state.channels.concat(resData.map((ch: any) => (
             <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Channel info={ch} isLogin={this.props.isLogin}/>
+              <Channel info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
             </Slide>
           )))
         })
@@ -105,7 +97,7 @@ class ChannelList extends Component<any, State> {
             lastCh: resData[resData.length - 1].recomNo
           })
         })
-        console.log(this.state.lastCh, this.state.channels);
+        // console.log(this.state.lastCh, this.state.channels);
       }
     }
     catch (err) {
@@ -113,23 +105,15 @@ class ChannelList extends Component<any, State> {
     }
   }
 
-  tempReq = async () => {
-    await this.setStateAsync({
-      channels: this.state.channels.concat(templist.map((temp: any) => (
-        // <loginState.Consumer>
-        //   {
-        //     (store) => {
-        //       return(<>
-                <Slide key={temp.ch_no} in={true} direction="left" timeout={500}>
-                  <Channel info={temp} isLogin={this.props.isLogin}/>
-                </Slide>
-        //       </>)
-        //     }
-        //   }
-        // </loginState.Consumer>
-      )))
-    })
-  }
+  // tempReq = async () => {
+  //   await this.setStateAsync({
+  //     channels: this.state.channels.concat(templist.map((temp: any) => (
+  //       <Slide key={temp.ch_no} in={true} direction="left" timeout={500}>
+  //         <Channel info={temp} isLogin={this.props.isLogin}/>
+  //       </Slide>
+  //     )))
+  //   })
+  // }
 
   scrollLeft = () => {
     document.getElementsByClassName(`${this.props.className}`)[0].scrollLeft -= 400;

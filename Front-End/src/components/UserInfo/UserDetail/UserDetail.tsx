@@ -4,7 +4,8 @@ import {
   Avatar,
   ListItem,
   ListItemAvatar,
-  FormControlLabel
+  FormControlLabel,
+  styled
 } from '@material-ui/core';
 import { Instagram } from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
@@ -29,7 +30,7 @@ interface State {
   link: string;
   msg: string;
   subscribes: subscribeObj[];
-  scheduleList: Array<Array<object>>;
+  totalScheduleList: Array<Array<Object>>;
 }
 
 // Main UserDetail part
@@ -53,8 +54,13 @@ class UserDetail extends Component<any, State> {
           checked: true
         }
       ],
-      scheduleList: []
+      totalScheduleList: [[{}]]
     };
+  }
+  setStateAsync(state: object) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
   }
 
   async componentDidMount() {
@@ -69,15 +75,15 @@ class UserDetail extends Component<any, State> {
       // 유저가 채널인 경우
       try {
         const resUserInfo = await axios({
-          method: 'get',
-          url: `${_url}/${this.state.isChannel}/findChannelById/${this.state.id}`,
-          data: {
-            id: this.state.id
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/jwt_auth/findChannelById/${this.state.id}`,
+          headers: {
+            jwt: sessionStorage.getItem('jwt')
           }
         });
-        const data = resUserInfo.data;
+        const data = resUserInfo.data.info;
         this.setState({
-          imgFile: `${_url}/img/${this.state.isChannel}/${this.state.id}.jpg`,
+          imgFile: `${_url}/${data.img}`,
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -89,15 +95,15 @@ class UserDetail extends Component<any, State> {
       // 유저가 개인일 경우
       try {
         const resUserInfo = await axios({
-          method: 'get',
-          url: `${_url}/${this.state.isChannel}/findMemberById/${this.state.id}`,
-          data: {
-            id: this.state.id
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/jwt_auth/findMemberById/${this.state.id}`,
+          headers: {
+            jwt: sessionStorage.getItem('jwt')
           }
         });
-        const data = resUserInfo.data;
-        this.setState({
-          imgFile: `${_url}/multimedia/profile/${this.state.id}.jpg`,
+        const data = resUserInfo.data.info;
+        await this.setStateAsync({
+          imgFile: `${_url}/${data.img}`,
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -105,6 +111,7 @@ class UserDetail extends Component<any, State> {
       } catch (err) {
         alert(err);
       }
+
       // 구독 리스트 가져오기
       try {
         const resSubscribeList = await axios({
@@ -123,7 +130,8 @@ class UserDetail extends Component<any, State> {
       } catch (err) {
         alert(err);
       }
-      // 구독채널 일정정보 받아오기
+
+      // 구독채널 전체 일정정보 받아오기
       try {
         const tempList: any = [];
         this.state.subscribes.map(async (channel: any, idx: number) => {
@@ -133,9 +141,36 @@ class UserDetail extends Component<any, State> {
           });
           tempList.push(resSubSch.data);
         });
-        this.setState({ scheduleList: tempList });
-        // console.log('구독채널 일정정보(전체):', this.state.scheduleList); // 2차원 배열로 받음
-        this.props.changeSubscribeChannelSch(this.state.scheduleList);
+        this.setState({ totalScheduleList: tempList });
+        // console.log('구독채널 일정정보(전체):', this.state.totalScheduleList); // 2차원 배열로 받음
+        this.props.changeSubscribeChannelSch(this.state.totalScheduleList);
+      } catch (err) {
+        alert(err);
+      }
+    }
+  } // componentDidMount END
+
+  componentWillReceiveProps(nextProps: any) {
+    // console.log(this.state.subscribes, '!!!'); //여기
+    // console.log(this.state.totalScheduleList);
+
+    if (this.props.yymm !== nextProps.yymm) {
+      try {
+        const tempList: any = [];
+        const tempList2: any = [];
+        this.state.subscribes.map(async (channel: any, idx: number) => {
+          const resSubSch = await axios({
+            method: 'get',
+            url: `${_url}/getSchedules/${channel.id}/${nextProps.yymm}`
+          });
+          tempList.push(resSubSch.data);
+          if (channel['checked']) {
+            tempList2.push(resSubSch.data);
+          }
+        });
+        this.setState({ totalScheduleList: tempList });
+        this.props.changeSubscribeChannelSch(tempList2);
+        // console.log('구독채널 일정정보(전체):', this.state.totalScheduleList); // 2차원 배열로 받음
       } catch (err) {
         alert(err);
       }
@@ -144,21 +179,33 @@ class UserDetail extends Component<any, State> {
 
   handleChannelFilter = (e: ChangeEvent<HTMLInputElement>) => {
     const _name = e.target.name;
-    const _checked = e.target.checked;
-    const sendingList: any[] = [];
+    // const _checked = e.target.checked;
+    const tempList: any[] = [];
+    const tempList2: any[] = [];
     this.state.subscribes.map((channel: any) => {
       if (channel.id === _name) {
-        channel['checked'] = _checked;
+        channel['checked'] = !channel['checked'];
       }
-      if (channel.checked) {
-        sendingList.push(
-          this.state.scheduleList[this.state.subscribes.indexOf(channel)]
-        );
+      tempList.push(channel);
+      // console.log('channelid/checked', channel.id, channel['checked']); // 여기
+      if (channel['checked']) {
+        this.state.totalScheduleList.map((schedule: any) => {
+          if (schedule.length >= 1) {
+            if (channel.id === schedule[0].csrDto.id) {
+              // tempList2.push(this.state.totalScheduleList[this.state.subscribes.indexOf(channel)])
+              tempList2.push(schedule);
+            }
+          }
+        });
       }
-      return null;
     });
-    // console.log('구독채널 일정정보(필터링): ', sendingList);
-    this.props.changeSubscribeChannelSch(sendingList);
+    // console.log('구독채널 일정정보(필터링): ', tempList2);
+    this.setState({
+      subscribes: tempList
+    });
+    // console.log('tempList', tempList); // 여기
+    // console.log('sendingList', tempList2); // 여기
+    this.props.changeSubscribeChannelSch(tempList2);
   };
 
   unsubscribe = (channelId: string) => {
@@ -187,6 +234,8 @@ class UserDetail extends Component<any, State> {
   };
 
   render() {
+    // console.log('년도', this.props.yymm);
+    // console.log(this.state.totalScheduleList);
     return (
       <Grid
         item
@@ -222,17 +271,16 @@ class UserDetail extends Component<any, State> {
         {/* Subscribe list */}
         {this.state.isChannel === 'member' ? (
           <Grid item>
-            <Styled.div style={{ width: '300px' }}>
+            <Styled.div>
               {this.state.subscribes.length >= 1
                 ? this.state.subscribes.map((channel: any) => {
-                    return (
-                      <ListItem
-                        key={channel.id}
-                        button
-                        style={{ padding: '5px' }}
-                      >
+                  return (
+                    <ListItem
+                      key={channel.id}
+                      button
+                    >
+                      <Styled.abcdefg>
                         <FormControlLabel
-                          style={{ width: '200px' }}
                           control={
                             <Styled.checkbox
                               checked={channel.checked}
@@ -251,14 +299,15 @@ class UserDetail extends Component<any, State> {
                             src={`${_url}/img/channel/${channel.img}.jpg`}
                           />
                         </ListItemAvatar> */}
-                        <Styled.btn
+                        <Styled.btn className="bbb"
                           onClick={this.unsubscribe.bind(this, channel.id)}
                         >
                           구독 취소
                         </Styled.btn>
-                      </ListItem>
-                    );
-                  })
+                      </Styled.abcdefg>
+                    </ListItem>
+                  );
+                })
                 : '구독 중인 채널이 없습니다.'}
             </Styled.div>
           </Grid>

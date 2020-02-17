@@ -42,7 +42,8 @@ const regExp = {
   // pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
   pw: /^[A-Za-z0-9]{6,15}$/,
   name: /^[A-Za-z가-힣]{2,}$/,
-  nickname: /^[A-Za-z0-9가-힣]{2,10}$/
+  nickname: /^[A-Za-z0-9가-힣_]{2,10}$/,
+  channelname: /^[A-Za-z0-9가-힣_]{2,}$/
 };
 
 interface State {
@@ -72,6 +73,10 @@ interface State {
   nickname: string;
   nicknameValid: string;
   nicknameLabel: string;
+
+  channelname: string;
+  channelnameValid: string;
+  channelnameLabel: string;
 
   link: string;
   linkValid: string;
@@ -117,6 +122,10 @@ class AccountsForm extends Component<any, State> {
       nicknameValid: "init",
       nicknameLabel: "*닉네임",
 
+      channelname: "",
+      channelnameValid: "init",
+      channelnameLabel: "*채널 이름",
+
       link: "",
       linkValid: "init",
 
@@ -128,14 +137,14 @@ class AccountsForm extends Component<any, State> {
       isChannel: false
     };
   }
-  
+
   componentDidMount(){
     // console.log('will mount')
     if(this.props.moreInfo){
       this.getAllInterests()
-      .then(()=>{
-        this.setState({ interests: initList })
-      });
+          .then(()=>{
+            this.setState({ interests: initList })
+          });
     }
   }
 
@@ -167,6 +176,10 @@ class AccountsForm extends Component<any, State> {
       nickname: "",
       nicknameValid: "init",
       nicknameLabel: "*닉네임",
+
+      channelname: "",
+      channelnameValid: "init",
+      channelnameLabel: "*채널 이름",
 
       link: "",
       linkValid: "init",
@@ -254,7 +267,21 @@ class AccountsForm extends Component<any, State> {
         } else {
           this.setState({
             nicknameValid: "invalid",
-            nicknameLabel: "한글, 영문, 숫자 포함 2~10자"
+            nicknameLabel: "한글, 영문, 숫자, '_' 포함 2~10자"
+          });
+        }
+      }
+    } else if (name === "channelname") {
+      await this.setStateAsync({ channelname: e.target.value });
+      if (this.state.channelname === "") {
+        this.setState({ channelnameValid: "init", channelnameLabel: "*채널 이름" });
+      } else {
+        if (regExp.channelname.test(this.state.channelname)) {
+          this.setState({ channelnameValid: "valid", channelnameLabel: "채널 이름" });
+        } else {
+          this.setState({
+            channelnameValid: "invalid",
+            channelnameLabel: "한글, 영문, 숫자, '_' 포함 2자 이상"
           });
         }
       }
@@ -262,29 +289,21 @@ class AccountsForm extends Component<any, State> {
   };
 
   checkDuple = async () => {
-    const _nickname = this.state.nickname;
-    if (_nickname !== "" && this.state.isChannel) {
+    const _channelname = this.state.channelname;
+    if (_channelname !== "" && this.state.isChannel) {
       try {
         let res = await axios({
           method: "get",
-          url: `${_url}/channel/isExistingNickName/${_nickname}`
+          url: `${_url}/channel/isExistingNickName/${_channelname}`
         });
         // alert(JSON.stringify(res.data, null ,2))
         if (res.data.state === "FAIL") {
           this.setState({
-            nicknameValid: "invalid",
-            nicknameLabel: "닉네임이 중복됩니다."
+            channelnameValid: "invalid",
+            channelnameLabel: "채널 이름이 중복됩니다."
           });
         }
 
-        // res = await axios({
-        //   method: 'get',
-        //   url: `${_url}/channel/isExistingNickName/${_nickname}`,
-        // })
-        // // alert(JSON.stringify(res.data, null ,2))
-        // if(res.data.state === 'FAIL'){
-        //   this.setState({ nicknameValid: 'invalid', nicknameLabel: '닉네임이 중복됩니다.' });
-        // }
       } catch (err) {
         alert(err);
       }
@@ -294,26 +313,26 @@ class AccountsForm extends Component<any, State> {
   isValid = (): boolean => {
     if (this.props.login) {
       return this.state.emailValid === "valid" && this.state.pwValid === "valid"
-        ? true
-        : false;
+          ? true
+          : false;
     } else if (this.props.signup) {
       return this.state.emailValid === "valid" &&
-        this.state.pwValid === "valid" &&
-        this.state.pwCheckValid === "valid"
-        ? true
-        : false;
+      this.state.pwValid === "valid" &&
+      this.state.pwCheckValid === "valid"
+          ? true
+          : false;
     } else if (this.props.moreInfo && this.state.isChannel) {
-      return this.state.nicknameValid === "valid" &&
-        this.state.interestsValid === "valid"
-        ? true
-        : false;
+      return this.state.channelnameValid === "valid" &&
+      this.state.interestsValid === "valid"
+          ? true
+          : false;
     } else if (this.props.moreInfo && !this.state.isChannel) {
       return this.state.birthValid === "valid" &&
-        this.state.nameValid === "valid" &&
-        this.state.nicknameValid === "valid" &&
-        this.state.interestsValid === "valid"
-        ? true
-        : false;
+      this.state.nameValid === "valid" &&
+      this.state.nicknameValid === "valid" &&
+      this.state.interestsValid === "valid"
+          ? true
+          : false;
     }
     return false;
   };
@@ -328,36 +347,40 @@ class AccountsForm extends Component<any, State> {
     if (this.props.login) {
       const _id = this.state.email;
       const _pw = this.state.pw;
-      try {
-        const res = await axios({
-          method: "post",
-          url: `${_url}/member/login`,
-          data: {
-            id: _id,
-            pw: _pw
-          }
-        });
-        // console.log(JSON.stringify(res.data, null, 2))
-        if (res.data.status) {
-          sessionStorage.setItem("id", _id);
-          sessionStorage.setItem("jwt", res.data.jwt);
-          if(this.state.isChannel){
-            sessionStorage.setItem("isChannel", "channel");
-          }
-          else{
-            sessionStorage.setItem("isChannel", "member");
-          }
 
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
-        } else {
-          alert(
-            "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
-          );
-        }
-      } catch (err) {
-        alert(err);
-      }
+      await this.onLogin(_id, _pw);
+
+      // try {
+      //   const res = await axios({
+      //     method: "post",
+      //     url: `${_url}/member/login`,
+      //     data: {
+      //       id: _id,
+      //       pw: _pw
+      //     }
+      //   });
+      //   // console.log(JSON.stringify(res.data, null, 2))
+      //   const resData = res.data;
+      //   if (resData.status) {
+      //     sessionStorage.setItem("id", _id);
+      //     sessionStorage.setItem("jwt", resData.jwt);
+      //     console.log(resData)
+      //     if(resData.data.name === 'channel'){
+      //       sessionStorage.setItem("isChannel", "channel");
+      //     }
+      //     else{
+      //       sessionStorage.setItem("isChannel", "member");
+      //     }
+      //     this.props.onLogin();
+      //     this.props.history.push('/mainPage');
+      //   } else {
+      //     alert(
+      //         "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
+      //     );
+      //   }
+      // } catch (err) {
+      //   alert(err);
+      // }
     } else if (this.props.signup) {
       const _id = this.state.email;
       const _pw = this.state.pw;
@@ -378,12 +401,12 @@ class AccountsForm extends Component<any, State> {
           alert("이미 존재하는 계정 입니다");
         }
       } catch (err) {
-        console.log(err);
+        alert(err);
       }
     } else if (this.props.moreInfo && this.state.isChannel) {
       const _id = sessionStorage.getItem("id");
       const _pw = sessionStorage.getItem("pw");
-      sessionStorage.removeItem('pw');
+      
       let _img = null;
 
       try {
@@ -398,8 +421,8 @@ class AccountsForm extends Component<any, State> {
           });
           _img = _id;
         }
-        console.log(_img);
-        const _nickname = this.state.nickname;
+        // console.log(_img);
+        const _channelname = this.state.channelname;
         const _link = this.state.link;
         const _msg = "";
         const _interests = this.initList();
@@ -412,16 +435,19 @@ class AccountsForm extends Component<any, State> {
             pw: _pw,
             img: _img,
             name: "channel",
-            nickname: _nickname,
+            nickname: _channelname,
             link: _link,
             msg: _msg,
             interests: _interests
           }
         });
+        console.log(res.data)
         if (res.data.state === "SUCCESS") {
-          sessionStorage.setItem("isChannel", "channel");
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
+          sessionStorage.removeItem('pw');
+          this.onLogin(_id, _pw);
+          // sessionStorage.setItem("isChannel", "channel");
+          // this.props.onLogin();
+          // this.props.history.push('/mainPage');
         }
       } catch (err) {
         alert(err);
@@ -466,12 +492,13 @@ class AccountsForm extends Component<any, State> {
             interests: _interests
           }
         });
-        // alert(JSON.stringify(res.data, null, 2));
         // console.log(JSON.stringify(res.data, null, 2));
         if (res.data.state === "SUCCESS") {
-          sessionStorage.setItem("isChannel", "member");
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
+          sessionStorage.removeItem('pw');
+          this.onLogin(_id, _pw);
+          // sessionStorage.setItem("isChannel", "member");
+          // this.props.onLogin();
+          // this.props.history.push('/mainPage');
         }
       } catch (err) {
         alert(err);
@@ -479,7 +506,43 @@ class AccountsForm extends Component<any, State> {
     }
   };
 
+  onLogin = async (_id:any, _pw:any) => {
+    try {
+      console.log(_id, _pw)
+      const res = await axios({
+        method: "post",
+        url: `${_url}/member/login`,
+        data: {
+          id: _id,
+          pw: _pw
+        }
+      });
+      console.log(JSON.stringify(res.data, null, 2))
+      const resData = res.data;
+      if (resData.status) {
+        sessionStorage.setItem("id", _id);
+        sessionStorage.setItem("jwt", resData.jwt);
+        console.log(resData)
+        if(resData.data.name === 'channel'){
+          sessionStorage.setItem("isChannel", "channel");
+        }
+        else{
+          sessionStorage.setItem("isChannel", "member");
+        }
+        this.props.onLogin();
+        this.props.history.push('/mainPage');
+      } else {
+        alert(
+          "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
+        );
+      }
+    } catch (err) {
+      alert(err);
+    }
+  }
+
   onBack = () => {
+    sessionStorage.clear();
     this.props.history.goBack();
   };
 
@@ -523,18 +586,18 @@ class AccountsForm extends Component<any, State> {
     const valueList = Object.values(this.state.interests);
     for (let i = 0; i < keyList.length; i++) {
       renderList.push(
-        <FormControlLabel
-          key={keyList[i]}
-          control={
-            <Checkbox
-              checked={valueList[i]}
-              name={keyList[i]}
-              onChange={this.onChangeInterest}
-              value={keyList[i]}
-            />
-          }
-          label={keyList[i]}
-        />
+          <FormControlLabel
+              key={keyList[i]}
+              control={
+                <Checkbox
+                    checked={valueList[i]}
+                    name={keyList[i]}
+                    onChange={this.onChangeInterest}
+                    value={keyList[i]}
+                />
+              }
+              label={keyList[i]}
+          />
       );
     }
     return renderList;
@@ -595,222 +658,242 @@ class AccountsForm extends Component<any, State> {
     if (this.props.moreInfo) {
       let renderList = this.renderInterest();
       return (
-        <>
-          <StyledForm autoComplete="off" onKeyPress={this.pressEnter}>
-            <Avatar
-              src={this.state.imgBase64}
-              style={{ width: "150px", height: "150px" }}
-            />
-            <StyledInputSet isUploaded={!(this.state.imgBase64 === "")}>
-              <label htmlFor="imageUpload">사진 업로드</label>
-              <input
-                id="imageUpload"
-                type="file"
-                onChange={this.onChangePreview}
+          <>
+            <StyledForm autoComplete="off" onKeyPress={this.pressEnter}>
+              <Avatar
+                  src={this.state.imgBase64}
+                  style={{ width: "150px", height: "150px" }}
               />
-            </StyledInputSet>
-
-            <StyledMemberContainer>
-              <FormLabel component="legend">회원 구분</FormLabel>
-              <RadioGroup
-                row
-                aria-label="memberType"
-                name="memberType"
-                onChange={this.onChangeMember}
-              >
-                <StyledRadio
-                  checked={!this.state.isChannel}
-                  value="personal"
-                  control={<Radio />}
-                  label="개인"
+              <StyledInputSet isUploaded={!(this.state.imgBase64 === "")}>
+                <label htmlFor="imageUpload">사진 업로드</label>
+                <input
+                    id="imageUpload"
+                    type="file"
+                    onChange={this.onChangePreview}
                 />
-                <StyledRadio
-                  checked={this.state.isChannel}
-                  value="channel"
-                  control={<Radio />}
-                  label="채널"
-                />
-              </RadioGroup>
-            </StyledMemberContainer>
+              </StyledInputSet>
 
-            {this.state.isChannel ? null : (
-              <>
-                <ThemeProvider theme={defaultMaterialTheme}>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <StyledDatePicker
-                      autoOk
-                      openTo="year"
-                      variant="inline"
-                      margin="dense"
-                      inputVariant="outlined"
-                      invalidDateMessage=""
-                      invalidLabel=""
-                      maxDateMessage=""
-                      minDateMessage=""
-                      orientation="landscape"
-                      format="yyyy.MM.dd"
-                      InputAdornmentProps={{ position: "end" }}
-                      label={this.state.birthLabel}
-                      value={this.state.birth}
-                      onChange={this.onChangeBirth}
-                      validate={this.state.birthValid}
+              <StyledMemberContainer>
+                <FormLabel component="legend">회원 구분</FormLabel>
+                <RadioGroup
+                    row
+                    aria-label="memberType"
+                    name="memberType"
+                    onChange={this.onChangeMember}
+                >
+                  <StyledRadio
+                      checked={!this.state.isChannel}
+                      value="personal"
+                      control={<Radio />}
+                      label="개인"
+                  />
+                  <StyledRadio
+                      checked={this.state.isChannel}
+                      value="channel"
+                      control={<Radio />}
+                      label="채널"
+                  />
+                </RadioGroup>
+              </StyledMemberContainer>
+
+              {this.state.isChannel ? (
+                <>
+                  <StyledTextField
+                    name="channelname"
+                    value={this.state.channelname}
+                    validate={this.state.channelnameValid}
+                    label={this.state.channelnameLabel}
+                    onChange={this.checkValid}
+                    onBlur={this.checkDuple}
+                    variant="outlined"
+                    margin="dense"
+                    InputProps={{
+                      endAdornment: (
+                          <InputAdornment position="end">
+                            <TagFaces />
+                          </InputAdornment>
+                      )
+                    }}
+                  />
+                </>
+              ) : (
+                  <>
+                    <ThemeProvider theme={defaultMaterialTheme}>
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <StyledDatePicker
+                            autoOk
+                            openTo="year"
+                            variant="inline"
+                            margin="dense"
+                            inputVariant="outlined"
+                            invalidDateMessage=""
+                            invalidLabel=""
+                            maxDateMessage=""
+                            minDateMessage=""
+                            orientation="landscape"
+                            format="yyyy.MM.dd"
+                            InputAdornmentProps={{ position: "end" }}
+                            label={this.state.birthLabel}
+                            value={this.state.birth}
+                            onChange={this.onChangeBirth}
+                            validate={this.state.birthValid}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </ThemeProvider>
+
+                    <StyledTextField
+                        name="name"
+                        validate={this.state.nameValid}
+                        label={this.state.nameLabel}
+                        onChange={this.checkValid}
+                        // onKeyPress={this.pressEnter}
+                        variant="outlined"
+                        margin="dense"
+                        InputProps={{
+                          endAdornment: (
+                              <InputAdornment position="end">
+                                <Face />
+                              </InputAdornment>
+                          )
+                        }}
                     />
-                  </MuiPickersUtilsProvider>
-                </ThemeProvider>
 
-                <StyledTextField
-                  name="name"
-                  validate={this.state.nameValid}
-                  label={this.state.nameLabel}
-                  onChange={this.checkValid}
-                  // onKeyPress={this.pressEnter}
+                    <StyledTextField
+                        name="nickname"
+                        value={this.state.nickname}
+                        validate={this.state.nicknameValid}
+                        label={this.state.nicknameLabel}
+                        onChange={this.checkValid}
+                        onBlur={this.checkDuple}
+                        variant="outlined"
+                        margin="dense"
+                        InputProps={{
+                          endAdornment: (
+                              <InputAdornment position="end">
+                                <TagFaces />
+                              </InputAdornment>
+                          )
+                        }}
+                    />
+                  </>
+              )}
+
+              <StyledTextField
+                  name="link"
+                  value={this.state.link}
+                  validate={this.state.linkValid}
+                  label={this.state.isChannel ? "관련 페이지" : "SNS"}
+                  onChange={this.onChangeLink}
                   variant="outlined"
                   margin="dense"
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
-                        <Face />
-                      </InputAdornment>
+                        <InputAdornment position="end">
+                          {this.state.isChannel ? <Link /> : <Instagram />}
+                        </InputAdornment>
                     )
                   }}
-                />
-              </>
-            )}
+              />
 
-            <StyledTextField
-              name="nickname"
-              value={this.state.nickname}
-              validate={this.state.nicknameValid}
-              label={this.state.nicknameLabel}
-              onChange={this.checkValid}
-              onBlur={this.checkDuple}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <TagFaces />
-                  </InputAdornment>
-                )
-              }}
-            />
+              {this.state.isChannel ? (
+                  <StyledInterestContainer validate={this.state.interestsValid}>
+                    <FormLabel component="label">{`${this.state.interestsLabel}카테고리`}</FormLabel>
+                    <StyledFormGroup row={true}>{renderList}</StyledFormGroup>
+                    <FormHelperText>1개 이상 체크해 주세요</FormHelperText>
+                  </StyledInterestContainer>
+              ) : (
+                  <StyledInterestContainer validate={this.state.interestsValid}>
+                    <FormLabel component="label">{`${this.state.interestsLabel}관심사`}</FormLabel>
+                    <StyledFormGroup row={true}>{renderList}</StyledFormGroup>
+                    <FormHelperText>2개 이상 체크해 주세요</FormHelperText>
+                  </StyledInterestContainer>
+              )}
 
-            <StyledTextField
-              name="link"
-              value={this.state.link}
-              validate={this.state.linkValid}
-              label={this.state.isChannel ? "관련 페이지" : "SNS"}
-              onChange={this.onChangeLink}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {this.state.isChannel ? <Link /> : <Instagram />}
-                  </InputAdornment>
-                )
-              }}
-            />
-
-            {this.state.isChannel ? (
-              <StyledInterestContainer validate={this.state.interestsValid}>
-                <FormLabel component="label">{`${this.state.interestsLabel}카테고리`}</FormLabel>
-                <StyledFormGroup row={true}>{renderList}</StyledFormGroup>
-                <FormHelperText>1개 이상 체크해 주세요</FormHelperText>
-              </StyledInterestContainer>
-            ) : (
-              <StyledInterestContainer validate={this.state.interestsValid}>
-                <FormLabel component="label">{`${this.state.interestsLabel}관심사`}</FormLabel>
-                <StyledFormGroup row={true}>{renderList}</StyledFormGroup>
-                <FormHelperText>2개 이상 체크해 주세요</FormHelperText>
-              </StyledInterestContainer>
-            )}
-
-            <StyledBtnContainer>
-              <StyledBtn onClick={this.onBack}>뒤로가기</StyledBtn>
-              <StyledBtn disabled={!this.isValid()} onClick={this.onSubmit}>
-                제출
-              </StyledBtn>
-            </StyledBtnContainer>
-          </StyledForm>
-        </>
+              <StyledBtnContainer>
+                <StyledBtn onClick={this.onBack}>뒤로가기</StyledBtn>
+                <StyledBtn disabled={!this.isValid()} onClick={this.onSubmit}>
+                  제출
+                </StyledBtn>
+              </StyledBtnContainer>
+            </StyledForm>
+          </>
       );
     } else {
       return (
-        <>
-          <StyledForm autoComplete="on" onKeyPress={this.pressEnter}>
-            <StyledTextField
-              name="email"
-              validate={this.state.emailValid}
-              label={this.state.emailLabel}
-              onChange={this.checkValid}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {this.state.emailValid === "valid" ? (
-                      <CheckCircle />
-                    ) : (
-                      <Email />
-                    )}
-                  </InputAdornment>
-                )
-              }}
-            />
-            <StyledTextField
-              name="pw"
-              type="password"
-              validate={this.state.pwValid}
-              label={this.state.pwLabel}
-              onChange={this.checkValid}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {this.state.pwValid === "valid" ? (
-                      <CheckCircle />
-                    ) : (
-                      <Lock />
-                    )}
-                  </InputAdornment>
-                )
-              }}
-            />
-            {this.props.signup ? (
+          <>
+            <StyledForm autoComplete="on" onKeyPress={this.pressEnter}>
               <StyledTextField
-                name="pwCheck"
-                type="password"
-                validate={this.state.pwCheckValid}
-                label={this.state.pwCheckLabel}
-                onChange={this.checkValid}
-                variant="outlined"
-                margin="dense"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      {this.state.pwCheckValid === "valid" ? (
-                        <CheckCircle />
-                      ) : (
-                        <EnhancedEncryption />
-                      )}
-                    </InputAdornment>
-                  )
-                }}
+                  name="email"
+                  validate={this.state.emailValid}
+                  label={this.state.emailLabel}
+                  onChange={this.checkValid}
+                  variant="outlined"
+                  margin="dense"
+                  InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                          {this.state.emailValid === "valid" ? (
+                              <CheckCircle />
+                          ) : (
+                              <Email />
+                          )}
+                        </InputAdornment>
+                    )
+                  }}
               />
-            ) : null}
-            <StyledBtnContainer>
-              <StyledBtn
-                // fixedWidth="true"
-                disabled={!this.isValid()}
-                onClick={this.onSubmit}
-              >
-                {this.props.login ? "로그인" : "회원가입"}
-              </StyledBtn>
-            </StyledBtnContainer>
-          </StyledForm>
-        </>
+              <StyledTextField
+                  name="pw"
+                  type="password"
+                  validate={this.state.pwValid}
+                  label={this.state.pwLabel}
+                  onChange={this.checkValid}
+                  variant="outlined"
+                  margin="dense"
+                  InputProps={{
+                    endAdornment: (
+                        <InputAdornment position="end">
+                          {this.state.pwValid === "valid" ? (
+                              <CheckCircle />
+                          ) : (
+                              <Lock />
+                          )}
+                        </InputAdornment>
+                    )
+                  }}
+              />
+              {this.props.signup ? (
+                  <StyledTextField
+                      name="pwCheck"
+                      type="password"
+                      validate={this.state.pwCheckValid}
+                      label={this.state.pwCheckLabel}
+                      onChange={this.checkValid}
+                      variant="outlined"
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end">
+                              {this.state.pwCheckValid === "valid" ? (
+                                  <CheckCircle />
+                              ) : (
+                                  <EnhancedEncryption />
+                              )}
+                            </InputAdornment>
+                        )
+                      }}
+                  />
+              ) : null}
+              <StyledBtnContainer>
+                <StyledBtn
+                    // fixedWidth="true"
+                    disabled={!this.isValid()}
+                    onClick={this.onSubmit}
+                >
+                  {this.props.login ? "로그인" : "회원가입"}
+                </StyledBtn>
+              </StyledBtnContainer>
+            </StyledForm>
+          </>
       );
     }
   }
@@ -825,6 +908,7 @@ const StyledForm = styled.form`
   justify-content: center;
   margin: 1rem;
   padding-top: 1rem;
+  font-weight: 400;
 `;
 
 const StyledInputSet = styled.div<any>`
@@ -846,8 +930,8 @@ const StyledInputSet = styled.div<any>`
     }
 
     ${props =>
-      props.isUploaded &&
-      css`
+    props.isUploaded &&
+    css`
         background-color: #8cebd1;
       `}
   }

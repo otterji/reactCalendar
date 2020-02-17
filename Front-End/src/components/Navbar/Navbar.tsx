@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, } from "react-router-dom";
+//
+import logo_full from '../common/images/logo_full.png'
 import Search from "../common/Search/Search";
+//style
 import * as Styled from "./StyledNavbar";
 import {
   AccountCircleRounded,
@@ -32,12 +35,25 @@ class Navbar extends Component<any, State> {
       isLogin: this.isLogin(),
     };
   }
+  componentDidMount(){
+    console.log('did mount NAV', sessionStorage.getItem('mode'))
+    this.setState({
+    })
+  }
+  componentDidUpdate(){
+    console.log('did update NAV', sessionStorage.getItem('mode'))
+  }
 
   changeMode = (e: any) => {
     const _name = e.currentTarget.name;
     // console.log(_name);
     this.props.changeMode(_name);
   }
+  initMode = () => {
+    
+    // sessionStorage.setItem('mode', 'home');
+  }
+
   isLogin = (): boolean => {
     const _id = window.sessionStorage.getItem('id');
     if (_id) {
@@ -45,11 +61,13 @@ class Navbar extends Component<any, State> {
     }
     return false;
   }
-
   onLogout = () => {
-    this.props.changeMode('home');
-    this.props.onLogout();
-  } 
+    let _confirm = window.confirm('로그아웃 하시겠습니까?');
+    if(_confirm){
+      sessionStorage.clear();
+      window.location.href = '/mainPage';
+    }
+  }
 
   handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (this.state.anchorEl === null) {
@@ -67,9 +85,9 @@ class Navbar extends Component<any, State> {
             <>
             {/* 로그인 되어있을 때 */}
               <Styled.StLeftCont>
-                <Link to="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }}>
+                <Link to="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }} onClick={this.initMode}>
                   <img
-                    src="images/logo_full.png"
+                    src={logo_full}
                     alt="images/logo_full.png"
                     width="150px"
                   />
@@ -159,12 +177,12 @@ class Navbar extends Component<any, State> {
               </Styled.StRightCont>
             </>
             :
+            // 로그인 안되어있을 때
             <>
-            {/* 로그인 안되어 있을 때 */}
               <Styled.StLeftCont>
                 <Link to="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }}>
                   <img
-                    src="images/logo_full.png"
+                    src={logo_full}
                     alt="images/logo_full.png"
                     width="150px"
                   />

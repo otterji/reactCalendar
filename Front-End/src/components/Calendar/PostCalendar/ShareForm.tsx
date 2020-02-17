@@ -2,13 +2,8 @@ import React, { FunctionComponent, useState } from 'react';
 import './Modal.scss';
 import styled, { css } from 'styled-components';
 import { ModalProps } from '../_types/calendar';
-import { StyledButton } from '../style';
 import axios from 'axios';
 import { url as _url } from '../../../url';
-import { Avatar } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
-import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
 import { Grid } from "@material-ui/core";
 
 
@@ -22,12 +17,13 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
   const [selectedVideoFile, setSelecctedVideoFile] = useState('')
 
   const handleImgFileInput = (e: any) => {
-    // setSelecctedImgFile(e.target.files[0])
-    console.log('e.target.files', e.target.files)
+    setSelecctedImgFile(e.target.files[0])
+    alert(`이미지(${e.target.files[0].name})가 업로드 되었습니당`)
   }
 
   const handleVideoFileInput = (e: any) => {
     setSelecctedVideoFile(e.target.files[0])
+    alert(`비디오(${e.target.files[0].name})가 업로드 되었습니당`)
   }
 
   const handleContentInput = (e: any) => {
@@ -48,31 +44,25 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
       const feedNo = res.data.count
 
       if (selectedImgFile !== '') {
-        console.log(selectedImgFile, 'selectedImgFile')
         const formData = new FormData();
-        formData.append('file', selectedImgFile);
-        console.log('file', selectedImgFile);
-        console.log(formData)
-
-        const imgReqData = {
-          feedNo: feedNo,
-          file: selectedImgFile
-        }
-
-        // await axios.post(`${_url}/feed/uploadImage/${feedNo}`, imgReqData);
+          formData.append("file", selectedImgFile);
+          await axios({
+            method: "post",
+            url: `${_url}/feed/uploadImage/${feedNo}`,
+            data: formData,
+            headers: { "content-Type": "multipart/form-data" }
+          });
       }
-
+      // console.log(selectedVideoFile)
       if (selectedVideoFile !== '') {
-        console.log(selectedVideoFile, 'selectedVideoFile')
         const formData = new FormData();
-        formData.append('file', selectedVideoFile);
-        console.log('file', selectedVideoFile);
-
-        const videoReqData = {
-          feedNo: feedNo,
-          file: selectedVideoFile
-        }
-        // await axios.post(`${_url}/feed/uploadVideo/${feedNo}`, videoReqData);
+          formData.append("file", selectedVideoFile);
+          await axios({
+            method: "post",
+            url: `${_url}/feed/uploadVideo/${feedNo}`,
+            data: formData,
+            headers: { "content-Type": "multipart/form-data"}
+          });
       }
       alert('피드에 공유되었습니다 >_< 야호!')
       close();
@@ -127,13 +117,12 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
 
             <StyledInputSet>
               <label htmlFor="imageUpload">사진 업로드</label>
-              <p>{selectedImgFile}</p>
               <input id="imageUpload" type="file" onChange={handleImgFileInput} />
             </StyledInputSet>
 
             <StyledInputSet>
-              <label htmlFor="imageUpload">동영상 업로드</label>
-              <input id="imageUpload" type="file" onChange={handleVideoFileInput} />
+              <label htmlFor="videoUpload">동영상 업로드</label>
+              <input id="videoUpload" type="file" onChange={handleVideoFileInput} />
             </StyledInputSet>
           </Grid>
         </Grid>

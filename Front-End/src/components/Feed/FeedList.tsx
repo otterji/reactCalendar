@@ -50,7 +50,6 @@ class FeedList extends Component<any, State> {
         .scrollTop;
       const _clientHeight = document.getElementsByName("feedContainer")[0]
         .clientHeight;
-      // console.log(_scrollHeight, _scrollTop, _scrollHeight - _scrollTop, _clientHeight + 2);
 
       if (this.state.isTop && _clientHeight <= _scrollTop) {
         this.setState({ isTop: false });
@@ -131,7 +130,7 @@ class FeedList extends Component<any, State> {
         }
       })
       const resData = res.data;
-      console.log('삭제하고 요청하는 피드들',resData)
+      // console.log('삭제하고 요청하는 피드들',resData)
       if (resData.length === 0) {
         this.setState({ noFeed: true });
       }

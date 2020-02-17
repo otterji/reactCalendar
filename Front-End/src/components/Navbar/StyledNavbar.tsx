@@ -1,10 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { withStyles } from '@material-ui/core/styles';
 import { Menu, MenuItem, Button, IconButton } from '@material-ui/core';
 import { MenuProps } from '@material-ui/core/Menu';
 
-export const NavBar = styled.nav`
+export const NavBar = styled.nav<any>`
   position: fixed;
   top: 0;
   display: flex;
@@ -15,7 +15,7 @@ export const NavBar = styled.nav`
   box-sizing: border-box;
   width: 100%;
   background: white;
-  border-bottom: 1px solid #009689;
+  border-bottom: 3px solid #009689;
   /* padding: 0 10px 0 10px; */
   padding: 0 5vw 0 5vw;
   z-index:1;
@@ -37,9 +37,20 @@ export const StBtnCont = styled.div<any>`
       background-color: inherit;
       color: #8cebd1;
     }
-    &[class$=${(props) => (props.mode)}]{
-      color: #8cebd1;
-    }
+
+    ${(props) => {return (props.mode === 'visit') ? 
+    css`
+      &{
+        color: black;
+      }
+    `
+    :
+    css`
+      &[class$=${props.mode}]{
+        color: #8cebd1;
+      }
+    `
+    }}
   }
 `;
 
@@ -84,7 +95,7 @@ export const StyledMenuItem = withStyles(theme => ({
   }
 }))(MenuItem);
 
-export const StLeftCont = styled.div`
+export const StLeftCont = styled.div<any>`
   display: flex;
   flex-wrap: nowrap;
   align-items: center;

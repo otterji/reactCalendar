@@ -35,7 +35,7 @@ const StyledTd = styled.td<TdBorder>`
   border: ${((props: any) => props.isDisplay ? `1px dotted #f2f2f2;` : `none`)};
   height: 100px;
   width: 14.4%;
-  min-width:140px;
+  min-width:160px;
   vertical-align: top;
 `;
 
@@ -46,6 +46,21 @@ const StyledTdDay = styled.span`
   text-align: center;
   font-size: 12px;
   height: 15px;
+  &:hover {
+    cursor: pointer;
+  }
+  width:100%;
+`;
+
+const HoveredStyledTdDay = styled.span`
+  display: block;
+  color: white;
+  background:  #009689;
+  padding: 2px;
+  text-align: center;
+  font-size: 12px;
+  height: 15px;
+  border-radius: 10px;
   &:hover {
     cursor: pointer;
   }
@@ -90,7 +105,7 @@ const StyledLiTitle = styled.div`
     background-color: lightgrey;
     cursor: pointer;
   }
-  width: 95px;
+  width: 120px;
   overflow:hidden;
   white-space:nowrap;
   text-overflow:ellipsis;
@@ -103,7 +118,7 @@ const StartLabel = styled.div`
   color: #ffffff;
   font-size: 10px;
   font-family: 나눔고딕,NanumGothic,돋움,Dotum;
-  background-color: #009689;
+  background-color: #ff6813;
   border-radius: 3px;
   width: 14px;
   height: 14px;
@@ -117,7 +132,8 @@ const EndLabel = styled.div`
   color: #ffffff;
   font-size: 10px;
   font-family: 나눔고딕,NanumGothic,돋움,Dotum;
-  background-color: #00332d;
+  /* background-color: #00332d; */
+  background-color: #BDBDBD;
   border-radius: 3px;
   width: 14px;
   height: 14px;
@@ -131,7 +147,8 @@ const DangLabel = styled.div`
   color: #ffffff;
   font-size: 10px;
   font-family: 나눔고딕,NanumGothic,돋움,Dotum;
-  background-color:  #BDBDBD;
+  /* background-color:  #BDBDBD; */
+  background-color:  #009689;
   border-radius: 3px;
   width: 14px;
   height: 14px;
@@ -155,4 +172,5 @@ export {
     StartLabel,
     EndLabel,
     DangLabel,
+    HoveredStyledTdDay
 };

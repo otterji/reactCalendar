@@ -1,0 +1,15 @@
+setStateAsync(state: object) {
+    return new Promise((resolve) => {
+      this.setState(state, resolve)
+    });
+  }
+
+
+  #8cebd1
+
+
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scroll-behavior: smooth;

@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router-dom';
-
+import styled from 'styled-components';
 declare const window: any;
-
 class KakaoSignUp extends Component<any> {
     loginWithKakao = () => {
         window.Kakao.Auth.login({
@@ -27,18 +26,20 @@ class KakaoSignUp extends Component<any> {
             }
         });
     }
-
     componentDidMount() {
         window.Kakao.init('048f1536eb1eb083312cde91cbcc3a6c')
     }
-
     render() {
         return (
-            <div>
-                <a onClick={this.loginWithKakao}>카카오로 회원가입</a>
-            </div>
+            <StGgLogin>
+                  <img src='/images/kakao_account_login_btn_medium_narrow.png' onClick={this.loginWithKakao}/>
+            </StGgLogin>
         );
     }
 }
-
+const StGgLogin = styled.div`
+    display: flex;
+    flex-flow: column wrap;
+    cursor: pointer;
+`;
 export default withRouter(KakaoSignUp);

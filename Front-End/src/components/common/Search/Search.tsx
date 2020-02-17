@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import axios from 'axios'
 //
 import { url } from '../../../url'
-import SearchResult from './SearchResult'
+import SearchedCh from '././SearchedCh'
 //style
 import * as Styled from './StyledSearch';
 import { Tooltip, Grow, } from '@material-ui/core';
+// import { Autocomplete } from '@mat'
 import { SearchRounded, TurnedIn, } from '@material-ui/icons';
 
 interface State {
   searchAnchorEl: any;
-  searchValue: string;
+  searchNickname: string;
   openListTab: boolean;
   searchList: any;
 }
@@ -20,7 +21,7 @@ class Search extends Component<any, State> {
     super(props);
     this.state = { 
       searchAnchorEl: null,
-      searchValue: '',
+      searchNickname: '',
       openListTab: false,
       searchList: [],
     };
@@ -40,12 +41,13 @@ class Search extends Component<any, State> {
     } else {
       this.setState({ 
         searchAnchorEl: null,
+        openListTab: false,
       });
     }
   };
 
   onChange = async (e:any) => {
-    await this.setStateAsync({ searchValue: e.target.value })
+    await this.setStateAsync({ searchNickname: e.target.value })
     
     if(this.isInputEmpty()){
       this.setState({
@@ -61,12 +63,13 @@ class Search extends Component<any, State> {
 
       const res = await axios({
         method: 'get',
-        url: `${url}`,
+        url: `${url}/channel/searchChannelByNickname/${this.state.searchNickname}`,
       })
       const resData = res.data;
+      console.log(resData)
       if(resData.length === 0){
         await this.setStateAsync({
-          searchList: [<div>찾는 채널이 없습니다.</div>]
+          searchList: [<Styled.StNoCh>찾는 채널이 없습니다.</Styled.StNoCh>]
         })
         return;
       }
@@ -74,7 +77,7 @@ class Search extends Component<any, State> {
       await this.setStateAsync({
         searchList: resData.map((res:any)=>{
           return(
-            <SearchResult key={res.no}/>
+            <SearchedCh key={res.ch_no} info={res}/>
           )
         })        
       })
@@ -85,7 +88,7 @@ class Search extends Component<any, State> {
   }
 
   isInputEmpty = () => {
-    if(this.state.searchValue === ''){
+    if(this.state.searchNickname === ''){
       return true;
     }
     else{
@@ -95,7 +98,8 @@ class Search extends Component<any, State> {
 
   render() {
     return (
-      <Styled.StSearch>
+      <Styled.StSearch className="search">
+        <div className="searchTX">
         {
           this.state.searchAnchorEl ?
           <Grow in={true}>
@@ -105,9 +109,9 @@ class Search extends Component<any, State> {
             margin="dense"
             label="채널 검색"
             size="small"
-            value={this.state.searchValue}
+            value={this.state.searchNickname}
             onChange={this.onChange}
-          />
+            />
           </Grow>
           : 
           <Grow in={false}>
@@ -117,11 +121,29 @@ class Search extends Component<any, State> {
             margin="dense"
             label="채널 검색"
             size="small"
-            value={this.state.searchValue}
-            onChange={this.onChange}
-          />
+            value={this.state.searchNickname}
+            />
           </Grow>
         }
+        {
+          this.state.openListTab ?
+          <Grow in={true}>
+            <Styled.StListCont>
+              {
+                this.state.searchList
+              }
+            </Styled.StListCont>
+          </Grow>
+          :
+          <Grow in={false}>
+            <Styled.StListCont>
+
+            </Styled.StListCont>
+          </Grow>
+        }
+        </div>
+
+
         <Tooltip title="채널 검색">
           <Styled.StIconBtn 
           aria-label="채널 검색" 
@@ -135,23 +157,7 @@ class Search extends Component<any, State> {
             {/* <SearchRounded /> */}
           </Styled.StIconBtn>
         </Tooltip>
-        
 
-        {
-          this.state.openListTab ?
-          <Grow in={true}>
-            <Styled.StListCont>
-
-            </Styled.StListCont>
-          </Grow>
-          :
-          <Grow in={false}>
-            <Styled.StListCont>
-
-            </Styled.StListCont>
-          </Grow>
-        }
-        
       </Styled.StSearch>
     );
   }

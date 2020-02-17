@@ -1,0 +1,62 @@
+.Modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  // backface-visibility: visible;
+}
+.Modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40%;
+  height: 80%;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0px 3px 6px lightgrey;
+  // box-shadow: 0px 3px 6px #8cebd1;
+  border-color: black;
+  // border: 1px solid;
+  .button-wrap {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    outline: none;
+    button {
+      border-radius: 0 0 10px 10px;
+      width: 100%;
+      padding: 12px 0;
+      background-color: #8cebd1;
+      font-size: 13pt;
+      color: white;
+      border: 0;
+      cursor: pointer;
+      &:hover {
+        background-color: darkcyan;
+      }
+      &:active {
+        background-color: darkcyan;
+      }
+    }
+  }
+  table {
+    margin: 15px 15px 0 15px;
+    width: 100%;
+  }
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  input {
+    height: 80%;
+    width: 100%;
+    padding: 10px;
+  }
+}
+.plzHover:hover {
+  cursor: pointer;
+}

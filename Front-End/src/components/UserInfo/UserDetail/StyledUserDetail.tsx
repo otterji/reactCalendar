@@ -35,25 +35,28 @@ export const img = styled.img`
 
 export const listDiv = styled.div`
   position: absolute;
-  width: 100px;
-  background-color: white;
+  background-color: black;
   top: center;
   left: center;
+  .fcl{
+    background-color: black;
+  }
 `;
 
-export const btn = styled(Button)<any>`
+export const btn = styled(Button) <any>`
+  display: none;
   background-color: #b2dfdb;
   color: white;
   font-size: small;
   font-weight: 600;
   padding: 10px auto;
-
+  margin-right: 0;
   &:hover {
     background-color: #009688;
   }
 `;
 
-export const checkbox = styled(Checkbox)<any>`
+export const checkbox = styled(Checkbox) <any>`
   ${props =>
     props.checked &&
     css`
@@ -66,9 +69,17 @@ export const checkbox = styled(Checkbox)<any>`
     `}
 `;
 
+export const abcdefg = styled.div`
+  &:hover{
+    .bbb{
+      display: flex;
+    }
+  }
+`
+
 export const div = styled.div`
   position: absolute;
-  width: 250px;
+  width: 200px;
   background-color: white;
   top: center;
   left: center;
