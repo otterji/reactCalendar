@@ -62,6 +62,7 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
       ...detailData,
       [name]: value
     });
+    console.log(detailData)
   }
 
   // let str = document.getElementById("content")
@@ -149,13 +150,13 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
             </tr>
             <tr>
               <td>장소</td>
-              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place}
+              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.place} name="place"
                 onChange={changeHandler} /> : detailData.place}</ContentsDiv>
               </td>
             </tr>
             <tr>
               <td>태그</td>
-              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants}
+              <td colSpan={2}><ContentsDiv>{isEdit ? <input type="text" value={detailData.attendants} name="attendants"
                 onChange={changeHandler} /> : detailData.attendants}</ContentsDiv>
               </td>
             </tr>

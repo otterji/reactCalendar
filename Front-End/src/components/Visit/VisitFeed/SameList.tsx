@@ -1,35 +1,15 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 //
-import { url } from '../../url'
-import Recom from './Recom'
+import { url } from '../../../url'
+import Recom from './Same'
 //style
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Fab, Zoom, Slide, } from '@material-ui/core'
 import { KeyboardArrowUp, } from "@material-ui/icons";
-const templist = [
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-];
+
 interface State {
+  height: number;
   labelHeight: number;
   channels: any[];
   isTop: boolean;
@@ -37,10 +17,11 @@ interface State {
   lastCh: number;
   noCh: boolean;
 }
-class RecomList extends Component<any, State> {
+class SameList extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = {
+      height: this.props.height,
       labelHeight: 0,
       channels: [],
       isTop: true,
@@ -55,11 +36,9 @@ class RecomList extends Component<any, State> {
     this.setState({
       labelHeight: _labelHeight,
     })
-    // this.tempReq();
     this.getRecoms();
   }
-  componentDidUpdate() {
-  }
+
   setStateAsync(state: object) {
     return new Promise((resolve) => {
       this.setState(state, resolve)
@@ -67,37 +46,24 @@ class RecomList extends Component<any, State> {
   }
   getRecoms = async () => {
     try {
-      let _url;
-      const _id = sessionStorage.getItem('id');      
-      if(this.props.isLogin && !this.props.isChannel){
-        _url = `${url}/channel/getRecommendedChannelsWithId/${_id}`;
-      }
-      else{
-        _url = `${url}/channel/getRecommendedChannels/`;
-      } 
+      const _id = this.props.id;      
       const res = await axios({
         method: 'get',
-        url: `${_url}`,
+        url: `${url}/channel/getRecommendedChannelsWithId/${_id}`,
       })
       const resData = res.data;
-      // console.log(_url, JSON.stringify(resData, null, 2))
       if (resData.length === 0) {
         this.setState({ noCh: true })
       }
       else {
         await this.setStateAsync({
           channels: this.state.channels.concat(resData.map((ch: any) => (
-            ch.id === window.sessionStorage.getItem('id') 
-            ?
-            null
-            :
             <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Recom info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+              <Recom info={ch}/>
             </Slide>
           )))
         })
         .then(() => {
-          
           this.setState({
             lastCh: resData[resData.length - 1].recomNo
           })
@@ -108,15 +74,8 @@ class RecomList extends Component<any, State> {
     catch (err) {
       // alert(err);
     }
-    
   }
-  tempReq = async () => {
-    await this.setStateAsync({
-      channels: this.state.channels.concat(templist.map((temp: any) => (
-        <Recom info={temp} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
-      )))
-    })
-  }
+
   onScroll = () => {
     if (!this.state.isBottom) {
       const _scrollHeight = document.getElementsByName("channelContainer")[0]
@@ -133,7 +92,6 @@ class RecomList extends Component<any, State> {
       if (_scrollHeight - _scrollTop < _clientHeight + 1) {
         this.setState({ isBottom: true });
       }
-      
     }
   };
   scrollToTop = () => {
@@ -143,11 +101,11 @@ class RecomList extends Component<any, State> {
       isBottom: false,
     })
   };
+
   render() {
-    
     return (<>
       <Slide in={true} direction="left" timeout={500}>
-        <StLabel className="label">추천 채널</StLabel>
+        <StLabel className="label">관련 채널</StLabel>
       </Slide> 
       <Slide in={true} direction="left" timeout={1000}>
         <StChListCont
@@ -177,7 +135,9 @@ class RecomList extends Component<any, State> {
     </>)
   }
 }
-export default RecomList;
+export default SameList;
+
+
 const StLabel = styled.div`
   text-align: center;
   font-size: 120%;
@@ -188,7 +148,7 @@ const StChListCont = styled.div<any>`
   z-index: 1;
   border-radius: 10px;
   overflow: auto;
-  height: ${props => (props.height - 150 - props.labelHeight)}px;
+  height: ${props => (props.height - 100 - props.labelHeight)}px;
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;

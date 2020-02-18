@@ -15,7 +15,6 @@ import styled from 'styled-components';
 import {
   Box,
   Grid,
-  Zoom,
   Slide,
   Fade,
 } from '@material-ui/core';
@@ -29,6 +28,7 @@ interface State {
   navHeight: number;
   _yymm: string;
   subscribeChannelSch: Array<Array<Object>>;
+  toggle: boolean;
 }
 
 class Main extends Component<any, State> {
@@ -41,11 +41,12 @@ class Main extends Component<any, State> {
       winHeight: window.innerHeight,
       navHeight: 0,
       _yymm: `${new Date().getFullYear()}-0${new Date().getMonth() + 1}`,
-      subscribeChannelSch: [[{}]]
+      subscribeChannelSch: [[{}]],
+      toggle: false
     };
   }
   componentDidMount() {
-    console.log('did mount MAIN', this.props.match.params.nickname)
+    // console.log('did mount MAIN', this.props.match.params.nickname)
 
     window.addEventListener('resize', this.changeSize);
     this.setState({ navHeight: 59 });
@@ -56,7 +57,7 @@ class Main extends Component<any, State> {
     }
   }
   componentDidUpdate() {
-    console.log('did update MAIN', this.props.match.params.nickname)
+    // console.log('did update MAIN', this.props.match.params.nickname)
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.changeSize);
@@ -96,9 +97,14 @@ class Main extends Component<any, State> {
         subscribeSch = {this.state.subscribeChannelSch}
       />;
     } else if (this.state.mode === 'feed') {
-      return <FeedList winHeight={this.state.winHeight}/>;
+      return <FeedList winHeight={this.state.winHeight} toggleRender={this.toggleRender}/>;
     }
   };
+
+  toggleRender = () => {
+    console.log('toggle setState 됨')
+    this.setState({toggle: !this.state.toggle})
+  }
 
   render() {
     return (

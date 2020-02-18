@@ -1,47 +1,40 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { url as _url } from "../../url";
+import { url } from "../../../url";
 //mycomp
-import Feed from "./Feed";
+import VisitFeed from "./VisitFeed";
 
 //style
 import styled from "styled-components";
-import { Slide, Zoom, Fab, ThemeProvider } from "@material-ui/core";
+import { Zoom, Fab, } from "@material-ui/core";
 import { KeyboardArrowUp, Autorenew } from "@material-ui/icons";
 
 interface State {
+  height: number;
   feeds: any[];
   isTop: boolean;
   isBottom: boolean;
   startFeed: number;
   lastFeed: number;
-  deleteIdx: number;
   noFeed: boolean;
-  toggle: boolean;
 }
 
-class FeedList extends Component<any, State> {
+class VisitFeedList extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = {
+      height: this.props.height,
       feeds: [],
       isTop: true,
       isBottom: false,
       startFeed: 0,
       lastFeed: 0,
-      deleteIdx: 0,
       noFeed: false,
-      toggle: false,
     };
   }
 
   componentDidMount() {
     this.getFeeds(0, 10);
-  };
-  setStateAsync(state: object) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
   };
 
   infiniteScroll = () => {
@@ -52,6 +45,8 @@ class FeedList extends Component<any, State> {
         .scrollTop;
       const _clientHeight = document.getElementsByName("feedContainer")[0]
         .clientHeight;
+
+      console.log(_scrollHeight - _scrollTop < _clientHeight + 1)
 
       if (this.state.isTop && _clientHeight <= _scrollTop) {
         this.setState({ isTop: false });
@@ -76,115 +71,47 @@ class FeedList extends Component<any, State> {
     document.getElementsByName("feedContainer")[0].scrollTop = 0;
   };
 
-  //axios로 feed 10개를 가져오는 메서드
+  //axios로 feed를 count만큼 가져오는 메서드
   getFeeds = async (_last:number, _count:number) => {
-    const _id = sessionStorage.getItem("id");
     try {
-      const res = await axios({
+      const _id = this.props.id;
+      await axios({
         method: "post",
-        url: `${_url}/feed/moreFeedInfo`,
+        url: `${url}/feed/moreFeedInfo`,
         data: {
           id: _id,
           last: _last,
           count: _count,
         }
-      });
-      // console.log(JSON.stringify(res.data, null, 2));
-      // console.log(res.data);
-      const resData = res.data;
-      // if (resData.length <= _count) {
-      //   this.setState({ noFeed: true });
-      // } else {
-        await this.setStateAsync({
+      })
+      .then((res) => {
+        const resData = res.data;
+        console.log(resData)
+        this.setState({
           feeds: this.state.feeds.concat(
-            resData.map((feed: any) => (
-              <Feed key={feed.feedNo} info={feed} delete={this.deleteFeed} toggleRender={this.props.toggleRender}/>
+            resData.map((feed:any) => (
+              <VisitFeed key={feed.feedNo} feedInfo={feed}/>
             ))
-          )
+          ),
+          lastFeed: resData[resData.length - 1].feedNo
         })
-        .then(()=>{
-          console.log('resData', resData)
-          this.setState({
-            lastFeed: resData[resData.length - 1].feedNo
-          });
-        });
-        if(resData.length <= _count) {
+        if(resData.length < _count) {
           this.setState({
             noFeed: true,
           })
         }
-        // console.log(this.state.lastFeed, this.state.feeds);
-      // }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-
-
-  deleteFeed = async (_feedNo:number) => {
-    // console.log('삭제될 피드', _feedNo)
-    const _id = sessionStorage.getItem("id");
-    //삭제되는 컴포넌트의 인덱스
-    const _idx = this.state.feeds.findIndex((feed) => (feed.key === _feedNo.toString()));
-    const _count = this.state.feeds.length - _idx;
-
-    try{
-      const res = await axios({
-        method: 'post',
-        url: `${_url}/feed/moreFeedInfo`,
-        data: {
-          id: _id,
-          last: _feedNo,
-          count: _count,
-        }
-      })
-      // await axios({
-      //   method: 'delete',
-      //   url: `${_url}/feed/delete/${_feedNo}`
-      // });
-      
-      const resData = res.data;
-      // console.log('삭제하고 요청하는 피드들',resData)
-      
-
-      if (resData.length === 0) {
-        this.setState({ noFeed: true });
-      }
-      else{
-        await this.setStateAsync({
-          feeds: this.state.feeds.slice(0, _idx).concat(
-            resData.map((feed: any) => (
-              <Feed key={feed.feedNo} info={feed} delete={this.deleteFeed} toggleRender={this.props.toggleRender}/>
-            ))
-          )
-        })
-        .then(() => {
-          this.setState({
-            lastFeed: resData[resData.length - 1].feedNo
-          });
-        })
-        
-        
-      }
-      await axios({
-        method: 'delete',
-        url: `${_url}/feed/delete/${_feedNo}`
       });
-      this.props.toggleRender();
-      window.location.reload(false);
-    }
-    catch(err){
+    } catch (err) {
       alert(err);
     }
-  }
+  };
 
   render() {
     return (<>
       <Zoom in={true}>
         <StFeedListCont
           name="feedContainer"
-          height={this.props.winHeight}
+          height={this.state.height}
           onScroll={this.infiniteScroll}
         >
           
@@ -207,6 +134,7 @@ class FeedList extends Component<any, State> {
         </StFeedListCont>
         
       </Zoom>
+
       {this.state.isTop ? (
         <Zoom in={false}>
           <StFab size="small">
@@ -223,17 +151,15 @@ class FeedList extends Component<any, State> {
     </>);
   }
 }
-  export default FeedList;
+  export default VisitFeedList;
 
   //////////////////////////////////////////////////////////// style
   const StFeedListCont = styled.div<any>`
-  /* border-style: ridge;
-  border-width: 2px;
-  border-color: #00cc99; */
   margin-top: 20px;
   border-radius: 5px;
   overflow: auto;
-  height: ${props => (props.height - 150)}px;
+  height: ${props => (props.height - 100)}px;
+  /* height: 150px; */
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
@@ -242,9 +168,9 @@ class FeedList extends Component<any, State> {
 `;
 
   const StFab = styled(Fab)`
+  position: absolute;
   background-color: black;
   color: white;
-  position: absolute;
   bottom: 10px;
   right: 5%;
 

@@ -6,7 +6,7 @@ class KakaoLogin extends Component<any> {
     loginWithKakao = () => {
         window.Kakao.Auth.login({
             success: (authObj: any) => {
-                console.log(authObj.access_token);
+                // console.log(authObj.access_token);
                 sessionStorage.setItem('jwt', authObj.access_token);
                 window.Kakao.API.request({
                     url: '/v2/user/me',

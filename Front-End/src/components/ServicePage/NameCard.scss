@@ -1,0 +1,107 @@
+
+:root {
+	font-size: 18px;
+	--cardW: 400px;
+	--cardH: 300px;
+	--cardZInc: 2em;
+	--cardd:5px;
+	--carddd:-5px;
+}
+
+/* Grid */
+.cards, .stack {
+	transform-style: preserve-3d;
+}
+
+.cards {
+	--scroll: 0;
+	display: grid;
+	grid-gap: 3%;
+	transform:rotateX(45deg) rotateZ(0.001deg) translateY(var(--scroll));
+	transform-origin: 50% 0;
+	vertical-align: bottom;
+}
+
+.cardContent {
+	font-size: 18px;
+	line-height: 1.25;
+	margin-bottom : 0;
+	vertical-align: bottom;
+}
+
+.cardContent h2 {
+	color:#009689;
+	font-size: 2em;
+	font-weight: 400;
+	margin-bottom: 0.25em;
+}
+.cardContent span {
+	margin-right: 0.75em;
+}
+.city {
+	margin-bottom: 0;
+}
+
+/* cardBox hover */
+.stack:hover .top, .stack:focus .top {
+	transform: translateZ(calc(var(--cardZInc)*6)) translateX(calc(var(--cardd)));
+}
+.stack:hover .mid-top, .stack:focus .mid-top {
+	transform: translateZ(calc(var(--cardZInc)*5)) translateX(calc(var(--carddd)*2));
+}
+.stack:hover .bottom, .stack:focus .bottom {
+	transform: translateZ(var(--cardZInc)) translateX(calc(var(--cardd)*3));
+}
+.stack:hover .shadow, .stack:focus .shadow {
+	filter: blur(5px);
+	-webkit-filter: blur(5px);
+	opacity: 0.2;
+}
+/* Other cardBox styles */
+.cardBox {
+	box-shadow: -1px -1px 0 rgba(0,0,0,0.2) inset;
+	padding: 0.75em;
+	position: absolute;
+	transition: all 0.3s;
+	width: 400px;
+	height: 250px;
+	border-radius: 10px;
+}
+
+.top {
+	transform: translateZ(4px);
+	z-index: 4;
+	background-color:white;
+	color: black;
+}
+.mid-top {
+	transform: translateZ(3px);
+	z-index: 3;
+	background-color: grey;
+	color: black;
+}
+.mid-bottom {
+	transform: translateZ(2px);
+	z-index: 2;
+	background-color: #e6fff7;
+}
+.bottom {
+	transform: translateZ(1px);
+	vertical-align: bottom;
+	z-index: 1;
+	background-color:#eff5f5;
+	color: grey;
+}
+.shadow {
+	background: #000;
+	filter: blur(2px);
+	-webkit-filter: blur(2px);
+	opacity: 0.4;
+}
+
+/* Alter grid at breakpoints */
+@media screen and (min-width: 361px) {
+	.cards {
+		grid-template: repeat(2, var(--cardH)) / repeat(3, var(--cardW));
+	}
+}

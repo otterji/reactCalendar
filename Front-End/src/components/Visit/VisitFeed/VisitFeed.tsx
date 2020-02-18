@@ -1,36 +1,31 @@
 import React, { Component } from 'react'
-import { Link, } from 'react-router-dom'
 import axios from 'axios'
 //
-import { url } from '../../url'
-import { contextStorage } from '../../App';
+import { url } from '../../../url'
 //style
 import styled from 'styled-components'
-import { TextField, InputBase, Avatar, Slide, Zoom } from '@material-ui/core'
-import {
-  Event, StarBorderRounded, StarRounded,
-  AddRounded, AddCircleRounded, DeleteForeverOutlined
-} from '@material-ui/icons'
+import { InputBase, Avatar, Slide } from '@material-ui/core'
+import { Event, StarBorderRounded, StarRounded, AddRounded, AddCircleRounded, } from '@material-ui/icons'
 
 interface State {
   isAdd: boolean;
   isInterest: boolean;
   isDelete: boolean;
-  info: any;
+  feedInfo: any;
   startDate: string;
   endDate: string;
 }
 
-class Feed extends Component<any, State>{
+class VisitFeed extends Component<any, State>{
   constructor(props: any) {
     super(props);
     this.state = {
       isAdd: false,
       isInterest: false,
       isDelete: false,
-      info: this.props.info,
-      startDate: this.getTimeStamp(this.props.info.schedules.startAt),
-      endDate: this.getTimeStamp(this.props.info.schedules.endAt),
+      feedInfo: this.props.feedInfo,
+      startDate: this.getTimeStamp(this.props.feedInfo.schedules.startAt),
+      endDate: this.getTimeStamp(this.props.feedInfo.schedules.endAt),
     }
   }
   componentDidMount() {
@@ -58,10 +53,8 @@ class Feed extends Component<any, State>{
     if (!_confirm) {
       return;
     }
-    const _feedNo = this.props.info.feedNo
+    const _feedNo = this.props.feedInfo.feedNo
     await this.props.delete(_feedNo);
-
-    this.props.toggleRender();
   }
 
   getTimeStamp = (_date: string) => {
@@ -89,7 +82,7 @@ class Feed extends Component<any, State>{
     try{
       await axios({
         method: 'put',
-        url: `${url}/channel/updateSearchFrequency/${this.state.info.srDto.id}`
+        url: `${url}/channel/updateSearchFrequency/${this.state.feedInfo.srDto.id}`
       }).then(() => {
         sessionStorage.setItem('isVisit', 'true');
       })
@@ -100,43 +93,41 @@ class Feed extends Component<any, State>{
   }
 
   render() {
-    // window.scrollTo(0, 0)
     return (<>
       <Slide direction="up" in={true} timeout={500}>
         <StFeedCont>
 
           <StUserCont>
             <h3 className="title">
-              {this.props.info.schedules.title}
+              {this.props.feedInfo.schedules.title}
             </h3>
             <div className="logoPlusNickName">
-              <Avatar className="avatar" src={`${url}/${this.state.info.srDto.img}`} />
-              <StLink to={`/visitPage/${this.state.info.srDto.nickName}`}
-                onClick={this.countUp}>{this.state.info.srDto.nickName}</StLink>
+              <Avatar className="avatar" src={`${url}/${this.state.feedInfo.srDto.img}`} />
+              <StName>{this.state.feedInfo.srDto.nickName}</StName>
             </div>
           </StUserCont>
 
           <StContentCont>
             <div className="contents" style={{ borderBottom: "1px dotted black", paddingBottom: "10px" }} >
-              {this.props.info.schedules.contents?.split('\n').map((line :any, idx: any) => {
+              {this.props.feedInfo.schedules.contents?.split('\n').map((line :any, idx: any) => {
                     return (<span key={idx}>{line}<br /></span>)
                   })}
             </div>
             <div className="contents" style={{paddingTop:"5px"}}>
-              {this.props.info.content?.split('\n').map((line: any, idx: any) => {
+              {this.props.feedInfo.content?.split('\n').map((line: any, idx: any) => {
                     return (<span key={idx}>{line}<br /></span>)
                   })}
             </div>
             <div className="place">
-              {`장소: ${this.props.info.schedules.place}`}
+              {`장소: ${this.props.feedInfo.schedules.place}`}
             </div>
             {
-              this.state.info.img && <img src={`${url}/${this.state.info.img}`} alt="" />
+              this.state.feedInfo.img && <img src={`${url}/${this.state.feedInfo.img}`} alt="" />
             }
             {
-              this.state.info.video && (
+              this.state.feedInfo.video && (
                 <video className="video" controls>
-                  <source src={`${url}/${this.state.info.video}`} type="video/mp4" />
+                  <source src={`${url}/${this.state.feedInfo.video}`} type="video/mp4" />
                 </video>
               )
             }
@@ -175,17 +166,6 @@ class Feed extends Component<any, State>{
                   <StarBorderRounded className="unstared" onClick={this.addInterest} />
               }
 
-              <contextStorage.Consumer>
-                {store => {
-                  return (<>
-                    {store.isChannel ?
-                      <DeleteForeverOutlined className="delete" onClick={this.deleteFeed} />
-                      :
-                      null
-                    }
-                  </>)
-                }}
-              </contextStorage.Consumer>
             </div>
 
           </StBtnCont>
@@ -195,7 +175,7 @@ class Feed extends Component<any, State>{
   }
 }
 
-export default Feed;
+export default VisitFeed;
 
 const StFeedCont = styled.div`
   position: relative;
@@ -221,7 +201,7 @@ const StUserCont = styled.div`
   }
 `;
 
-const StLink = styled(Link)`
+const StName = styled.div`
   color: black;
 `;
 

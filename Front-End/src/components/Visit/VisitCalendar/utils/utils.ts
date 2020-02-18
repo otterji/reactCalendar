@@ -83,20 +83,15 @@ const isLeafYear = (year: number) => {
   return isLeaf;
 };
 
-const getHttpXXXList = async (params: { _yymm: string }) => {
-  const { _yymm } = params;
+
+const getHttpXXXList = async (params: { _yymm: string, id: string }) => {
+  const { _yymm, id } = params;
 
   try {
-    // 닉네임 받아온거 axios 요청 보내서 id 뭔지 알아내기
-    // const pageNickname = props.match
-    const pageNickname = 'props.match'
+    const pageNickname = id
     const reqId = await Axios.get(`${_url}/channel/searchChannelByNickname/${pageNickname}`)
-
-    const res = await Axios.get(`${_url}/getSchedules/${reqId}/${_yymm}`);
-    // console.log(res);
-    // alert(JSON.stringify(res.data, null, 2));
+    const res = await Axios.get(`${_url}/getSchedules/${reqId.data[0].id}/${_yymm}`);
     const returnList: ServerData[] = res.data;
-    // console.log(returnList);
 
     return returnList;
   } catch (e) {
@@ -108,8 +103,9 @@ const fetchData = async (params: {
   // subList;
   viewDate: Date;
   setDataList: any;
+  id: string;
 }) => {
-  const { viewDate, setDataList } = params;
+  const { viewDate, setDataList, id } = params;
 
   const addZero = (n: string) => {
     return n.length === 1 ? '0' + n : n;
@@ -125,7 +121,8 @@ const fetchData = async (params: {
   const mm = addZero(`${viewDate.getMonth() + 1}`);
 
   const qparams = {
-    _yymm: `${viewDate.getFullYear()}-${mm}`
+    _yymm: `${viewDate.getFullYear()}-${mm}`,
+    id: id
   };
 
   let reqRet: ServerData[] = [];

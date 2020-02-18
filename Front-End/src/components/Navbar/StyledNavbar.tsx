@@ -15,7 +15,7 @@ export const NavBar = styled.nav<any>`
   box-sizing: border-box;
   width: 100%;
   background: white;
-  border-bottom: 3px solid #009689;
+  border-bottom: 2px solid #009689;
   /* padding: 0 10px 0 10px; */
   padding: 0 5vw 0 5vw;
   z-index:1;
@@ -55,12 +55,14 @@ export const StBtnCont = styled.div<any>`
 `;
 
 export const StBtn = styled(Button)`
-  background-color: black;  
+  /* background-color: black;   */
   font-size: 100%;
+  /* font-weight: 100; */
   margin-left: 2px;
   
   &:hover{
-    background-color: #8cebd1;
+    /* background-color: #8cebd1; */
+    background-color: lightgray;
   }
 `;
 

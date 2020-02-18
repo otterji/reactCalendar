@@ -33,4 +33,5 @@ export type OpenModal = {
 export interface CalendarProps extends OpenModal {
   list: DateData[];
   reload: () => void;
+  id: string;
 }

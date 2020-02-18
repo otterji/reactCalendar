@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
 class GgLogin extends Component<any> {
     responseGoogle = (res: any) => {
-        console.log(res);
+        // console.log(res);
         sessionStorage.setItem('jwt', res.accessToken);
         sessionStorage.setItem('id', res.profileObj.email);
         sessionStorage.setItem('pw', '2222');

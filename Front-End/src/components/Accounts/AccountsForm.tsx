@@ -155,7 +155,7 @@ class AccountsForm extends Component<any, State> {
         url: `${_url}/interest/getAllInterests`,
         responseType: "json"
       });
-      console.log(res);
+      // console.log(res);
       initList = res.data;
     } catch (err) {
       // alert(err);
@@ -410,17 +410,17 @@ class AccountsForm extends Component<any, State> {
       let _img = null;
 
       try {
-        if (this.state.imgBase64 !== "") {
-          const formData = new FormData();
-          formData.append("file", this.state.imgFile);
-          await axios({
-            method: "post",
-            url: `${_url}/channel/uploadImage/${_id}`,
-            data: formData,
-            headers: { "content-Type": "multipart/form-data" }
-          });
-          _img = _id;
-        }
+        // if (this.state.imgBase64 !== "") {
+        //   const formData = new FormData();
+        //   formData.append("file", this.state.imgFile);
+        //   await axios({
+        //     method: "post",
+        //     url: `${_url}/channel/uploadImage/${_id}`,
+        //     data: formData,
+        //     headers: { "content-Type": "multipart/form-data" }
+        //   });
+        //   _img = _id;
+        // }
         // console.log(_img);
         const _channelname = this.state.channelname;
         const _link = this.state.link;
@@ -441,6 +441,17 @@ class AccountsForm extends Component<any, State> {
             interests: _interests
           }
         });
+        if (this.state.imgBase64 !== "") {
+          const formData = new FormData();
+          formData.append("file", this.state.imgFile);
+          await axios({
+            method: "post",
+            url: `${_url}/channel/uploadImage/${_id}`,
+            data: formData,
+            headers: { "content-Type": "multipart/form-data" }
+          });
+          _img = _id;
+        }
         console.log(res.data)
         if (res.data.state === "SUCCESS") {
           sessionStorage.removeItem('pw');
@@ -458,17 +469,17 @@ class AccountsForm extends Component<any, State> {
       let _img = null;
 
       try {
-        if (this.state.imgBase64 !== "") {
-          const formData = new FormData();
-          formData.append("file", this.state.imgFile);
-          await axios({
-            method: "post",
-            url: `${_url}/member/uploadImage/${_id}`,
-            data: formData,
-            headers: { "content-Type": "multipart/form-data" }
-          });
-          _img = _id;
-        }
+        // if (this.state.imgBase64 !== "") {
+        //   const formData = new FormData();
+        //   formData.append("file", this.state.imgFile);
+        //   await axios({
+        //     method: "post",
+        //     url: `${_url}/member/uploadImage/${_id}`,
+        //     data: formData,
+        //     headers: { "content-Type": "multipart/form-data" }
+        //   });
+        //   _img = _id;
+        // }
 
         const _name = this.state.nickname;
         const _birth = this.state.birth;
@@ -493,6 +504,17 @@ class AccountsForm extends Component<any, State> {
           }
         });
         // console.log(JSON.stringify(res.data, null, 2));
+        if (this.state.imgBase64 !== "") {
+          const formData = new FormData();
+          formData.append("file", this.state.imgFile);
+          await axios({
+            method: "post",
+            url: `${_url}/channel/uploadImage/${_id}`,
+            data: formData,
+            headers: { "content-Type": "multipart/form-data" }
+          });
+          _img = _id;
+        }
         if (res.data.state === "SUCCESS") {
           sessionStorage.removeItem('pw');
           this.onLogin(_id, _pw);
@@ -508,7 +530,7 @@ class AccountsForm extends Component<any, State> {
 
   onLogin = async (_id:any, _pw:any) => {
     try {
-      console.log(_id, _pw)
+      // console.log(_id, _pw)
       const res = await axios({
         method: "post",
         url: `${_url}/member/login`,
@@ -517,12 +539,12 @@ class AccountsForm extends Component<any, State> {
           pw: _pw
         }
       });
-      console.log(JSON.stringify(res.data, null, 2))
+      // console.log(JSON.stringify(res.data, null, 2))
       const resData = res.data;
       if (resData.status) {
         sessionStorage.setItem("id", _id);
         sessionStorage.setItem("jwt", resData.jwt);
-        console.log(resData)
+        // console.log(resData)
         if(resData.data.name === 'channel'){
           sessionStorage.setItem("isChannel", "channel");
         }
@@ -533,7 +555,7 @@ class AccountsForm extends Component<any, State> {
         this.props.history.push('/mainPage');
       } else {
         alert(
-          "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
+          "이메일 혹은 비밀번호를 확인해 주세요."
         );
       }
     } catch (err) {

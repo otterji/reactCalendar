@@ -7,28 +7,29 @@ import LoginPage from './components/Accounts/LoginPage';
 import SignupPage from './components/Accounts/SignupPage';
 import MoreInfo from './components/Accounts/MoreInfo';
 import Visit from './components/Visit/Visit';
-
+import ServicePage from './components/ServicePage/ServicePage';
+import UpdateUserInfo from './components/UserInfo/UpdateUserInfo/UpdateUserInfo';
 
 interface State {
-  isLogin: boolean,
-  isChannel: boolean,
+  isLogin: boolean;
+  isChannel: boolean;
   actions: {
-    onLogin: () => void,
+    onLogin: () => void;
     // onLogout: (string:string) => void,
-  },
+  };
 }
-export const contextStorage  = React.createContext<Partial<State>>({});
-class App extends Component<any, State>{
+export const contextStorage = React.createContext<Partial<State>>({});
+class App extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = {
       isLogin: this.isLogin(),
       isChannel: this.isChannel(),
       actions: {
-        onLogin: this.onLogin,
+        onLogin: this.onLogin
         // onLogout: this.onLogout,
-      },
-    }
+      }
+    };
   }
   componentDidMount() {
     // console.log('did mount APP')
@@ -37,8 +38,8 @@ class App extends Component<any, State>{
     // console.log('did update APP')
   }
   setStateAsync(state: object) {
-    return new Promise((resolve) => {
-      this.setState(state, resolve)
+    return new Promise(resolve => {
+      this.setState(state, resolve);
     });
   }
 
@@ -48,22 +49,22 @@ class App extends Component<any, State>{
       return true;
     }
     return false;
-  }
+  };
   isChannel = (): boolean => {
     const _isChannel = window.sessionStorage.getItem('isChannel');
     if (_isChannel === 'channel') {
       return true;
     }
     return false;
-  }
+  };
 
   onLogin = async () => {
     sessionStorage.setItem('mode', 'home');
     await this.setStateAsync({
       isLogin: this.isLogin(),
-      isChannel: this.isChannel(),
+      isChannel: this.isChannel()
     });
-  }
+  };
 
   render() {
     return (
@@ -71,13 +72,15 @@ class App extends Component<any, State>{
         <contextStorage.Provider value={this.state}>
           <Route exact path="/" component={Loading} />
           <Route path="/mainPage" component={Main} />
-          <Route path="/VisitPage/:nickname" component={Visit}/>
+          <Route path="/VisitPage/:chName" component={Visit} />
           <Route path="/loginPage" component={LoginPage} />
           <Route path="/signupPage" component={SignupPage} />
           <Route path="/moreInfoPage" component={MoreInfo} />
+          <Route path="/ServicePage" component={ServicePage} />
+          <Route path="/updateUserInfo" component={UpdateUserInfo} />
         </contextStorage.Provider>
       </div>
-    )
+    );
   }
 }
 export default withRouter(App);

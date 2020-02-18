@@ -8,11 +8,7 @@ import { Calendar } from './Calendar';
 import axios from 'axios';
 import { url as _url } from '../../../url';
 
-type changeProps = {
-    changeYYMM: any;
-};
-
-const Container: FunctionComponent<any> = ({ changeYYMM }) => {
+const VisitContainer: FunctionComponent<any> = ({ changeYYMM, id }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [viewDate, setViewDate] = useState(new Date());
     const [dataList, setDataList] = useState([] as DateData[]);
@@ -24,7 +20,7 @@ const Container: FunctionComponent<any> = ({ changeYYMM }) => {
     // 보여지고 있는 달력의 데이터가 변경될 때마다 훅스가 실행
     // @ts-ignore
     useEffect(() => {
-        fetchData({ viewDate, setDataList });
+        fetchData({ viewDate, setDataList, id });
     }, [viewDate, isModalOpen, toggleRender ]);
 
     const showPrevMonthHandler = () => {
@@ -86,6 +82,7 @@ const Container: FunctionComponent<any> = ({ changeYYMM }) => {
                 list={dataList}
                 openModal={openModalHandler}
                 reload={reloadHandler}
+                id={id}
             />
 
             {isModalOpen ? (
@@ -99,4 +96,4 @@ const Container: FunctionComponent<any> = ({ changeYYMM }) => {
     );
 };
 
-export { Container };
+export { VisitContainer };

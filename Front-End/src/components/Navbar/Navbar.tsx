@@ -36,12 +36,12 @@ class Navbar extends Component<any, State> {
     };
   }
   componentDidMount(){
-    console.log('did mount NAV', sessionStorage.getItem('mode'))
+    // console.log('did mount NAV', sessionStorage.getItem('mode'))
     this.setState({
     })
   }
   componentDidUpdate(){
-    console.log('did update NAV', sessionStorage.getItem('mode'))
+    // console.log('did update NAV', sessionStorage.getItem('mode'))
   }
 
   changeMode = (e: any) => {
@@ -190,13 +190,18 @@ class Navbar extends Component<any, State> {
               </Styled.StLeftCont>
               <Styled.StRightCont>
                 <Styled.StBtn>
-                  <Link to="/loginPage" style={{ color: "white" }}>
+                  <Link to="/loginPage" style={{ color: "gray", fontWeight: 300 }}>
                     로그인
                   </Link>
                 </Styled.StBtn>
                 <Styled.StBtn>
-                  <Link to="/signupPage" style={{ color: "white" }}>
+                  <Link to="/signupPage" style={{ color: "gray", fontWeight: 300  }}>
                     회원가입
+                </Link>
+                </Styled.StBtn>
+                <Styled.StBtn>
+                  <Link to="/ServicePage" style={{ color: "gray", fontWeight: 300  }}>
+                    서비스 소개
                 </Link>
                 </Styled.StBtn>
               </Styled.StRightCont>

@@ -25,9 +25,9 @@ class Recom extends Component<any, State>{
 
   unSubscribe = async () => {
     let _confirm = window.confirm('구독을 취소하시겠습니까?');
-    if(_confirm){
+    if (_confirm) {
       const _id = sessionStorage.getItem('id');
-      try{
+      try {
         const res = await axios({
           method: 'delete',
           url: `${url}/member/unSubscribe`,
@@ -37,13 +37,13 @@ class Recom extends Component<any, State>{
           }
         })
         // console.log(JSON.stringify(res.data, null, 2))
-        if(res.data.state === 'SUCCESS'){
+        if (res.data.state === 'SUCCESS') {
           this.setState({
             subscribe: false,
           })
         }
       }
-      catch(err){
+      catch (err) {
         alert(err)
       }
     }
@@ -52,7 +52,7 @@ class Recom extends Component<any, State>{
   onSubscribe = async () => {
     const _id = sessionStorage.getItem('id');
 
-    try{
+    try {
       const res = await axios({
         method: 'post',
         url: `${url}/member/subscribe`,
@@ -62,13 +62,13 @@ class Recom extends Component<any, State>{
         }
       })
       // console.log(JSON.stringify(res.data, null, 2))
-      if(res.data.state === 'SUCCESS'){
+      if (res.data.state === 'SUCCESS') {
         this.setState({
           subscribe: true,
         })
       }
     }
-    catch(err){
+    catch (err) {
       alert(err)
     }
   }
@@ -77,29 +77,31 @@ class Recom extends Component<any, State>{
     return (<>
       <StChTile>
         <div className="recomCard">
-          <StCh className="stch top">
+          <StCh className="stch ttop">
             {/* <div>채널이름{this.props.info.ch_no}</div> */}
-            <Stprofile src={`${url}/${this.state.info.img}`} />
+            <StProfile src={`${url}/${this.state.info.img ? this.state.info.img  : "multimedia/profile/default.png" }`} />
             <div className="contents">
               <StLink to={`/visitPage/${this.state.info.nickname}`} >{this.state.info.nickname}</StLink>
               <StCategory>{this.state.info.category}</StCategory>
             </div>
           </StCh>
-          <StBtnHo className="bottom">
-            {
-              (this.props.isLogin && !this.props.isChannel) ?
-                <>
-                  {
-                    this.state.subscribe ?
-                      <StBtn onClick={this.unSubscribe}>구독 취소</StBtn>
-                      :
-                      <StBtn onClick={this.onSubscribe}>구독</StBtn>
-                  }
-                </>
-                :
-                null
-            }
-          </StBtnHo>
+          { 
+            <StBtnHo className="botttom">
+              {
+                (this.props.isLogin && !this.props.isChannel) ?
+                  <>
+                    {
+                      this.state.subscribe ?
+                        <StBtn onClick={this.unSubscribe}>구독 취소</StBtn>
+                        :
+                        <StBtn onClick={this.onSubscribe}>구독</StBtn>
+                    }
+                  </>
+                  :
+                  <StBtn>구경 가기</StBtn>
+              }
+            </StBtnHo>
+          }
         </div>
       </StChTile>
     </>)
@@ -148,10 +150,11 @@ const StCategory = styled.div`
   margin-left: 10px;
   font-size: 14px;
 `;
-const Stprofile = styled.img`
+const StProfile = styled.img`
   border-radius : 6px;
   width: 50px;
   height: 50px;
+  /* background-image: /images/ssafyLogo.png; */
 `;
 const StBtnHo = styled.div`
   display: none;

@@ -4,7 +4,7 @@ import { DateData, CalendarProps } from './_types/calendar';
 import { Td } from './Table';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
-    const { openModal, list, reload} = props;
+    const { openModal, list, reload, id } = props;
 
     // XXX: How can i fix?
     const trList: any[] = [];

@@ -4,8 +4,7 @@ import {
   Avatar,
   ListItem,
   ListItemAvatar,
-  FormControlLabel,
-  styled
+  FormControlLabel
 } from '@material-ui/core';
 import { Instagram } from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
@@ -151,9 +150,6 @@ class UserDetail extends Component<any, State> {
   } // componentDidMount END
 
   componentWillReceiveProps(nextProps: any) {
-    // console.log(this.state.subscribes, '!!!'); //여기
-    // console.log(this.state.totalScheduleList);
-
     if (this.props.yymm !== nextProps.yymm) {
       try {
         const tempList: any = [];
@@ -170,7 +166,6 @@ class UserDetail extends Component<any, State> {
         });
         this.setState({ totalScheduleList: tempList });
         this.props.changeSubscribeChannelSch(tempList2);
-        // console.log('구독채널 일정정보(전체):', this.state.totalScheduleList); // 2차원 배열로 받음
       } catch (err) {
         alert(err);
       }
@@ -179,7 +174,6 @@ class UserDetail extends Component<any, State> {
 
   handleChannelFilter = (e: ChangeEvent<HTMLInputElement>) => {
     const _name = e.target.name;
-    // const _checked = e.target.checked;
     const tempList: any[] = [];
     const tempList2: any[] = [];
     this.state.subscribes.map((channel: any) => {
@@ -187,9 +181,9 @@ class UserDetail extends Component<any, State> {
         channel['checked'] = !channel['checked'];
       }
       tempList.push(channel);
-      // console.log('channelid/checked', channel.id, channel['checked']); // 여기
       if (channel['checked']) {
         this.state.totalScheduleList.map((schedule: any) => {
+          // console.log(schedule, "here")
           if (schedule.length >= 1) {
             if (channel.id === schedule[0].csrDto.id) {
               // tempList2.push(this.state.totalScheduleList[this.state.subscribes.indexOf(channel)])
@@ -199,12 +193,9 @@ class UserDetail extends Component<any, State> {
         });
       }
     });
-    // console.log('구독채널 일정정보(필터링): ', tempList2);
     this.setState({
       subscribes: tempList
     });
-    // console.log('tempList', tempList); // 여기
-    // console.log('sendingList', tempList2); // 여기
     this.props.changeSubscribeChannelSch(tempList2);
   };
 
@@ -223,6 +214,7 @@ class UserDetail extends Component<any, State> {
         alert(err);
       }
       const tempList: subscribeObj[] = [];
+      const tempList2: any[] = [];
       this.state.subscribes.map((channel: any) => {
         if (channel.id !== channelId) tempList.push(channel);
         return null;
@@ -230,6 +222,16 @@ class UserDetail extends Component<any, State> {
       this.setState({
         subscribes: tempList
       });
+
+      this.state.totalScheduleList.map((schedule: any) => {
+        if (schedule.length >= 1) {
+          if (channelId !== schedule[0].csrDto.id) {
+            // tempList2.push(this.state.totalScheduleList[this.state.subscribes.indexOf(channel)])
+            tempList2.push(schedule);
+          }
+        }
+      });
+      this.props.changeSubscribeChannelSch(tempList2);
     }
   };
 
@@ -275,11 +277,12 @@ class UserDetail extends Component<any, State> {
               {this.state.subscribes.length >= 1
                 ? this.state.subscribes.map((channel: any) => {
                   return (
-                    <ListItem
-                      key={channel.id}
-                      button
-                    >
-                      <Styled.abcdefg>
+                    <Styled.labelHover>
+                      <ListItem
+                        key={channel.id}
+                        button
+                        style={{ padding: '5px', width: '200px' }}
+                      >
                         <FormControlLabel
                           control={
                             <Styled.checkbox
@@ -304,8 +307,8 @@ class UserDetail extends Component<any, State> {
                         >
                           구독 취소
                         </Styled.btn>
-                      </Styled.abcdefg>
-                    </ListItem>
+                      </ListItem>
+                    </Styled.labelHover>
                   );
                 })
                 : '구독 중인 채널이 없습니다.'}

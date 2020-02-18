@@ -1,25 +1,17 @@
 import React, { Component } from 'react'
-import axios from 'axios'
 //
-import {url} from '../../url'
 import { contextStorage } from '../../App';
 import Navbar from '../Navbar/Navbar';
-import UserDetail from '../UserInfo/UserDetail/UserDetail';
-import VisitedChannel from './VisitedChannel'
+// import UserDetail from '../UserInfo/UserDetail/UserDetail';
+import VisitCh from './VisitCh'
 // import { Container } from '../Calendar/Container';
 // import FeedList from '../Feed/FeedList';
 import Footer from '../Footer/Footer';
 //style
 import styled from 'styled-components';
-import {
-  Grid,
-  Zoom,
-  Slide,
-  Fade,
-} from '@material-ui/core';
+import { Grid, } from '@material-ui/core';
 
 interface State{
-  nickname: string;
   mode: string;
   winWidth: number;
   winHeight: number;
@@ -31,7 +23,6 @@ class Visit extends Component<any, State> {
   constructor(props:any){
     super(props)
     this.state = {
-      nickname: this.props.match.params.nickname,
       mode: 'calendar',
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
@@ -41,7 +32,6 @@ class Visit extends Component<any, State> {
   }
   componentDidMount(){
     window.addEventListener('resize', this.changeSize);
-    this.getChannelInfo();
   } 
   componentWillUnmount(){
     window.removeEventListener('resize', this.changeSize);
@@ -64,33 +54,6 @@ class Visit extends Component<any, State> {
     this.setState({_yymm: yymm})
   };
 
-  getChannelInfo = async () => {
-    //axios
-    try{
-      const res = await axios({
-        method: 'get',
-        url: `${url}/channel/searchChannelByNickname/${this.state.nickname}`,
-      })
-      const resData = res.data;
-      console.log(resData)
-    }
-    catch(err){
-      alert(err);
-    }
-  }
-
-  // renderByMode = () => {
-  //   if (this.state.mode === 'calendar') {
-  //     // console.log('YYMM', this.state._yymm)
-  //     return <Container
-  //       changeYYMM = {this.changeYYMM}
-  //       subscribeSch= {this.state.subscribeChannelSch}
-  //     />;
-  //   } else if (this.state.mode === 'feed') {
-  //     return <FeedList winHeight={this.state.winHeight}/>;
-  //   }
-  // };
-
   render(){
     return (<>
         <contextStorage.Consumer>
@@ -108,19 +71,23 @@ class Visit extends Component<any, State> {
                 <StyledMainContainer
                   className="Visit"
                   // mode={this.state.mode}
-                  // width={this.state.winWidth}
+                  width={this.state.winWidth}
                 >
                   <Grid container spacing={1}>
                     <Grid item xs={3} sm={3} lg={3}>
                       {
                         store.isLogin ? 
-                        <UserDetail/>
+                        <div>로그인 되어있음</div>
                         :
                         <div>로그인 안되어있음</div>
                       }
                     </Grid>
                     <Grid item xs={9} sm={9} lg={9}>
-                      <VisitedChannel/>
+                      <VisitCh 
+                        chName={this.props.match.params.chName}
+                        isLogin={store.isLogin}
+                        isChannel={store.isChannel}
+                      />
                     </Grid>
                   </Grid>
 

@@ -7,7 +7,8 @@ import main_page_image_002 from '../common/images/main_page_image_002.jpg'
 import main_page_image_003 from '../common/images/main_page_image_003.jpg'
 //style
 import styled from 'styled-components'
-import { Zoom, Slide, } from '@material-ui/core'
+import { Zoom, Slide, Avatar, } from '@material-ui/core'
+
 
 class Home extends Component<any> {
   setStateAsync(state: object) {
@@ -16,61 +17,60 @@ class Home extends Component<any> {
     });
   }
 
-  render(){
-    return(
+  render() {
+    return (
       <>
         <StChannelListCont>
           <Slide in={true} direction="right" timeout={1000}>
             <div className='label'>추천 채널</div>
-          </Slide> 
+          </Slide>
           <div className='channelListCont'>
-            <ChannelList className="recom" isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+            <ChannelList className="recom" isLogin={this.props.isLogin} isChannel={this.props.isChannel} />
           </div>
 
           <Slide in={true} direction="right" timeout={1000}>
-            <div className='label'>인기 채널</div> 
+            <div className='label'>인기 채널</div>
           </Slide>
           <div className='channelListCont'>
-            <ChannelList className="popular" isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+            <ChannelList className="popular" isLogin={this.props.isLogin} isChannel={this.props.isChannel} />
           </div>
         </StChannelListCont>
-        
+
         <Slide in={true} direction="up" timeout={2500}>
-        <StIntroCont>
-          <div className="intro1">
-            <p>
-              STEP 1. 회원가입 후 관심사를 설정하세요
+          <StIntroCont>
+            <div className="intro1">
+              <p>
+                STEP 1. 회원가입 후 관심사를 설정하세요
             </p>
-            {/* <span>
+              {/* <span>
               그림
             </span> */}
 
-          </div>
-          <div className="intro2">
-            <p>
-              STEP 2. 실시간 인기 채널을 추천받으세요
+            </div>
+            <div className="intro2">
+              <p>
+                STEP 2. 실시간 인기 채널을 추천받으세요
             </p>
-            {/* <span>
+              {/* <span>
               그림
             </span> */}
-          </div>
-          <div className="intro3">
-            <p>
-              STEP 3. 관심있는 일정을 구독하여 한눈에 받아보세요
+            </div>
+            <div className="intro3">
+              <p>
+                STEP 3. 관심있는 일정을 구독하여 한눈에 받아보세요
             </p>
-            {/* <span>
+              {/* <span>
               그림
             </span> */}
-          </div>
-        </StIntroCont>
+            </div>
+          </StIntroCont>
         </Slide>
 
-        <Slide in={true} direction="up" timeout={3000}>
-        <StIntroMemberCont>
-          {/* 일단은 주석처리 한것! 꾸며지면 올려서 배포하기 */}
-          {/* <div>개발팀 소개</div> */}
-        </StIntroMemberCont>
-        </Slide>
+        {/* <Slide in={true} direction="up" timeout={3000}>
+          
+            
+          
+        </Slide > */}
       </>
     )
   }
@@ -169,13 +169,3 @@ const StIntroCont = styled.div`
   
 `
 
-const StIntroMemberCont = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 2rem;
-  div{
-    width:100%;
-    height: 200px;
-    background-color: gray;
-  }
-`

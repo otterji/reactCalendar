@@ -51,6 +51,8 @@ export const btn = styled(Button) <any>`
   font-weight: 600;
   padding: 10px auto;
   margin-right: 0;
+  position: absolute;
+  left: 130px;
   &:hover {
     background-color: #009688;
   }
@@ -83,4 +85,12 @@ export const div = styled.div`
   background-color: white;
   top: center;
   left: center;
+`;
+
+export const labelHover = styled.div`
+  &:hover{
+    .bbb{
+      display: inline;
+    }
+  }
 `;

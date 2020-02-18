@@ -86,6 +86,7 @@ class Channel extends Component<any, State>{
 
   countUp = async () => {
     try{
+      console.log('asdfas', this.state.info.id)
       await axios({
         method: 'put',
         url: `${url}/channel/updateSearchFrequency/${this.state.info.id}`
@@ -126,12 +127,14 @@ class Channel extends Component<any, State>{
                     onClick={this.unSubscribe}>구독 취소</StBtn>
                   </Zoom>
                   :
+                  <>
                   <Zoom in={true} timeout={500}>
                     <StBtn 
                     subscribe={false} 
                     size="small" 
                     onClick={this.onSubscribe}>구독</StBtn>
                   </Zoom>
+                  </>
                 }
               </>
               :
@@ -148,7 +151,7 @@ export default Channel;
 const StChTile = styled(GridListTile)<any>`
   overflow: hidden;
   margin: 8px;
-  border: 1px solid gray;
+  /* border: 1px solid gray; */
   border-radius: 10px;
   background-image: url(${props => (props.imgurl)});
   background-position: center center;

@@ -66,7 +66,7 @@ class Search extends Component<any, State> {
         url: `${url}/channel/searchChannelByNickname/${this.state.searchNickname}`,
       })
       const resData = res.data;
-      console.log(resData)
+      // console.log(resData)
       if(resData.length === 0){
         await this.setStateAsync({
           searchList: [<Styled.StNoCh>찾는 채널이 없습니다.</Styled.StNoCh>]
