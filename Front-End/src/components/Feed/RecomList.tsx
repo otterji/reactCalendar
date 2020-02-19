@@ -4,31 +4,10 @@ import axios from 'axios'
 import { url } from '../../url'
 import Recom from './Recom'
 //style
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Fab, Zoom, Slide, } from '@material-ui/core'
 import { KeyboardArrowUp, } from "@material-ui/icons";
-const templist = [
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-];
+
 interface State {
   labelHeight: number;
   channels: any[];
@@ -110,13 +89,7 @@ class RecomList extends Component<any, State> {
     }
     
   }
-  tempReq = async () => {
-    await this.setStateAsync({
-      channels: this.state.channels.concat(templist.map((temp: any) => (
-        <Recom info={temp} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
-      )))
-    })
-  }
+  
   onScroll = () => {
     if (!this.state.isBottom) {
       const _scrollHeight = document.getElementsByName("channelContainer")[0]

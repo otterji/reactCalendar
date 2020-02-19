@@ -39,8 +39,8 @@ import {
 
 const regExp = {
   email: /^(([^<>()\\[\].,;:\s@"]+(\.[^<>()\\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-  // pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
-  pw: /^[A-Za-z0-9]{6,15}$/,
+  pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
+  // pw: /^[A-Za-z0-9]{6,15}$/,
   name: /^[A-Za-z가-힣]{2,}$/,
   nickname: /^[A-Za-z0-9가-힣_]{2,10}$/,
   channelname: /^[A-Za-z0-9가-힣_]{2,}$/
@@ -395,12 +395,14 @@ class AccountsForm extends Component<any, State> {
         if (res.data.state === "SUCCESS") {
           sessionStorage.setItem("id", _id);
           sessionStorage.setItem("pw", _pw);
-          sessionStorage.setItem("jwt", res.data.jwt);
+          // sessionStorage.setItem("jwt", res.data.jwt);
           this.props.history.push("/moreInfoPage");
         } else if (res.data.state === "FAIL") {
+          sessionStorage.clear();
           alert("이미 존재하는 계정 입니다");
         }
       } catch (err) {
+        sessionStorage.clear()
         alert(err);
       }
     } else if (this.props.moreInfo && this.state.isChannel) {
@@ -410,18 +412,9 @@ class AccountsForm extends Component<any, State> {
       let _img = null;
 
       try {
-        // if (this.state.imgBase64 !== "") {
-        //   const formData = new FormData();
-        //   formData.append("file", this.state.imgFile);
-        //   await axios({
-        //     method: "post",
-        //     url: `${_url}/channel/uploadImage/${_id}`,
-        //     data: formData,
-        //     headers: { "content-Type": "multipart/form-data" }
-        //   });
-        //   _img = _id;
-        // }
-        // console.log(_img);
+        if (this.state.imgBase64 !== "") {
+          _img = _id;
+        }
         const _channelname = this.state.channelname;
         const _link = this.state.link;
         const _msg = "";
@@ -450,7 +443,6 @@ class AccountsForm extends Component<any, State> {
             data: formData,
             headers: { "content-Type": "multipart/form-data" }
           });
-          _img = _id;
         }
         console.log(res.data)
         if (res.data.state === "SUCCESS") {
@@ -469,17 +461,9 @@ class AccountsForm extends Component<any, State> {
       let _img = null;
 
       try {
-        // if (this.state.imgBase64 !== "") {
-        //   const formData = new FormData();
-        //   formData.append("file", this.state.imgFile);
-        //   await axios({
-        //     method: "post",
-        //     url: `${_url}/member/uploadImage/${_id}`,
-        //     data: formData,
-        //     headers: { "content-Type": "multipart/form-data" }
-        //   });
-        //   _img = _id;
-        // }
+        if (this.state.imgBase64 !== "") {
+          _img = _id;
+        }
 
         const _name = this.state.nickname;
         const _birth = this.state.birth;
@@ -503,17 +487,16 @@ class AccountsForm extends Component<any, State> {
             interests: _interests
           }
         });
-        // console.log(JSON.stringify(res.data, null, 2));
+        console.log(JSON.stringify(res.data, null, 2));
         if (this.state.imgBase64 !== "") {
           const formData = new FormData();
           formData.append("file", this.state.imgFile);
           await axios({
             method: "post",
-            url: `${_url}/channel/uploadImage/${_id}`,
+            url: `${_url}/member/uploadImage/${_id}`,
             data: formData,
             headers: { "content-Type": "multipart/form-data" }
           });
-          _img = _id;
         }
         if (res.data.state === "SUCCESS") {
           sessionStorage.removeItem('pw');
@@ -955,7 +938,7 @@ const StyledInputSet = styled.div<any>`
     props.isUploaded &&
     css`
         background-color: #8cebd1;
-      `}
+    `}
   }
 
   input {

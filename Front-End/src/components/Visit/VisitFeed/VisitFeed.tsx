@@ -122,7 +122,7 @@ class VisitFeed extends Component<any, State>{
               {`장소: ${this.props.feedInfo.schedules.place}`}
             </div>
             {
-              this.state.feedInfo.img && <img src={`${url}/${this.state.feedInfo.img}`} alt="" />
+              this.state.feedInfo.img && <img className="img" src={`${url}/${this.state.feedInfo.img}`} alt="" />
             }
             {
               this.state.feedInfo.video && (
@@ -236,7 +236,7 @@ const StContentCont = styled.div`
     font-weight: thin;
   }
 
-  .video{
+  .img, .video{
     width: 100%;
     height: auto;
   }

@@ -131,7 +131,7 @@ class Feed extends Component<any, State>{
               {`장소: ${this.props.info.schedules.place}`}
             </div>
             {
-              this.state.info.img && <img src={`${url}/${this.state.info.img}`} alt="" />
+              this.state.info.img && <img className="img" src={`${url}/${this.state.info.img}`} alt="" />
             }
             {
               this.state.info.video && (
@@ -256,7 +256,7 @@ const StContentCont = styled.div`
     font-weight: thin;
   }
 
-  .video{
+  .img, .video {
     width: 100%;
     height: auto;
   }

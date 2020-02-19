@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState, useEffect } from 'react';
 import { Button, Title } from './style';
+import { Slide } from '@material-ui/core';
 import './Modal/Modal.scss';
 import Modal from './Modal/Modal';
 import { getPrevMonthDate, fetchData, getNextMonthDate } from './utils/utils';
@@ -51,6 +52,7 @@ const Container: FunctionComponent<any> = ({ changeYYMM, subscribeSch }) => {
 
   return (
     <>
+    <Slide in={true} direction="down" timeout={1000}>
       <Title>
         <Button
           style={{ cursor: 'pointer', outline: 'none', fontSize: '20px' }}
@@ -74,6 +76,7 @@ const Container: FunctionComponent<any> = ({ changeYYMM, subscribeSch }) => {
           &gt;{' '}
         </Button>
       </Title>
+    </Slide>
 
       <Calendar
         list={dataList}
@@ -90,6 +93,7 @@ const Container: FunctionComponent<any> = ({ changeYYMM, subscribeSch }) => {
         />
       ) : null}
     </>
+    
   );
 };
 

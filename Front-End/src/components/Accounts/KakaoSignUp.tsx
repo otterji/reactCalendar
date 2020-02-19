@@ -4,6 +4,7 @@ import styled from 'styled-components';
 declare const window: any;
 class KakaoSignUp extends Component<any> {
     loginWithKakao = () => {
+        window.Kakao.init('048f1536eb1eb083312cde91cbcc3a6c')
         window.Kakao.Auth.login({
             success: (authObj: any) => {
                 // console.log(authObj.access_token);
@@ -25,9 +26,6 @@ class KakaoSignUp extends Component<any> {
                 alert("카카오 로그 실패");
             }
         });
-    }
-    componentDidMount() {
-        window.Kakao.init('048f1536eb1eb083312cde91cbcc3a6c')
     }
     render() {
         return (

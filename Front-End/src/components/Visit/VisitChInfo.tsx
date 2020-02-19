@@ -5,7 +5,7 @@ import { visitStorage } from './VisitCh'
 import ModeBar from './ModeBar'
 //style
 import styled from 'styled-components'
-import { Button, Avatar, Slide } from '@material-ui/core'
+import { Button, Avatar, Slide, Zoom } from '@material-ui/core'
 import { CheckCircle } from '@material-ui/icons'
 
 class VisitChInfo extends Component<any>{
@@ -32,19 +32,20 @@ class VisitChInfo extends Component<any>{
             </StLeftCont>
 
             <StMidCont>
-            <ModeBar changeMode={this.props.changeMode}/>
+              <ModeBar changeMode={this.props.changeMode}/>
             </StMidCont>
 
             <StRightCont>
               {store.isLogin && !store.isChannel ?
                 <>
+                <Zoom in={true} timeout={500}>
                   {store.isSubscribe ?
                     <StBtn
                       issubscribe="true"
                       onClick={this.props.unSubscribe}
                     >
                       구독 취소
-                  </StBtn>
+                    </StBtn>
                     :
                     <StBtn
                       issubscribe="false"
@@ -53,9 +54,26 @@ class VisitChInfo extends Component<any>{
                       구독
                   </StBtn>
                   }
+                </Zoom>
                 </>
                 :
-                null
+                <Zoom in={false} timeout={500}>
+                  {store.isSubscribe ?
+                    <StBtn
+                      issubscribe="true"
+                      onClick={this.props.unSubscribe}
+                    >
+                      구독 취소
+                    </StBtn>
+                    :
+                    <StBtn
+                      issubscribe="false"
+                      onClick={this.props.onSubscribe}
+                    >
+                      구독
+                  </StBtn>
+                  }
+                </Zoom>
               }
             </StRightCont>
           </StVChInfoCont>
@@ -73,6 +91,7 @@ const StVChInfoCont = styled.div`
   /* justify-content: start; */
   align-items: center;
 
+
   /* border: 2px solid gray; */
 `;
 
@@ -85,7 +104,7 @@ const StLeftCont = styled.div`
     .avatar{
       margin: 10px;
       width: 5vw;
-      height: auto;
+      height: 5vw;
     }
   }
 `;
@@ -93,6 +112,9 @@ const StLeftCont = styled.div`
 const StMidCont = styled.div`
   display: flex;
   justify-content: flex-start;
+  background-color: white;
+  border: 2px solid #00e6b8;
+  border-radius: 10px;
 `
 
 const StStringCont = styled.div`
@@ -118,12 +140,12 @@ const StRightCont = styled.div`
 `;
 
 const StBtn = styled(Button)<any>`
-  margin-right: 10px;
+  margin-right: 3vw;
   color: white;
-  background-color: ${props => (props.issubscribe ? "#00e6b8" : "black")};  
+  background-color: ${props => (props.issubscribe === "true" ? "#00e6b8" : "black")};  
   font-size: 1vw;
   
   &:hover{
-    background-color: ${props => (props.issubscribe ? " red" : "#00e6b8")};
+    background-color: ${props => (props.issubscribe === "true" ? " red" : "#00e6b8")};
   }
 `;

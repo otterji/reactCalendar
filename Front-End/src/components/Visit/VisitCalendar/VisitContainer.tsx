@@ -30,7 +30,7 @@ const VisitContainer: FunctionComponent<any> = ({ changeYYMM, id }) => {
             return n.length === 1 ? '0' + n : n;
         };
         const mm = addZero(`${viewDate.getMonth() + 1}`);
-        changeYYMM(`${prevDate.getFullYear()}-${mm}`);
+        changeYYMM(`${prevDate.getFullYear()}-${prevDate.getMonth() + 1}`);
     };
 
     const showNextMonthHandler = () => {

@@ -25,69 +25,69 @@ class LoginPage extends Component<any, State> {
 
   render() {
     return (
-        <>
-          <Slide direction="left" in={true}>
-            <Styled.div>
-              <Grid container spacing={2} justify="center" alignItems="center">
-                <Grid item xs={12}>
-                  <Link to="/mainPage"><Styled.logo src={"images/logo_full.png"} /></Link>
-                </Grid>
+      <>
+        <Slide direction="left" in={true}>
+          <Styled.div>
+            <Grid container spacing={2} justify="center" alignItems="center">
+              <Grid item xs={12}>
+                <Link to="/mainPage"><Styled.logo src={"images/logo_full.png"} /></Link>
+              </Grid>
 
-                <Grid item xs={12}>
-                  <div style={{ fontSize: "30px" }}>로그인</div>
+              <Grid item xs={12}>
+                <div style={{ fontSize: "30px" }}>로그인</div>
+                <contextStorage.Consumer>
+                  {
+                    (store) => {
+                      return (
+                        <AccountsForm login mode={this.state.mode} onLogin={store.actions?.onLogin} />
+                      )
+                    }
+                  }
+                </contextStorage.Consumer>
+              </Grid>
+
+              <Grid container spacing={2} direction="column" justify="center" alignItems="center">
+                <div style={{ width: "222px" }}>
                   <contextStorage.Consumer>
                     {
                       (store) => {
                         return (
-                            <AccountsForm login mode={this.state.mode} onLogin={store.actions?.onLogin} />
+                          <KakaoLogin login mode={this.state.mode} onLogin={store.actions?.onLogin} />
                         )
                       }
                     }
                   </contextStorage.Consumer>
-                </Grid>
-
-                <Grid container spacing={2} justify="center" alignItems="center">
-                  <Grid item xs={5}>
-                    {/*<SocialLogin login/>*/}
-                    <contextStorage.Consumer>
-                      {
-                        (store) => {
-                          return (
-                              <KakaoLogin login mode={this.state.mode} onLogin={store.actions?.onLogin} />
-                          )
-                        }
+                </div>
+          
+                <div style={{ width: "222px", marginTop: "20px", marginBottom: "20px" }}>
+                  {/*<SocialLogin login/>*/}
+                  <contextStorage.Consumer>
+                    {
+                      (store) => {
+                        return (
+                          <GgLogin login mode={this.state.mode} onLogin={store.actions?.onLogin} />
+                        )
                       }
-                    </contextStorage.Consumer>
-                  </Grid>
-                  <Grid item xs={5}>
-                    {/*<SocialLogin login/>*/}
-                    <contextStorage.Consumer>
-                      {
-                        (store) => {
-                          return (
-                              <GgLogin login mode={this.state.mode} onLogin={store.actions?.onLogin}  />
-                          )
-                        }
-                      }
-                    </contextStorage.Consumer>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <a href="/">아이디</a>
-                  <span> / </span>
-                  <a href="/">비밀번호</a>
-                  <span> 찾기</span>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Link to="/signupPage">회원 가입</Link>
-                </Grid>
-
+                    }
+                  </contextStorage.Consumer>
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <a href="/">아이디</a>
+                <span> / </span>
+                <a href="/">비밀번호</a>
+                <span> 찾기</span>
               </Grid>
 
-            </Styled.div>
-          </Slide>
-        </>
+              <Grid item xs={12}>
+                <Link to="/signupPage">회원 가입</Link>
+              </Grid>
+
+            </Grid>
+
+          </Styled.div>
+        </Slide>
+      </>
     );
   }
 }

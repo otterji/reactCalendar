@@ -1,20 +1,19 @@
 import React, { Component } from "react";
 import axios from "axios";
-import { url as _url } from "../../url";
+import { url } from "../../url";
 //mycomp
 import Feed from "./Feed";
 
 //style
 import styled from "styled-components";
-import { Slide, Zoom, Fab, ThemeProvider } from "@material-ui/core";
-import { KeyboardArrowUp, Autorenew } from "@material-ui/icons";
+import { Zoom, Fab, } from "@material-ui/core";
+import { KeyboardArrowUp, Autorenew, MoreHorizOutlined } from "@material-ui/icons";
 
 interface State {
   feeds: any[];
   isTop: boolean;
   isBottom: boolean;
-  startFeed: number;
-  lastFeed: number;
+  lastFeedNo: number;
   deleteIdx: number;
   noFeed: boolean;
   toggle: boolean;
@@ -27,8 +26,7 @@ class FeedList extends Component<any, State> {
       feeds: [],
       isTop: true,
       isBottom: false,
-      startFeed: 0,
-      lastFeed: 0,
+      lastFeedNo: 0,
       deleteIdx: 0,
       noFeed: false,
       toggle: false,
@@ -58,11 +56,11 @@ class FeedList extends Component<any, State> {
       } else if (!this.state.isTop && _clientHeight > _scrollTop) {
         this.setState({ isTop: true });
       }
-
+      console.log(_scrollHeight - _scrollTop < _clientHeight + 1)
       if (_scrollHeight - _scrollTop < _clientHeight + 1) {
         this.setState({ isBottom: true });
         setTimeout(() => {
-          this.getFeeds(this.state.lastFeed, 10).then(() => {
+          this.getFeeds(this.state.lastFeedNo, 10).then(() => {
             this.setState({
               isBottom: false
             });
@@ -78,61 +76,60 @@ class FeedList extends Component<any, State> {
 
   //axios로 feed 10개를 가져오는 메서드
   getFeeds = async (_last:number, _count:number) => {
-    const _id = sessionStorage.getItem("id");
     try {
-      const res = await axios({
+      const _id = sessionStorage.getItem("id")
+      console.log('last', _last, 'count', _count)
+      await axios({
         method: "post",
-        url: `${_url}/feed/moreFeedInfo`,
+        url: `${url}/feed/moreFeedInfo`,
         data: {
           id: _id,
           last: _last,
           count: _count,
         }
-      });
-      // console.log(JSON.stringify(res.data, null, 2));
-      // console.log(res.data);
-      const resData = res.data;
-      // if (resData.length <= _count) {
-      //   this.setState({ noFeed: true });
-      // } else {
-        await this.setStateAsync({
-          feeds: this.state.feeds.concat(
-            resData.map((feed: any) => (
-              <Feed key={feed.feedNo} info={feed} delete={this.deleteFeed} toggleRender={this.props.toggleRender}/>
-            ))
-          )
-        })
-        .then(()=>{
-          console.log('resData', resData)
-          this.setState({
-            lastFeed: resData[resData.length - 1].feedNo
-          });
-        });
-        if(resData.length <= _count) {
-          this.setState({
+      })
+      .then((res) => {
+        const resData = res.data;
+        if(resData.length === 0){ //불러온 피드가 없을때
+          this.setState({ 
             noFeed: true,
+            feeds: this.state.feeds.concat(
+              [<div style={{ textAlign: "center", paddingBottom: "10px" }}>
+                <Zoom in={true} timeout={500} key={-1} >
+                  <MoreHorizOutlined fontSize="large" style={{ color: "gray" }}/>
+                </Zoom>
+              </div>]
+            )
+          });
+        }
+        // else if(resData.length === _count) { //불러온 피드가 요청한 만큼 들어올 때
+        else{
+          this.setState({
+            feeds: this.state.feeds.concat(
+              resData.map((feed: any) => (
+                <Feed key={feed.feedNo} info={feed} delete={this.deleteFeed} toggleRender={this.props.toggleRender}/>
+              ))
+            )
           })
         }
-        // console.log(this.state.lastFeed, this.state.feeds);
-      // }
-    } catch (err) {
-      console.log(err);
-    }
+      })
+      this.setState({
+        lastFeedNo: this.state.feeds[this.state.feeds.length - 1].props.info.feedNo
+      })
+    } 
+    catch (err) {console.log(err);}
   };
 
-
-
   deleteFeed = async (_feedNo:number) => {
-    // console.log('삭제될 피드', _feedNo)
-    const _id = sessionStorage.getItem("id");
-    //삭제되는 컴포넌트의 인덱스
-    const _idx = this.state.feeds.findIndex((feed) => (feed.key === _feedNo.toString()));
-    const _count = this.state.feeds.length - _idx;
-
     try{
+      const _id = sessionStorage.getItem("id");
+      //삭제되는 컴포넌트의 인덱스
+      const _idx = this.state.feeds.findIndex((feed) => (feed.key === _feedNo.toString()));
+      const _count = this.state.feeds.length - _idx;
+    
       const res = await axios({
         method: 'post',
-        url: `${_url}/feed/moreFeedInfo`,
+        url: `${url}/feed/moreFeedInfo`,
         data: {
           id: _id,
           last: _feedNo,
@@ -145,11 +142,18 @@ class FeedList extends Component<any, State> {
       // });
       
       const resData = res.data;
-      // console.log('삭제하고 요청하는 피드들',resData)
-      
 
       if (resData.length === 0) {
-        this.setState({ noFeed: true });
+        this.setState({ 
+          noFeed: true,
+          feeds: this.state.feeds.concat(
+            [<div style={{ textAlign: "center", paddingBottom: "10px" }}>
+              <Zoom in={true} timeout={500} key={-1} >
+                <MoreHorizOutlined fontSize="large" style={{ color: "gray" }}/>
+              </Zoom>
+            </div>]
+          )
+        });
       }
       else{
         await this.setStateAsync({
@@ -161,15 +165,14 @@ class FeedList extends Component<any, State> {
         })
         .then(() => {
           this.setState({
-            lastFeed: resData[resData.length - 1].feedNo
+            lastFeedNo: resData[resData.length - 1].feedNo
           });
         })
-        
         
       }
       await axios({
         method: 'delete',
-        url: `${_url}/feed/delete/${_feedNo}`
+        url: `${url}/feed/delete/${_feedNo}`
       });
       this.props.toggleRender();
       window.location.reload(false);
@@ -199,7 +202,6 @@ class FeedList extends Component<any, State> {
           ) : (
             <Zoom in={false}>
               <div style={{ textAlign: "center", paddingBottom: "10px" }}>
-                {/* <MoreHoriz fontSize="large" style={{color:"gray"}}/> */}
                 <Autorenew fontSize="large" style={{ color: "#00b386" }} />
               </div>
             </Zoom>

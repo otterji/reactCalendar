@@ -11,7 +11,7 @@ interface State {
   info: any;
   subscribe: boolean;
 }
-class Recom extends Component<any, State>{
+class Same extends Component<any, State>{
   constructor(props: any) {
     super(props);
     this.state = {
@@ -52,18 +52,18 @@ class Recom extends Component<any, State>{
     </>)
   }
 }
-export default Recom;
+export default Same;
 
 
 const StChCont = styled.div`
-  font-size: 0.9vw;
   display: flex;
   justify-content: start;
   border-bottom: 1px dotted gray;
   margin: 10px 10px 0 10px;
+  
   :hover{
     border-radius: 8px;
-    border-style: none;
+    border-bottom: 1px solid white;
     background-color: #99ffcc; 
     .link a{
       color:white;
@@ -84,9 +84,13 @@ const StChCont = styled.div`
     text-overflow:ellipsis;
   }
   .link{
-    font-size: 90%;
+    font-size: 0.9vw;
     display: flex;
     align-items: center;
     margin-left: 5px;
+    a{
+      text-decoration: none;
+      color: black;
+    }
   }
 `;

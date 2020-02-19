@@ -5,6 +5,7 @@ import { TdDay } from './TdDay';
 import { TYPE_DETAIL } from '../utils/CONST';
 import axios from 'axios';
 import { url as _url } from '../../../url';
+import { Fade } from '@material-ui/core'
 
 const Td: FunctionComponent<DateData & OpenModal & Reload & any> = props => {
   const { days, schedules, openModal, reload, setHoverRange, hoverRange } = props;
@@ -67,6 +68,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload & any> = props => {
 
     return (
       <>
+      {/* <Fade in={true} timeout={2500}> */}
         <StyledScheduleLi key={idx}>
           {trueIdx.value ?
             <>
@@ -92,6 +94,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload & any> = props => {
               }
             </> : null}
         </StyledScheduleLi>
+      {/* </Fade> */}
       </>
     )
   });

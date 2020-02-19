@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { contextStorage } from '../../App';
 import Navbar from '../../components/Navbar/Navbar';
-import './NameCard.scss'
 import Footer from '../../components/Footer/Footer';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { NameCard } from './NameCard';
 import {
   Box,
@@ -14,6 +13,14 @@ import {
   Avatar
 } from '@material-ui/core';
 
+import channel1 from '../common/images/1.jpg'
+import channel2 from '../common/images/2.jpg'
+import channel3 from '../common/images/3.jpg'
+import channel4 from '../common/images/4.jpg'
+import pers1 from '../common/images/11.jpg'
+import pers2 from '../common/images/22.jpg'
+import pers3 from '../common/images/33.jpg'
+import pers4 from '../common/images/44.jpg'
 
 interface State {
   isLogin: boolean;
@@ -21,6 +28,8 @@ interface State {
   winWidth: number;
   winHeight: number;
   navHeight: number;
+  isCh: boolean;
+  isDev: boolean;
 }
 
 class ServicePage extends Component<any, State> {
@@ -32,13 +41,30 @@ class ServicePage extends Component<any, State> {
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
       navHeight: 0,
+      isCh: true,
+      isDev: false,
     };
   }
 
+  // changeMode = (_mode: string) => {
+  //   sessionStorage.setItem('mode', _mode);
+  //   this.setState({ mode: _mode });
+  // };
   changeMode = (_mode: string) => {
     sessionStorage.setItem('mode', _mode);
-    this.setState({ mode: _mode });
+    this.props.history.push('/mainPage');
   };
+
+  isChannel = (rec: boolean) => {
+    this.setState({ isCh: rec })
+    if (this.state.isDev) {
+      this.setState({ isDev: false })
+    }
+  }
+
+  isDeveloper = (tog: boolean) => {
+    this.setState({ isDev: tog })
+  }
 
   render() {
     window.scrollTo(0, 0)
@@ -54,89 +80,176 @@ class ServicePage extends Component<any, State> {
                   changeMode={(comm: string) => {
                     this.changeMode(comm);
                   }}
-                  currentMode={this.state.mode}
+                // currentMode={this.state.mode}
                 />
               </Slide>
               {
-                <>
-                  <StBannerCont>
-                    <Grow in={true}>
-                      <h1 style={{ color: "white" }}>Shalendar 서비스 안내</h1>
-                    </Grow>
+                this.state.isDev
+                  ? <>
                     <Grow
                       in={true}
                       style={{ transformOrigin: '0 0 0' }}
                       {...(true ? { timeout: 1800 } : {})}
                     ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
                     </Grow>
-                  </StBannerCont>
-
-                  <Grow
-                    in={true}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(true ? { timeout: 2800 } : {})}
-                  >
-                    <Discription>
-                      <p style={{ color: "darkgrey" }}>STEP 1</p>
-                    </Discription>
-                  </Grow>
-
-                  <Grow
-                    in={true}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(true ? { timeout: 3800 } : {})}
-                  >
-                    <Discription>
-                      <p style={{ color: "darkgrey" }}>STEP 2</p>
-                    </Discription>
-                  </Grow>
-
-                  <Grow
-                    in={true}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(true ? { timeout: 4800 } : {})}
-                  >
-                    <Discription>
-                      <p style={{ color: "darkgrey" }}>STEP 3</p>
-                    </Discription>
-                  </Grow>
-
-                  <Grow
-                    in={true}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(true ? { timeout: 5800 } : {})}
-                  >
-                    <Discription>
-                      <p style={{ color: "darkgrey" }}>STEP 4</p>
-                    </Discription>
-                  </Grow>
-
-                  <Grow
-                    in={true}
-                    style={{ transformOrigin: '0 0 0' }}
-                    {...(true ? { timeout: 6800 } : {})}
-                  >
-                    <Discription>
-                      <p style={{ color: "darkgrey" }}>STEP 5</p>
-                    </Discription>
-                  </Grow>
+                    {/* </StBannerCont> */}
+                    <StMiniNav>
+                      <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
+                      <StyledSpan onClick={() => this.isChannel(false)} >개인 사용자</StyledSpan>
+                      <StyledSpan onClick={() => this.isDeveloper(true)}>개발자 소개</StyledSpan>
+                    </StMiniNav>
+                    <NameCard></NameCard>
+                    {/* // 상엽오빠꺼 여기 컴포넌트 들어가면 됨 */}
+                  </>
+                  :
+                  <>
 
 
-                </>
+                    {this.state.isCh ?
+                      <>
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 1800 } : {})}
+                        ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
+                        </Grow>
+                        <StMiniNav>
+                          <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
+                          <StyledSpan onClick={() => this.isChannel(false)} >개인 사용자</StyledSpan>
+                          <StyledSpan onClick={() => this.isDeveloper(true)}>개발자 소개</StyledSpan>
+                        </StMiniNav>
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 2800 } : {})}
+                        >
+                          <img
+                            src={channel1}
+                            alt="images/channel1.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 3800 } : {})}
+                        >
+                          <img
+                            src={channel2}
+                            alt="images/channel2.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 4800 } : {})}
+                        >
+                          <img
+                            src={channel3}
+                            alt="images/channel3.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 5800 } : {})}
+                        >
+                          <img
+                            src={channel4}
+                            alt="images/channel4.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                      </>
+                      :
+
+                      <>
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 1800 } : {})}
+                        ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
+                        </Grow>
+                        <StMiniNav>
+                          <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
+                          <StyledSpan onClick={() => this.isChannel(false)} >개인 사용자</StyledSpan>
+                          <StyledSpan onClick={() => this.isDeveloper(true)}>개발자 소개</StyledSpan>
+                        </StMiniNav>
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 2800 } : {})}
+                        >
+                          <img
+                            src={pers1}
+                            alt="images/pers1.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 3800 } : {})}
+                        >
+                          <img
+                            src={pers2}
+                            alt="images/pers2.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 4800 } : {})}
+                        >
+                          <img
+                            src={pers3}
+                            alt="images/pers3.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                        <Grow
+                          in={true}
+                          style={{ transformOrigin: '0 0 0' }}
+                          {...(true ? { timeout: 5800 } : {})}
+                        >
+                          <img
+                            src={pers4}
+                            alt="images/pers4.jpg"
+                            width="80%"
+                          />
+                        </Grow>
+
+                      </>
+                    }
+
+
+
+
+                  </>
               }
               <Grow
                 in={true}
                 style={{ transformOrigin: '0 0 0' }}
                 {...(true ? { timeout: 7500 } : {})}
               >
-                <p style={{ color: "darkgrey" }}>개발자 소개</p>
+                <br></br>
               </Grow>
               <Grow
                 in={true}
                 style={{ transformOrigin: '0 0 0' }}
                 {...(true ? { timeout: 7500 } : {})}
               >
-              <NameCard></NameCard>
+                <br></br>
               </Grow>
               <StyledMainContainer
                 className="Main"
@@ -169,37 +282,14 @@ const StyledMainContainer = styled.div<any>`
   }
 `;
 
-
-const StBannerCont = styled.div<any>`
-  /* position: relative; */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  width: 100%;
-  height: 200px;
-  background-color: black;
-  margin-top: 59px;
-  overflow: hidden;
-`;
-
-const Discription = styled.div<any>`
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  width: 50%;
-  height: 200px;
-  background-color: black;
-  margin-top: 59px;
-  overflow: hidden;
+const StyledSpan = styled.span`
+  width: 200px;
+  height: 50px;
+  padding-top: 20px;
+  text-align: center;
+  cursor: pointer;
 `
 
-const StIntroMemberCont = styled.div`
-  margin-left: 50px;
-  margin-right: 50px;
+const StMiniNav = styled.span`
+  display: flex;
 `

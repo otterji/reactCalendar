@@ -7,12 +7,13 @@ import Search from "../common/Search/Search";
 import * as Styled from "./StyledNavbar";
 import {
   AccountCircleRounded,
-  SettingsRounded,
+  // SettingsRounded,
   EditRounded,
   ExitToApp,
   DateRangeRounded,
   ChatRounded,
   HomeRounded,
+  AssignmentOutlined
 } from "@material-ui/icons";
 import {
   ListItemIcon,
@@ -35,12 +36,12 @@ class Navbar extends Component<any, State> {
       isLogin: this.isLogin(),
     };
   }
-  componentDidMount(){
+  componentDidMount() {
     // console.log('did mount NAV', sessionStorage.getItem('mode'))
     this.setState({
     })
   }
-  componentDidUpdate(){
+  componentDidUpdate() {
     // console.log('did update NAV', sessionStorage.getItem('mode'))
   }
 
@@ -50,20 +51,21 @@ class Navbar extends Component<any, State> {
     this.props.changeMode(_name);
   }
   initMode = () => {
-    
-    // sessionStorage.setItem('mode', 'home');
+    sessionStorage.setItem('mode', 'home');
   }
 
   isLogin = (): boolean => {
     const _id = window.sessionStorage.getItem('id');
-    if (_id) {
+    const _jwt = window.sessionStorage.getItem('jwt');
+    if (_id && _jwt) {
       return true;
     }
+    sessionStorage.clear();
     return false;
   }
   onLogout = () => {
     let _confirm = window.confirm('로그아웃 하시겠습니까?');
-    if(_confirm){
+    if (_confirm) {
       sessionStorage.clear();
       window.location.href = '/mainPage';
     }
@@ -83,15 +85,17 @@ class Navbar extends Component<any, State> {
         {
           this.state.isLogin ?
             <>
-            {/* 로그인 되어있을 때 */}
+              {/* 로그인 되어있을 때 */}
               <Styled.StLeftCont>
-                <Link to="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }} onClick={this.initMode}>
+                {/* <Link to="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }} onClick={this.initMode}> */}
+                <a href="/mainPage" style={{ margin: "5px 1rem 0rem 0rem" }}  onClick={this.initMode}>
                   <img
                     src={logo_full}
                     alt="images/logo_full.png"
                     width="150px"
                   />
-                </Link>
+                </a>
+                {/* </Link> */}
                 <Styled.StBtnCont mode={this.props.currentMode}>
                   <Tooltip title="홈">
                     <Styled.StIconBtn
@@ -159,10 +163,13 @@ class Navbar extends Component<any, State> {
 
                     <Styled.StyledMenuItem>
                       <ListItemIcon>
-                        <SettingsRounded fontSize="small" />
+                        <AssignmentOutlined fontSize="small" />
                       </ListItemIcon>
-                      <ListItemText primary="환경 설정" />
+                      <Link to="/ServicePage" style={{ fontWeight: 300, textDecoration: "none", color: "black"}}>
+                        <ListItemText primary="서비스 소개" />
+                      </Link>
                     </Styled.StyledMenuItem>
+
 
                     <Styled.StyledMenuItem onClick={this.onLogout}>
                       <ListItemIcon>
@@ -195,12 +202,12 @@ class Navbar extends Component<any, State> {
                   </Link>
                 </Styled.StBtn>
                 <Styled.StBtn>
-                  <Link to="/signupPage" style={{ color: "gray", fontWeight: 300  }}>
+                  <Link to="/signupPage" style={{ color: "gray", fontWeight: 300 }}>
                     회원가입
                 </Link>
                 </Styled.StBtn>
                 <Styled.StBtn>
-                  <Link to="/ServicePage" style={{ color: "gray", fontWeight: 300  }}>
+                  <Link to="/ServicePage" style={{ color: "gray", fontWeight: 300 }}>
                     서비스 소개
                 </Link>
                 </Styled.StBtn>

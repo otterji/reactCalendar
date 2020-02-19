@@ -5,6 +5,7 @@ import { Menu, MenuItem, Button, IconButton } from '@material-ui/core';
 import { MenuProps } from '@material-ui/core/Menu';
 
 export const NavBar = styled.nav<any>`
+  font-size: 1vw;
   position: fixed;
   top: 0;
   display: flex;
@@ -56,7 +57,7 @@ export const StBtnCont = styled.div<any>`
 
 export const StBtn = styled(Button)`
   /* background-color: black;   */
-  font-size: 100%;
+  /* font-size: 100%; */
   /* font-weight: 100; */
   margin-left: 2px;
   
@@ -88,6 +89,9 @@ export const StyledMenu = withStyles({
 
 export const StyledMenuItem = withStyles(theme => ({
   root: {
+    '& .MuiTypography-body1':{
+      fontSize: "1vw"
+    },
     '&:hover': {
       backgroundColor: '#80cbc4',
       '& .MuiListItemIcon-root, & .MuiListItemText-primary': {

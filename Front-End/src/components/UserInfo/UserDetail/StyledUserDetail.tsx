@@ -1,6 +1,22 @@
 import styled, { css } from 'styled-components';
 import { Button, Checkbox } from '@material-ui/core';
 
+export const StUDCont = styled.div`
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .avatarCont{
+    .avatar{
+      margin: 0.2em;
+      width: 5vw;
+      height: 5vw;
+    }
+  }
+`
+
 export const profileName = styled.p`
   font-size: 23px;
   font-weight: 700;
@@ -80,11 +96,11 @@ export const abcdefg = styled.div`
 `
 
 export const div = styled.div`
-  position: absolute;
+  /* position: absolute; */
   width: 200px;
   background-color: white;
-  top: center;
-  left: center;
+  /* top: center; */
+  /* left: center; */
 `;
 
 export const labelHover = styled.div`

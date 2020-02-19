@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { Table } from "./style";
+import { Zoom, Slide } from '@material-ui/core';
 import { DateData, CalendarProps } from './_types/calendar';
 import { Td } from './Table';
 
@@ -36,6 +37,7 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
   trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);
 
   return (
+    <Zoom in={true} timeout={500}>
     <Table>
       <tbody style={{ width: "100%" }}>
         <tr style={{ backgroundColor: "#80CBC4" }}>
@@ -50,6 +52,7 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
         {trList}
       </tbody>
     </Table>
+    </Zoom>
   )
 }
 

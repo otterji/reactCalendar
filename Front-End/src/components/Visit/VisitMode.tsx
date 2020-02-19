@@ -7,6 +7,7 @@ import VisitFeedList from './VisitFeed/VisitFeedList'
 import SameList from './VisitFeed/SameList'
 //style
 import styled from 'styled-components'
+import {Grid} from '@material-ui/core'
 
 interface State{
   height: number;
@@ -33,7 +34,11 @@ class VisitMode extends Component<any, State> {
   }
 
   changeYYMM = (yymm: string) => {
-    this.setState({_yymm: yymm})
+    const addZero = (n: string) => {
+      return n.length === 6 ? n[0] + n[1] + n[2] + n[3] + n[4] + '0' + n[5] : n;
+    };
+    const mm = addZero(`${yymm}`);
+    this.setState({_yymm: mm})
   };
 
 
@@ -44,16 +49,25 @@ class VisitMode extends Component<any, State> {
           store.mode === "calendar" ?
           // 채널 달력
           // <VisitContainer id={store.chInfo.id}/>
-          <VisitContainer id={this.props.match.params.chName}/>
+          <VisitContainer 
+            id={this.props.match.params.chName}
+            changeYYMM={this.changeYYMM}
+          />
           :
           // 채널 피드
           <StFeedSameCont>
+          <Grid container spacing={1}>
+            <Grid item xs={10} sm={10} lg={10}>
             <div className="feed">
               <VisitFeedList id={store.chInfo.id} height={this.state.height}/>
             </div>
-            <div className='recom'>
+            </Grid>
+            <Grid item xs={2} sm={2} lg={2}>
+            <div className='same'>
               <SameList id={store.chInfo.id} height={this.state.height}/>
             </div>
+            </Grid>
+          </Grid>
           </StFeedSameCont>
         }
       </>)
@@ -64,13 +78,14 @@ class VisitMode extends Component<any, State> {
 export default withRouter(VisitMode);
 
 const StFeedSameCont = styled.div`
-  display: flex;
+  /* display: flex; */
   .feed{
     position: relative;
-    flex-grow: 3;
+    /* flex-grow: 3; */
   }
-  .recom{
+  .same{
     position: relative;
-    flex-grow: 1;
+    /* flex-grow: 1; */
+    margin-top: 20px;
   }
 `

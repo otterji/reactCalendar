@@ -5,12 +5,10 @@ import { TdDay } from './TdDay';
 import { TYPE_DETAIL } from '../utils/CONST';
 import axios from 'axios';
 import { url as _url } from '../../../../url';
-import { Server } from 'http';
-import color from '@material-ui/core/colors/amber';
-import { grey } from '@material-ui/core/colors';
+import {Fade} from '@material-ui/core';
 
-const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
-  const { days, schedules, openModal, reload } = props;
+const Td: FunctionComponent<DateData & OpenModal & Reload & any> = props => {
+  const { days, schedules, openModal, reload, setHoverRange, hoverRange } = props;
   // console.log(days)
   const onClickHandler = (e: any) => {
     openModal({ days: (days as Date), schedules: [e], type: TYPE_DETAIL });
@@ -59,15 +57,18 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
     }
 
     const hoverRange: any = (e: ServerData) => {
-      // console.log('범위가나 보기', startDate, endDate)
-      // 여기서 시작-끝 에 해당하는 tdDay에 색깔을 입혀주는 효과를 내는 함수를 정의하면됨
-      // console.log('reload')
+      setHoverRange([startDate, endDate])
       reload();
-      return [startDate, endDate]
+    }
+
+    const notHoverRange: any = (e: ServerData) => {
+      setHoverRange([0, 0])
+      reload();
     }
 
     return (
       <>
+      {/* <Fade in={true} timeout={2500}> */}
         <StyledScheduleLi key={idx}>
           {trueIdx.value ?
             <>
@@ -75,13 +76,15 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
               <StyledLiTitle
                 onClick={() => onClickHandler(e)}
                 onMouseOver={() => hoverRange(e)}
+                onMouseOut={() => notHoverRange(e)}
                 style={{ color: dayColor(e) }}>
                 {e.title}
               </StyledLiTitle>
             </>
             : null
           }
-            </StyledScheduleLi>
+          </StyledScheduleLi>
+      {/* </Fade> */}
       </>
         )
       });
@@ -93,7 +96,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
           {days === 0 ? null
             : (
               <>
-                <TdDay days={(days) as Date} openModal={openModal} onMouseHover={null} />
+                <TdDay days={(days) as Date} openModal={openModal} hoverRange={hoverRange}/>
                 <StyledScheduleUi>{scheduleList}</StyledScheduleUi>
               </>
             )

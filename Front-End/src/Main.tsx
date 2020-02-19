@@ -147,20 +147,14 @@ class Main extends Component<any, State> {
                           <Grid container spacing={1}>
                             {/* user */}
                             <Grid item xs={2} sm={2} lg={2}>
-                              <Box
-                                border={2}
-                                borderColor="white"
-                                textAlign="center"
-                              >
-                                <Slide in={true} direction="right" timeout={1000}>
+                              <Slide in={true} direction="right" timeout={1000}>
                                 <UserDetail
                                   yymm={this.state._yymm}
                                   changeSubscribeChannelSch={
                                     this.changeSubscribeChannelSch
                                   }
-                                  />
-                                </Slide>
-                              </Box>
+                                />
+                              </Slide>
                             </Grid>
 
                             {/* 달력과 피드 */}

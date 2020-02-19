@@ -8,6 +8,7 @@ import '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   createMuiTheme,
+  Zoom,
 } from "@material-ui/core";
 
 import { ThemeProvider } from "@material-ui/styles";
@@ -92,10 +93,10 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
     }
   }
 
-
   return (
     <>
       <div className="Modal-overlay" onClick={close} />
+      {/* <Zoom in={true}> */}
       <div className="Modal">
         <table style={{ width: "90%" }}>
           <tbody>
@@ -195,6 +196,7 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
                 }
 
       </div>
+      {/* </Zoom> */}
     </>
   )
 

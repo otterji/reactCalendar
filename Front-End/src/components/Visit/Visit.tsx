@@ -50,9 +50,7 @@ class Visit extends Component<any, State> {
       subscribeChannelSch: list
     });
   };
-  changeYYMM = (yymm: string) => {
-    this.setState({_yymm: yymm})
-  };
+
 
   render(){
     return (<>
@@ -74,7 +72,7 @@ class Visit extends Component<any, State> {
                   width={this.state.winWidth}
                 >
                   <Grid container spacing={1}>
-                    <Grid item xs={3} sm={3} lg={3}>
+                    <Grid item xs={2} sm={2} lg={2}>
                       {
                         store.isLogin ? 
                         <div>로그인 되어있음</div>
@@ -82,7 +80,7 @@ class Visit extends Component<any, State> {
                         <div>로그인 안되어있음</div>
                       }
                     </Grid>
-                    <Grid item xs={9} sm={9} lg={9}>
+                    <Grid item xs={10} sm={10} lg={10}>
                       <VisitCh 
                         chName={this.props.match.params.chName}
                         isLogin={store.isLogin}

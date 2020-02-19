@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 //
 import { url } from '../../../url'
-import Recom from './Same'
+import Same from './Same'
 //style
 import styled from 'styled-components'
 import { Fab, Zoom, Slide, } from '@material-ui/core'
@@ -59,7 +59,7 @@ class SameList extends Component<any, State> {
         await this.setStateAsync({
           channels: this.state.channels.concat(resData.map((ch: any) => (
             <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Recom info={ch}/>
+              <Same info={ch}/>
             </Slide>
           )))
         })

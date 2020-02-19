@@ -45,9 +45,11 @@ class App extends Component<any, State> {
 
   isLogin = (): boolean => {
     const _id = window.sessionStorage.getItem('id');
-    if (_id) {
+    const _jwt = window.sessionStorage.getItem('jwt');
+    if (_id && _jwt) {
       return true;
     }
+    sessionStorage.clear();
     return false;
   };
   isChannel = (): boolean => {

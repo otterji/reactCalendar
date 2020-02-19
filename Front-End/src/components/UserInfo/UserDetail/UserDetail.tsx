@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { Instagram } from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
+import styled from 'styled-components';
 // import ItemList from "../../common/ItemList/ItemList";
 import axios from 'axios';
 import { url as _url } from '../../../url';
@@ -108,7 +109,9 @@ class UserDetail extends Component<any, State> {
           link: data.link
         });
       } catch (err) {
-        alert(err);
+        alert('세션이 만료 되었습니다.');
+        sessionStorage.clear()
+        window.location.href = '/mainPage'
       }
 
       // 구독 리스트 가져오기
@@ -236,87 +239,57 @@ class UserDetail extends Component<any, State> {
   };
 
   render() {
-    // console.log('년도', this.props.yymm);
-    // console.log(this.state.totalScheduleList);
-    return (
-      <Grid
-        item
-        container
-        justify="center"
-        direction="column"
-        style={{ padding: '10px' }}
-      >
-        {/* profile img and nickname part */}
-        <Grid item container alignItems="center" style={{ marginTop: '50px' }}>
-          <Avatar
-            src={this.state.imgFile}
-            alt={this.state.nickname}
-            style={{ width: '70px', height: '70px' }}
-          />
+    return (<>
+      <Styled.StUDCont>
+        <div className="avatarCont">
+          <Avatar className="avatar" src={this.state.imgFile} alt={this.state.nickname}/>
+        </div>
 
-          <Grid item>
-            <Styled.profileName>{this.state.nickname}</Styled.profileName>
-          </Grid>
-        </Grid>
+        <Styled.profileName>{this.state.nickname}</Styled.profileName>
+        <Styled.content>
+          <Instagram style={{ fontSize: '40px', margin: '10px' }} />
+          {this.state.link}
+        </Styled.content>
+        <Styled.content>{this.state.msg}</Styled.content>
 
-        {/* profile content part */}
-        <Grid item>
-          <Styled.content>
-            <Instagram style={{ fontSize: '40px', margin: '10px' }} />
-            {this.state.link}
-          </Styled.content>
-        </Grid>
-        <Grid item>
-          <Styled.content>{this.state.msg}</Styled.content>
-        </Grid>
-
-        {/* Subscribe list */}
         {this.state.isChannel === 'member' ? (
-          <Grid item>
-            <Styled.div>
-              {this.state.subscribes.length >= 1
-                ? this.state.subscribes.map((channel: any) => {
-                  return (
-                    <Styled.labelHover>
-                      <ListItem
-                        key={channel.id}
-                        button
-                        style={{ padding: '5px', width: '200px' }}
-                      >
-                        <FormControlLabel
-                          control={
-                            <Styled.checkbox
-                              checked={channel.checked}
-                              colordark={channel.color[0]}
-                              colorlight={channel.color[1]}
-                              name={channel.id}
-                              onChange={this.handleChannelFilter}
-                              value={channel.id}
-                            />
-                          }
-                          label={channel.nickName}
-                        />
-                        {/* <ListItemAvatar>
-                          <Avatar
-                            alt={channel.nickName}
-                            src={`${_url}/img/channel/${channel.img}.jpg`}
+          <Styled.div>
+            {this.state.subscribes.length >= 1
+              ? this.state.subscribes.map((channel: any) => {
+                return (
+                  <Styled.labelHover>
+                    <ListItem
+                      key={channel.id}
+                      button
+                      style={{ padding: '5px', width: '200px' }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Styled.checkbox
+                            checked={channel.checked}
+                            colordark={channel.color[0]}
+                            colorlight={channel.color[1]}
+                            name={channel.id}
+                            onChange={this.handleChannelFilter}
+                            value={channel.id}
                           />
-                        </ListItemAvatar> */}
-                        <Styled.btn className="bbb"
-                          onClick={this.unsubscribe.bind(this, channel.id)}
-                        >
-                          구독 취소
+                        }
+                        label={channel.nickName}
+                      />
+                      <Styled.btn className="bbb"
+                        onClick={this.unsubscribe.bind(this, channel.id)}
+                      >
+                        구독 취소
                         </Styled.btn>
-                      </ListItem>
-                    </Styled.labelHover>
-                  );
-                })
-                : '구독 중인 채널이 없습니다.'}
-            </Styled.div>
-          </Grid>
+                    </ListItem>
+                  </Styled.labelHover>
+                );
+              })
+              : '구독 중인 채널이 없습니다.'}
+          </Styled.div>
         ) : null}
-      </Grid>
-    );
+      </Styled.StUDCont>
+    </>);
   }
 }
 

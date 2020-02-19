@@ -36,35 +36,35 @@ class Home extends Component<any> {
           </div>
         </StChannelListCont>
 
-        <Slide in={true} direction="up" timeout={2500}>
-          <StIntroCont>
-            <div className="intro1">
+        {/* <Slide in={true} direction="up" timeout={2500}>
+          <StIntroCont> */}
+            {/* <div className="intro1">
               <p>
                 STEP 1. 회원가입 후 관심사를 설정하세요
-            </p>
+            </p> */}
               {/* <span>
               그림
             </span> */}
 
-            </div>
+            {/* </div>
             <div className="intro2">
               <p>
                 STEP 2. 실시간 인기 채널을 추천받으세요
-            </p>
+            </p> */}
               {/* <span>
               그림
             </span> */}
-            </div>
+            {/* </div>
             <div className="intro3">
               <p>
                 STEP 3. 관심있는 일정을 구독하여 한눈에 받아보세요
-            </p>
+            </p> */}
               {/* <span>
               그림
             </span> */}
-            </div>
+            {/* </div>
           </StIntroCont>
-        </Slide>
+        </Slide> */}
 
         {/* <Slide in={true} direction="up" timeout={3000}>
           

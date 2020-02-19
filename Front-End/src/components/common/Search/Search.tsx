@@ -5,9 +5,9 @@ import { url } from '../../../url'
 import SearchedCh from '././SearchedCh'
 //style
 import * as Styled from './StyledSearch';
-import { Tooltip, Grow, } from '@material-ui/core';
+import { Tooltip, Grow, Zoom } from '@material-ui/core';
 // import { Autocomplete } from '@mat'
-import { SearchRounded, TurnedIn, } from '@material-ui/icons';
+import { SearchRounded, } from '@material-ui/icons';
 
 interface State {
   searchAnchorEl: any;
@@ -69,7 +69,7 @@ class Search extends Component<any, State> {
       // console.log(resData)
       if(resData.length === 0){
         await this.setStateAsync({
-          searchList: [<Styled.StNoCh>찾는 채널이 없습니다.</Styled.StNoCh>]
+          searchList: [<Zoom in={true}><Styled.StNoCh>찾는 채널이 없습니다.</Styled.StNoCh></Zoom>]
         })
         return;
       }

@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 //
 import { url } from '../../url'
 //style
 import styled from 'styled-components'
-import { Button, } from '@material-ui/core'
-import axios from 'axios'
+import { Avatar } from '@material-ui/core'
 
 
 interface State {
-  isLogin: boolean;
   info: any;
   subscribe: boolean;
 }
@@ -17,154 +16,81 @@ class Recom extends Component<any, State>{
   constructor(props: any) {
     super(props);
     this.state = {
-      isLogin: this.props.isLogin,
       info: this.props.info,
       subscribe: this.props.info.subscribe
     }
   }
 
-  unSubscribe = async () => {
-    let _confirm = window.confirm('구독을 취소하시겠습니까?');
-    if (_confirm) {
-      const _id = sessionStorage.getItem('id');
-      try {
-        const res = await axios({
-          method: 'delete',
-          url: `${url}/member/unSubscribe`,
-          data: {
-            fromId: _id,
-            toChannel: this.state.info.id,
-          }
-        })
-        // console.log(JSON.stringify(res.data, null, 2))
-        if (res.data.state === 'SUCCESS') {
-          this.setState({
-            subscribe: false,
-          })
-        }
-      }
-      catch (err) {
-        alert(err)
-      }
-    }
-  }
-
-  onSubscribe = async () => {
-    const _id = sessionStorage.getItem('id');
-
-    try {
-      const res = await axios({
-        method: 'post',
-        url: `${url}/member/subscribe`,
-        data: {
-          fromId: _id,
-          toChannel: this.state.info.id,
-        }
+  countUp = async () => {
+    try{
+      await axios({
+        method: 'put',
+        url: `${url}/channel/updateSearchFrequency/${this.state.info.id}`
+      }).then(() => {
+        sessionStorage.setItem('isVisit', 'true');
       })
-      // console.log(JSON.stringify(res.data, null, 2))
-      if (res.data.state === 'SUCCESS') {
-        this.setState({
-          subscribe: true,
-        })
-      }
     }
-    catch (err) {
-      alert(err)
+    catch(err){
+      alert(err);
     }
   }
 
   render() {
     return (<>
-      <StChTile>
-        <div className="recomCard">
-          <StCh className="stch ttop">
-            {/* <div>채널이름{this.props.info.ch_no}</div> */}
-            <StProfile src={`${url}/${this.state.info.img ? this.state.info.img  : "multimedia/profile/default.png" }`} />
-            <div className="contents">
-              <StLink to={`/visitPage/${this.state.info.nickname}`} >{this.state.info.nickname}</StLink>
-              <StCategory>{this.state.info.category}</StCategory>
-            </div>
-          </StCh>
-          { 
-            <StBtnHo className="botttom">
-              {
-                (this.props.isLogin && !this.props.isChannel) ?
-                  <>
-                    {
-                      this.state.subscribe ?
-                        <StBtn onClick={this.unSubscribe}>구독 취소</StBtn>
-                        :
-                        <StBtn onClick={this.onSubscribe}>구독</StBtn>
-                    }
-                  </>
-                  :
-                  <StBtn>구경 가기</StBtn>
-              }
-            </StBtnHo>
-          }
+      <StChCont>
+        <div className="avatarCont">
+          <Avatar className="avatar" src={`${url}/${this.state.info.img}`}/>
         </div>
-      </StChTile>
+        <div className="link">
+          <Link 
+            to={`/visitPage/${this.state.info.nickname}`} 
+            onClick={this.countUp}
+          >
+            {this.state.info.nickname}
+          </Link>
+        </div>
+      </StChCont>
     </>)
   }
 }
 export default Recom;
-const StChTile = styled.div<any>`
-  margin: 10px 10px 20px 10px;
-  z-index: 222;
-  height: 50px;
-  .recomCard{
-    potision: fixed;
+
+
+const StChCont = styled.div`
+  display: flex;
+  justify-content: start;
+  border-bottom: 1px dotted gray;
+  margin: 10px 10px 0 10px;
+  :hover{
+    border-radius: 8px;
+    border-bottom: 1px solid white;
+    background-color: #99ffcc; 
+    .link a{
+      color: white;
+      text-shadow: 5px 5px 10px gray;
+    }
   }
-  .bottom{
-    width:100%;
-    height:49px;
+  .avatarCont{
+    .avatar{
+      margin: 0.2em;
+      width: 1.8em;
+      height: 1.8em;
+    }
   }
-  .contents{
-    width:100%;
+  .lin{
+    width: 100%;
     overflow:hidden;
     white-space:nowrap;
     text-overflow:ellipsis;
-    margin-right: 10px;
-    border-bottom: 1px dotted grey;
   }
-  &:hover{
-    .contents{
-      display: none;
-    }
-    div{
-      display: flex;
+  .link{
+    font-size: 0.9vw;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    a{
+      color: black;
+      text-decoration: none;
     }
   }
-`
-const StCh = styled.div`
-  display: flex;
-`
-const StLink = styled(Link)`
-  text-decoration: none;
-  margin-left: 10px;
-  margin-right: 10px;
-  font-size: 18px;
-  color: black;
-`
-const StCategory = styled.div`
-  margin-left: 10px;
-  font-size: 14px;
-`;
-const StProfile = styled.img`
-  border-radius : 6px;
-  width: 50px;
-  height: 50px;
-  /* background-image: /images/ssafyLogo.png; */
-`;
-const StBtnHo = styled.div`
-  display: none;
-  border-radius: 10px;
-  background: #F2F2F2;
-  width: 100%;
-  height: 100%;
-`;
-const StBtn = styled(Button)`
-  color: #009689;
-  font-size: 100%;
-  width: 100%;
 `;

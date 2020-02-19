@@ -7,15 +7,14 @@ import VisitFeed from "./VisitFeed";
 //style
 import styled from "styled-components";
 import { Zoom, Fab, } from "@material-ui/core";
-import { KeyboardArrowUp, Autorenew } from "@material-ui/icons";
+import { KeyboardArrowUp, Autorenew, MoreHorizOutlined } from "@material-ui/icons";
 
 interface State {
   height: number;
   feeds: any[];
   isTop: boolean;
   isBottom: boolean;
-  startFeed: number;
-  lastFeed: number;
+  lastFeedNo: number;
   noFeed: boolean;
 }
 
@@ -27,14 +26,18 @@ class VisitFeedList extends Component<any, State> {
       feeds: [],
       isTop: true,
       isBottom: false,
-      startFeed: 0,
-      lastFeed: 0,
+      lastFeedNo: 0,
       noFeed: false,
     };
   }
 
   componentDidMount() {
     this.getFeeds(0, 10);
+  };
+  setStateAsync(state: object) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
   };
 
   infiniteScroll = () => {
@@ -46,8 +49,6 @@ class VisitFeedList extends Component<any, State> {
       const _clientHeight = document.getElementsByName("feedContainer")[0]
         .clientHeight;
 
-      console.log(_scrollHeight - _scrollTop < _clientHeight + 1)
-
       if (this.state.isTop && _clientHeight <= _scrollTop) {
         this.setState({ isTop: false });
       } else if (!this.state.isTop && _clientHeight > _scrollTop) {
@@ -57,7 +58,7 @@ class VisitFeedList extends Component<any, State> {
       if (_scrollHeight - _scrollTop < _clientHeight + 1) {
         this.setState({ isBottom: true });
         setTimeout(() => {
-          this.getFeeds(this.state.lastFeed, 10).then(() => {
+          this.getFeeds(this.state.lastFeedNo, 10).then(() => {
             this.setState({
               isBottom: false
             });
@@ -71,7 +72,6 @@ class VisitFeedList extends Component<any, State> {
     document.getElementsByName("feedContainer")[0].scrollTop = 0;
   };
 
-  //axios로 feed를 count만큼 가져오는 메서드
   getFeeds = async (_last:number, _count:number) => {
     try {
       const _id = this.props.id;
@@ -86,24 +86,35 @@ class VisitFeedList extends Component<any, State> {
       })
       .then((res) => {
         const resData = res.data;
-        console.log(resData)
-        this.setState({
-          feeds: this.state.feeds.concat(
-            resData.map((feed:any) => (
-              <VisitFeed key={feed.feedNo} feedInfo={feed}/>
-            ))
-          ),
-          lastFeed: resData[resData.length - 1].feedNo
-        })
-        if(resData.length < _count) {
-          this.setState({
+        if(resData.length === 0){ //불러온 피드가 없을때
+          this.setState({ 
             noFeed: true,
+            feeds: this.state.feeds.concat(
+              [<div style={{ textAlign: "center", paddingBottom: "10px" }}>
+                <Zoom in={true} timeout={500} key={0} >
+                  <MoreHorizOutlined fontSize="large" style={{ color: "gray" }}/>
+                </Zoom>
+              </div>]
+            )
+          });
+        }
+        // else if(resData.length === _count) { //불러온 피드가 요청한 만큼 들어올 때
+        else{
+          this.setState({
+            feeds: this.state.feeds.concat(
+              resData.map((feed: any) => (
+                <VisitFeed key={feed.feedNo} feedInfo={feed}/>
+              ))
+            )
           })
         }
-      });
-    } catch (err) {
-      alert(err);
-    }
+      })
+      this.setState({
+        lastFeedNo: this.state.feeds[this.state.feeds.length - 1].props.feedInfo.feedNo
+      })
+    } 
+    catch (err) {console.log(err);}
+
   };
 
   render() {
@@ -118,18 +129,18 @@ class VisitFeedList extends Component<any, State> {
           {this.state.feeds}
 
           {this.state.isBottom ? (
-            <Zoom in={true}>
-              <div style={{ textAlign: "center", paddingBottom: "10px" }}>
+            <div style={{ textAlign: "center", paddingBottom: "10px" }}>
+              <Zoom in={true} timeout={500}>
                 <Autorenew fontSize="large" style={{ color: "#00b386" }} />
-              </div>
-            </Zoom>
+              </Zoom>
+            </div>
           ) : (
-            <Zoom in={false}>
-              <div style={{ textAlign: "center", paddingBottom: "10px" }}>
-                {/* <MoreHoriz fontSize="large" style={{color:"gray"}}/> */}
-                <Autorenew fontSize="large" style={{ color: "#00b386" }} />
-              </div>
-            </Zoom>
+            // <div style={{ textAlign: "center", paddingBottom: "10px" }}>
+            //   <Zoom in={false}>
+            //     <Autorenew fontSize="large" style={{ color: "#00b386" }} />
+            //   </Zoom>
+            // </div>
+            null
           )}
         </StFeedListCont>
         
@@ -151,7 +162,7 @@ class VisitFeedList extends Component<any, State> {
     </>);
   }
 }
-  export default VisitFeedList;
+export default VisitFeedList;
 
   //////////////////////////////////////////////////////////// style
   const StFeedListCont = styled.div<any>`

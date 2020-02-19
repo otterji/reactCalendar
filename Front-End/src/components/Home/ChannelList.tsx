@@ -8,18 +8,18 @@ import styled, { css } from 'styled-components'
 import { GridList, Fab, Zoom, Slide, } from '@material-ui/core'
 import { KeyboardArrowRight, KeyboardArrowLeft } from '@material-ui/icons'
 
-const templist = [
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-];
+// const templist = [
+//   {ch_no:0, subscribe:true}, 
+//   {ch_no:1, subscribe:false}, 
+//   {ch_no:2, subscribe:false}, 
+//   {ch_no:3, subscribe:true}, 
+//   {ch_no:4, subscribe:false}, 
+//   {ch_no:5, subscribe:true}, 
+//   {ch_no:6, subscribe:false}, 
+//   {ch_no:7, subscribe:true}, 
+//   {ch_no:8, subscribe:true}, 
+//   {ch_no:9, subscribe:true}, 
+// ];
 
 interface State {
   isLeftEnd: boolean;
