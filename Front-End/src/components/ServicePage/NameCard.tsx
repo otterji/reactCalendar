@@ -25,12 +25,13 @@ const NameCard: any = () => {
           <div className="teamMember"><h3>S</h3><h2></h2><h3 className="nameCard">이정훈<br />Back-End</h3></div>
         </div>
         <div className="teamShalendarBack">
-          <div className="tmHover"></div>
-          <div className="tmHover"></div>
-          <div className="tmHover"></div>
-          <div className="tmHover"></div>
-          <div className="tmHover"></div>
-          <div className="tmHover"></div>
+          <div className="tmHover">
+          <div className="square"></div></div>
+          <div className="tmHover"><div className="square"></div></div>
+          <div className="tmHover"><div className="square"></div></div>
+          <div className="tmHover"><div className="square"></div></div>
+          <div className="tmHover"><div className="square"></div></div>
+          <div className="tmHover"><div className="square"></div></div>
         </div>
       </div>
     </StIntroMemberCont>
@@ -86,7 +87,7 @@ height: 570px;
 }
 
 .teamMember > h2 {
-  height:350px;
+  height:400px;
   color: white(26, 25, 25);
   font-size: 10px;
 }
@@ -199,4 +200,45 @@ h3 {
   padding-bottom: 10px;
   vertical-align: bottom;
 }
+
+.square{
+  margin: auto;
+  margin-top: 10%;
+  width: 80%;
+  height: 90%;
+  position: relative;
+  z-index: 2;
+}
+
+.square::after,
+.square::before {
+    content: "";
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 0%;
+    height: 0%;
+    border: 2px solid white;
+    border-width: 1px;
+    transition: .5s;
+}
+
+.square::after {
+  height: 100%;
+  border-style: solid none;
+}
+.square::before {
+  width: 100%;
+  border-style: none solid;
+}
+
+.tmHover:hover .square::after,
+.tmHover:hover .square::before {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+}
+
 `;

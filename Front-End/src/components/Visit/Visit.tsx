@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 //
 import { contextStorage } from '../../App';
 import Navbar from '../Navbar/Navbar';
-// import UserDetail from '../UserInfo/UserDetail/UserDetail';
+import VisitUserDetail from './VisitUserDetail/VisitUserDetail';
 import VisitCh from './VisitCh'
 // import { Container } from '../Calendar/Container';
 // import FeedList from '../Feed/FeedList';
@@ -75,7 +75,9 @@ class Visit extends Component<any, State> {
                     <Grid item xs={2} sm={2} lg={2}>
                       {
                         store.isLogin ? 
-                        <div>로그인 되어있음</div>
+                        <VisitUserDetail
+                          height={this.state.winHeight}
+                        />
                         :
                         <div>로그인 안되어있음</div>
                       }

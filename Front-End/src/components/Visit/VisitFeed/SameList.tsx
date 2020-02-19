@@ -59,7 +59,7 @@ class SameList extends Component<any, State> {
         await this.setStateAsync({
           channels: this.state.channels.concat(resData.map((ch: any) => (
             <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Same info={ch}/>
+              <Same info={ch} onChangeCh={this.props.onChangeCh}/>
             </Slide>
           )))
         })

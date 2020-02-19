@@ -51,6 +51,7 @@ interface State {
   prevImg: string;
   imgBase64: string;
   imgFile: any;
+  imgUpdate: boolean;
 
   poster: string;
   color: Array<string>;
@@ -108,6 +109,7 @@ class UpdateUserInfo extends Component<any, State> {
       prevImg: '',
       imgBase64: '',
       imgFile: null,
+      imgUpdate: false,
 
       poster: '',
       color: [],
@@ -151,32 +153,7 @@ class UpdateUserInfo extends Component<any, State> {
     }
 
     // 유저정보 가져오기
-    if (this.state.isChannel === 'channel') {
-      // 유저가 채널인 경우
-      // id, pw, name, nickname, img, link, poster, msg, color[]
-      try {
-        const resUserInfo = await axios({
-          method: 'post',
-          url: `${_url}/${this.state.isChannel}/jwt_auth/findChannelById/${this.state.email}`,
-          headers: {
-            jwt: sessionStorage.getItem('jwt')
-          }
-        });
-        const data = resUserInfo.data.info;
-        console.log(data, 'results with poster');
-        await this.setStateAsync({
-          prevImg: `${_url}/${data.img}`,
-          imgBase64: `${_url}/${data.img}`,
-          nickname: data.nickname,
-          msg: data.msg,
-          link: data.link,
-          poster: data.poster,
-          color: data.color
-        });
-      } catch (err) {
-        alert(err);
-      }
-    } else {
+    if (this.state.isChannel === 'member') {
       // 유저가 개인일 경우
       // birth, id, img, link, msg, name, nickname, pw
       try {
@@ -189,8 +166,8 @@ class UpdateUserInfo extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         await this.setStateAsync({
-          prevImg: `${_url}/${data.img}`,
-          imgBase64: `${_url}/${data.img}`.concat('?'),
+          prevImg: data.img ? `${_url}/${data.img}` : '',
+          imgBase64: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
           link: data.link,
@@ -200,8 +177,36 @@ class UpdateUserInfo extends Component<any, State> {
       } catch (err) {
         alert(err);
       }
+    } else {
+      // 유저가 채널인 경우
+      // id, pw, name, nickname, img, link, poster, msg, color[]
+      try {
+        const resUserInfo = await axios({
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/jwt_auth/findChannelById/${this.state.email}`,
+          headers: {
+            jwt: sessionStorage.getItem('jwt')
+          }
+        });
+        const data = resUserInfo.data.info;
+        await this.setStateAsync({
+          prevImg: data.img ? `${_url}/${data.img}` : '',
+          imgBase64: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
+          nickname: data.nickname,
+          msg: data.msg,
+          link: data.link,
+          poster: data.poster,
+          color: data.color
+        });
+      } catch (err) {
+        alert(err);
+      }
     }
-
+    if (!this.state.prevImg) {
+      this.setState({
+        imgUpdate: true
+      });
+    }
     // interests 목록 가져오기
     try {
       const res = await axios({
@@ -232,6 +237,79 @@ class UpdateUserInfo extends Component<any, State> {
     }
   }
 
+  onChangeBirth = (_date: Date | null) => {
+    if (_date === null) {
+      this.setState({ birthValid: 'init', birthLabel: '*생년월일' });
+    } else if (_date.toString() === 'Invalid Date') {
+      this.setState({
+        birthValid: 'invalid',
+        birthLabel: '정확히 기입해 주세요'
+      });
+    } else {
+      this.setState({
+        birth: _date,
+        birthValid: 'valid',
+        birthLabel: '생년월일'
+      });
+    }
+  };
+
+  renderInterest = (): Array<any> => {
+    let renderList: any[] = [];
+    const keyList = Object.keys(this.state.interests);
+    const valueList = Object.values(this.state.interests);
+    for (let i = 0; i < keyList.length; i++) {
+      renderList.push(
+        <FormControlLabel
+          key={keyList[i]}
+          control={
+            <Checkbox
+              checked={valueList[i]}
+              name={keyList[i]}
+              onChange={this.onChangeInterest}
+              value={keyList[i]}
+            />
+          }
+          label={keyList[i]}
+        />
+      );
+    }
+    return renderList;
+  };
+
+  onChangeInterest = async (e: ChangeEvent<HTMLInputElement>) => {
+    const _name = e.target.name;
+    const _checked = e.target.checked;
+    await this.setStateAsync({
+      interests: { ...this.state.interests, [_name]: _checked }
+    });
+    const checked = Object.values(this.state.interests).filter(v => v).length;
+    if (this.state.isChannel) {
+      if (checked === 0) {
+        this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
+      } else if (checked >= 1) {
+        this.setState({ interestsValid: 'valid', interestsLabel: '' });
+      }
+    } else {
+      if (checked < 2) {
+        this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
+      } else if (checked >= 2) {
+        this.setState({ interestsValid: 'valid', interestsLabel: '' });
+      }
+    }
+  };
+
+  initList = () => {
+    const curInterests: any = this.state.interests;
+    let outputList = [];
+    for (let i in curInterests) {
+      if (curInterests[i]) {
+        outputList.push(i);
+      }
+    }
+    return outputList;
+  };
+
   pressEnter = (e: KeyboardEvent) => {
     if (e.key === 'Enter') {
       this.onSubmit();
@@ -250,6 +328,11 @@ class UpdateUserInfo extends Component<any, State> {
     });
   };
 
+  handleImageUpdate = () => {
+    this.setState({
+      imgUpdate: !this.state.imgUpdate
+    });
+  };
   setStateAsync(state: object) {
     return new Promise(resolve => {
       this.setState(state, resolve);
@@ -339,95 +422,6 @@ class UpdateUserInfo extends Component<any, State> {
       : false;
   };
 
-  onSubmit = async () => {
-    if (this.state.page === 1) {
-      try {
-        const res = await axios({
-          method: 'post',
-          url: `${_url}/member/login`,
-          data: {
-            id: this.state.email,
-            pw: this.state.checkPrevPw
-          }
-        });
-        const resData = res.data;
-        if (resData.status) {
-          sessionStorage.setItem('jwt', resData.jwt);
-          this.setState({ page: 2 });
-        } else {
-          alert('비밀번호를 잘못 입력하셨습니다. 다시 입력해주세요.');
-        }
-      } catch (err) {
-        alert(err);
-      }
-    } else {
-      const formData = new FormData();
-      formData.append('file', this.state.imgFile);
-      let _img = null;
-      // TODO: 만약 formData에 아무 데이터도 안들어오면? 기존 이미지를 유지해야함
-      // TODO: 이미지를 삭제하고 싶으면?
-      if (formData) {
-        try {
-          let res = await axios({
-            method: 'post',
-            url: `${_url}/${this.state.isChannel}/uploadImage/${this.state.email}`,
-            data: formData,
-            headers: { 'content-Type': 'multipart/form-data' }
-          });
-        } catch (err) {
-          alert(err);
-        }
-        _img = this.state.email;
-      }
-      try {
-        // birth, id, img, link, msg, name, nickname, pw
-        if (this.state.isChannel === 'member') {
-          let res = await axios({
-            method: 'put',
-            url: `${_url}/${this.state.isChannel}/updateMember/`,
-            data: {
-              id: this.state.email,
-              pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
-              img: _img,
-              name: this.state.name,
-              birth: this.state.birth,
-              nickname: this.state.nickname,
-              link: this.state.link,
-              msg: this.state.msg,
-              interests: this.initList()
-            }
-          });
-          if (res.data.state === 'SUCCESS') {
-            this.props.history.push('/mainPage');
-          }
-        } else {
-          // id, pw, name, nickname, img, link, poster, msg, color[]
-          let res = await axios({
-            method: 'put',
-            url: `${_url}/${this.state.isChannel}/updateChannel/`,
-            data: {
-              id: this.state.email,
-              pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
-              img: _img,
-              name: 'channel',
-              nickname: this.state.nickname,
-              link: this.state.link,
-              msg: this.state.msg,
-              interests: this.initList(),
-              poster: this.state.poster,
-              color: this.state.color
-            }
-          });
-          if (res.data.state === 'SUCCESS') {
-            this.props.history.push('/mainPage');
-          }
-        }
-      } catch (err) {
-        alert(err);
-      }
-    }
-  };
-
   onChangePreview = async (e: any) => {
     let reader = new FileReader();
 
@@ -438,85 +432,118 @@ class UpdateUserInfo extends Component<any, State> {
         this.setState({ imgBase64: base64.toString() }); // 파일 base64 상태 업데이트
       }
     };
-    console.log(this.state.imgBase64, 'testhere');
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]); // 1. 파일을 읽어 버퍼에 저장합니다.
       this.setState({ imgFile: e.target.files[0] }); // 파일 상태 업데이트
     }
   };
 
-  onChangeBirth = (_date: Date | null) => {
-    if (_date === null) {
-      this.setState({ birthValid: 'init', birthLabel: '*생년월일' });
-    } else if (_date.toString() === 'Invalid Date') {
+  onDeletePrevImg = async () => {
+    if (window.confirm('기존 이미지를 삭제할까요?')) {
+      try {
+        await axios.delete(
+          `${_url}/${this.state.isChannel}/deleteImage/${this.state.email}`
+        );
+      } catch (err) {
+        alert(err);
+      }
       this.setState({
-        birthValid: 'invalid',
-        birthLabel: '정확히 기입해 주세요'
-      });
-    } else {
-      this.setState({
-        birth: _date,
-        birthValid: 'valid',
-        birthLabel: '생년월일'
+        imgBase64: '',
+        prevImg: ''
       });
     }
   };
 
-  renderInterest = (): Array<any> => {
-    let renderList: any[] = [];
-    const keyList = Object.keys(this.state.interests);
-    const valueList = Object.values(this.state.interests);
-    for (let i = 0; i < keyList.length; i++) {
-      renderList.push(
-        <FormControlLabel
-          key={keyList[i]}
-          control={
-            <Checkbox
-              checked={valueList[i]}
-              name={keyList[i]}
-              onChange={this.onChangeInterest}
-              value={keyList[i]}
-            />
-          }
-          label={keyList[i]}
-        />
-      );
-    }
-    return renderList;
-  };
-
-  onChangeInterest = async (e: ChangeEvent<HTMLInputElement>) => {
-    const _name = e.target.name;
-    const _checked = e.target.checked;
-    await this.setStateAsync({
-      interests: { ...this.state.interests, [_name]: _checked }
+  onCancelUpload = async () => {
+    const data = this.state.prevImg ? this.state.prevImg : '';
+    this.setState({
+      imgBase64: data,
+      imgFile: ''
     });
-    const checked = Object.values(this.state.interests).filter(v => v).length;
-    if (this.state.isChannel) {
-      if (checked === 0) {
-        this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
-      } else if (checked >= 1) {
-        this.setState({ interestsValid: 'valid', interestsLabel: '' });
-      }
-    } else {
-      if (checked < 2) {
-        this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
-      } else if (checked >= 2) {
-        this.setState({ interestsValid: 'valid', interestsLabel: '' });
-      }
-    }
   };
 
-  initList = () => {
-    const curInterests: any = this.state.interests;
-    let outputList = [];
-    for (let i in curInterests) {
-      if (curInterests[i]) {
-        outputList.push(i);
+  onSubmit = async () => {
+    if (this.state.page === 1) {
+      try {
+        const res = await axios({
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/confirmPassword`,
+          data: {
+            id: this.state.email,
+            pw: this.state.checkPrevPw
+          }
+        });
+        if (res.data.result) {
+          this.setState({ page: 2 });
+        } else {
+          alert('비밀번호를 잘못 입력하셨습니다. 다시 입력해주세요.');
+        }
+      } catch (err) {
+        alert(err);
+      }
+    } else {
+      let res: any = null;
+      try {
+        // birth, id, img, link, msg, name, nickname, pw
+        if (this.state.isChannel === 'member') {
+          res = await axios({
+            method: 'put',
+            url: `${_url}/${this.state.isChannel}/updateMember/`,
+            data: {
+              id: this.state.email,
+              pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
+              img: null,
+              name: this.state.name,
+              birth: this.state.birth,
+              nickname: this.state.nickname,
+              link: this.state.link,
+              msg: this.state.msg,
+              interests: this.initList()
+            }
+          });
+        } else {
+          // id, pw, name, nickname, img, link, poster, msg, color[]
+          res = await axios({
+            method: 'put',
+            url: `${_url}/${this.state.isChannel}/updateChannel/`,
+            data: {
+              id: this.state.email,
+              pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
+              img: null,
+              name: 'channel',
+              nickname: this.state.nickname,
+              link: this.state.link,
+              msg: this.state.msg,
+              interests: this.initList(),
+              poster: this.state.poster,
+              color: this.state.color
+            }
+          });
+        }
+        if (res.data.state === 'SUCCESS') {
+          if (this.state.imgFile) {
+            const formData = new FormData();
+            formData.append('file', this.state.imgFile);
+            // TODO: 만약 formData에 아무 데이터도 안들어오면? 기존 이미지를 유지해야함
+            try {
+              let resImg = await axios({
+                method: 'post',
+                url: `${_url}/${this.state.isChannel}/uploadImage/${this.state.email}`,
+                data: formData,
+                headers: { 'content-Type': 'multipart/form-data' }
+              });
+              if (resImg.data.state === 'SUCCESS') {
+                this.props.history.push('/mainPage');
+              }
+            } catch (err) {
+              alert(err);
+            }
+          }
+        }
+      } catch (err) {
+        alert(err);
       }
     }
-    // console.log(out)
-    return outputList;
   };
 
   render() {
@@ -552,24 +579,37 @@ class UpdateUserInfo extends Component<any, State> {
             {this.state.email}(
             {this.state.isChannel === 'channel' ? '채널' : '멤버'})
             <Avatar
-              // src={this.state.imgFile ? this.state.imgFile : this.state.imgBase64}
               src={this.state.imgBase64}
               style={{ width: '100px', height: '100px' }}
             />
-            <Styled.InputSet isUploaded={!(this.state.imgBase64 === '')}>
-              <label htmlFor="imageUpload">사진 수정</label>
-              <input
-                id="imageUpload"
-                type="file"
-                onChange={this.onChangePreview}
-              />
-            </Styled.InputSet>
+            {!this.state.imgUpdate ? (
+              <Styled.InputSet>
+                <label onClick={this.handleImageUpdate} id="cancel">
+                  이미지 수정
+                </label>{' '}
+              </Styled.InputSet>
+            ) : (
+              <Styled.InputSet>
+                {this.state.prevImg ? (
+                  <label onClick={this.onDeletePrevImg} id="cancel">
+                    기존 사진 삭제
+                  </label>
+                ) : null}
+                <label htmlFor="imageUpload">사진 업로드</label>
+                <input
+                  id="imageUpload"
+                  type="file"
+                  onChange={this.onChangePreview}
+                />
+                {this.state.imgFile ? (
+                  <label onClick={this.onCancelUpload}>업로드 취소</label>
+                ) : null}
+              </Styled.InputSet>
+            )}
             {!this.state.updatePw ? (
-              <Styled.BtnContainer>
-                <Styled.Btn onClick={this.handleAddPw}>
-                  비밀번호 변경
-                </Styled.Btn>
-              </Styled.BtnContainer>
+              <Styled.InputSet>
+                <label onClick={this.handleAddPw}>비밀번호 변경</label>
+              </Styled.InputSet>
             ) : (
               <>
                 <Styled.CancelBtn>

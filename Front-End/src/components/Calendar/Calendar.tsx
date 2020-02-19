@@ -38,20 +38,20 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
 
   return (
     <Zoom in={true} timeout={500}>
-    <Table>
-      <tbody style={{ width: "100%" }}>
-        <tr style={{ backgroundColor: "#80CBC4" }}>
-          <th style={{ color: "red", borderRadius: "3px" }}>일</th>
-          <th style={{ borderRadius: "3px" }}>월</th>
-          <th style={{ borderRadius: "3px" }}>화</th>
-          <th style={{ borderRadius: "3px" }}>수</th>
-          <th style={{ borderRadius: "3px" }}>목</th>
-          <th style={{ borderRadius: "3px" }}>금</th>
-          <th style={{ color: "blue", borderRadius: "3px" }}>토</th>
-        </tr>
-        {trList}
-      </tbody>
-    </Table>
+      <Table>
+        <tbody style={{ width: "100%" }}>
+          <tr style={{ backgroundColor: "#80CBC4" }}>
+            <th style={{ color: "red", borderRadius: "3px" }}>일</th>
+            <th style={{ borderRadius: "3px" }}>월</th>
+            <th style={{ borderRadius: "3px" }}>화</th>
+            <th style={{ borderRadius: "3px" }}>수</th>
+            <th style={{ borderRadius: "3px" }}>목</th>
+            <th style={{ borderRadius: "3px" }}>금</th>
+            <th style={{ color: "blue", borderRadius: "3px" }}>토</th>
+          </tr>
+          {trList}
+        </tbody>
+      </Table>
     </Zoom>
   )
 }

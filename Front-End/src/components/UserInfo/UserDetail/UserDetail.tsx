@@ -4,11 +4,11 @@ import {
   Avatar,
   ListItem,
   ListItemAvatar,
-  FormControlLabel
+  FormControlLabel,
+  Slide
 } from '@material-ui/core';
-import { Instagram } from '@material-ui/icons';
+import { Instagram, CheckCircle, EmojiPeopleOutlined, CategoryOutlined } from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
-import styled from 'styled-components';
 // import ItemList from "../../common/ItemList/ItemList";
 import axios from 'axios';
 import { url as _url } from '../../../url';
@@ -31,6 +31,10 @@ interface State {
   msg: string;
   subscribes: subscribeObj[];
   totalScheduleList: Array<Array<Object>>;
+
+  interOrCate: any;
+  subscribers: number;
+  onButton: boolean;
 }
 
 // Main UserDetail part
@@ -54,7 +58,11 @@ class UserDetail extends Component<any, State> {
           checked: true
         }
       ],
-      totalScheduleList: [[{}]]
+      totalScheduleList: [[{}]],
+
+      interOrCate: [],
+      subscribers: 0,
+      onButton: false,
     };
   }
   setStateAsync(state: object) {
@@ -72,6 +80,8 @@ class UserDetail extends Component<any, State> {
 
     // 유저정보 가져오기
     if (this.state.isChannel === 'channel') {
+      this.getInterOrCate('channel');
+      this.getSubscribers();
       // 유저가 채널인 경우
       try {
         const resUserInfo = await axios({
@@ -83,7 +93,7 @@ class UserDetail extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         this.setState({
-          imgFile: `${_url}/${data.img}`,
+          imgFile: `${_url}/${data.img}?${Date.now()}`,
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -92,6 +102,7 @@ class UserDetail extends Component<any, State> {
         alert(err);
       }
     } else {
+      this.getInterOrCate('member');
       // 유저가 개인일 경우
       try {
         const resUserInfo = await axios({
@@ -103,15 +114,15 @@ class UserDetail extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         await this.setStateAsync({
-          imgFile: `${_url}/${data.img}`,
+          imgFile: `${_url}/${data.img}?${Date.now()}`,
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
         });
       } catch (err) {
         alert('세션이 만료 되었습니다.');
-        sessionStorage.clear()
-        window.location.href = '/mainPage'
+        sessionStorage.clear();
+        window.location.href = '/mainPage';
       }
 
       // 구독 리스트 가져오기
@@ -238,30 +249,147 @@ class UserDetail extends Component<any, State> {
     }
   };
 
+  getInterOrCate = async (_type:string) => {
+    try{
+      const _id = this.state.id;
+      await axios({
+        method: 'get',
+        url: `${_url}/${_type}/getMyInterests/${_id}`
+      })
+      .then((res) => {
+        const resData = res.data;
+        console.log(resData)
+        this.setState({
+          interOrCate: resData.map((res:any) => {
+            return(<div key={res}>{res}</div>)
+          })
+        })
+      })
+    }
+    catch(err){
+      alert(err);
+    }
+  }
+
+  getSubscribers = async () => {
+    try{
+      const _id = this.state.id
+      axios({
+        method: 'get',
+        url: `${_url}/member/getCountOfMySubscriber/${_id}`
+      })
+      .then((res) => {
+        const resData = res.data
+        this.setState({
+          subscribers: resData.count
+        })
+      })
+    }
+    catch(err){
+      alert(err)
+    }
+  }
+
+  onMouseOver = () => {
+    this.setState({
+      onButton: true,
+    })
+  }
+  onMouseLeave = () => {
+    this.setState({
+      onButton: false,
+    })
+  }
+
   render() {
-    return (<>
-      <Styled.StUDCont>
-        <div className="avatarCont">
-          <Avatar className="avatar" src={this.state.imgFile} alt={this.state.nickname}/>
-        </div>
+    return (
+      <>
+        <Styled.StUDCont>
+          <div className="avatarCont">
+            <Avatar
+              className="avatar"
+              src={this.state.imgFile}
+              alt={this.state.nickname}
+            />
+          </div>
 
-        <Styled.profileName>{this.state.nickname}</Styled.profileName>
-        <Styled.content>
-          <Instagram style={{ fontSize: '40px', margin: '10px' }} />
-          {this.state.link}
-        </Styled.content>
-        <Styled.content>{this.state.msg}</Styled.content>
+        <Styled.profileName>
+          {
+            this.state.isChannel === 'member' ? (<>
+              {this.state.nickname}
+            </>) : (<>
+              <div className="nick">
+                {this.state.nickname}
+              </div>
+              <div className="official">
+                <CheckCircle className="icon" fontSize="small"/>
+              </div>
+            </>)
+          }
+        </Styled.profileName>
 
-        {this.state.isChannel === 'member' ? (
-          <Styled.div>
+        {
+          this.state.isChannel === "channel" &&
+          (<>
+            <Styled.StICCont>
+              {this.state.interOrCate}
+            </Styled.StICCont>
+
+            <Styled.StSubersCont>
+              구독자  {this.state.subscribers}명 
+            </Styled.StSubersCont>
+            
+            <br/>
+            <hr style={{width: "90%"}}/>
+          </>)
+        }
+        
+
+        {
+          this.state.link === '' ? 
+          null
+          :
+          <Styled.StSnsCont>
+            <div className="snsIcon">
+              <Instagram fontSize="small"/>
+            </div>
+            <div className="sns">
+              <a href={`${this.state.link}`}>{this.state.link}</a>
+            </div>
+          </Styled.StSnsCont>
+        } 
+        
+
+        {
+          this.state.msg === '' ? 
+          null
+          :
+          <Styled.StMsgCont>
+            <div className="msgIcon">
+              <EmojiPeopleOutlined fontSize="small"/>
+            </div>
+            <div className="msg">
+              <div>{this.state.msg}</div>
+            </div>
+          </Styled.StMsgCont>
+        }
+        
+
+
+        {this.state.isChannel === 'member' && sessionStorage.getItem('mode') === 'calendar' ? (<>
+          <br/>
+          <hr style={{width: "90%"}}/>
+          <Styled.StListLabel>구독 리스트</Styled.StListLabel>
+          <Styled.div height={this.props.height} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
             {this.state.subscribes.length >= 1
               ? this.state.subscribes.map((channel: any) => {
                 return (
                   <Styled.labelHover>
                     <ListItem
+                      dense
                       key={channel.id}
                       button
-                      style={{ padding: '5px', width: '200px' }}
+                      // style={{ padding: '5px', width: '200px' }}
                     >
                       <FormControlLabel
                         control={
@@ -276,18 +404,22 @@ class UserDetail extends Component<any, State> {
                         }
                         label={channel.nickName}
                       />
-                      <Styled.btn className="bbb"
-                        onClick={this.unsubscribe.bind(this, channel.id)}
-                      >
+                      </ListItem>
+                    {
+                      this.state.onButton ? 
+                      <Styled.btn onClick={this.unsubscribe.bind(this, channel.id)}>
                         구독 취소
-                        </Styled.btn>
-                    </ListItem>
+                      </Styled.btn>
+                      :
+                      null
+                      
+                    }
                   </Styled.labelHover>
                 );
               })
               : '구독 중인 채널이 없습니다.'}
           </Styled.div>
-        ) : null}
+      </>) : null}
       </Styled.StUDCont>
     </>);
   }

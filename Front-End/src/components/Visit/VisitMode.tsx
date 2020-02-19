@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import {Grid} from '@material-ui/core'
 
 interface State{
+  curChName: string;
   height: number;
   _yymm: string;
 }
@@ -17,6 +18,7 @@ class VisitMode extends Component<any, State> {
   constructor(props:any){
     super(props);
     this.state = {
+      curChName: this.props.match.params.chName,
       height: window.innerHeight,
       _yymm: `${new Date().getFullYear()}-0${new Date().getMonth() + 1}`,
     }
@@ -41,6 +43,12 @@ class VisitMode extends Component<any, State> {
     this.setState({_yymm: mm})
   };
 
+  onChangeCh = (_curChName:string) => {
+    this.setState({
+      curChName: _curChName
+    })
+  }
+
 
   render(){
     return(<><visitStorage.Consumer>{store => {
@@ -50,7 +58,7 @@ class VisitMode extends Component<any, State> {
           // 채널 달력
           // <VisitContainer id={store.chInfo.id}/>
           <VisitContainer 
-            id={this.props.match.params.chName}
+            id={this.state.curChName}
             changeYYMM={this.changeYYMM}
           />
           :
@@ -64,7 +72,7 @@ class VisitMode extends Component<any, State> {
             </Grid>
             <Grid item xs={2} sm={2} lg={2}>
             <div className='same'>
-              <SameList id={store.chInfo.id} height={this.state.height}/>
+              <SameList id={store.chInfo.id} height={this.state.height} onChangeCh={this.onChangeCh} />
             </div>
             </Grid>
           </Grid>

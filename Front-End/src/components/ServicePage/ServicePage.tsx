@@ -283,9 +283,8 @@ const StyledMainContainer = styled.div<any>`
 `;
 
 const StyledSpan = styled.span`
-  width: 200px;
-  height: 50px;
-  padding-top: 20px;
+  width: 40%;
+  margin: 20px;
   text-align: center;
   cursor: pointer;
 `

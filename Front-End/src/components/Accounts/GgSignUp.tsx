@@ -2,14 +2,40 @@ import React, { Component } from 'react';
 import GoogleLogin from 'react-google-login';
 import styled from 'styled-components';
 import { withRouter } from 'react-router-dom';
+import { url as _url } from "../../url";
+import axios from "axios";
 
 class GgSignUp extends Component<any> {
-    responseGoogle = (res: any) => {
+    responseGoogle = async(res: any) => {
         // console.log(res);
-        sessionStorage.setItem('jwt', res.accessToken);
-        sessionStorage.setItem('id', res.profileObj.email);
-        sessionStorage.setItem('pw', '2222');
-        this.props.history.push('/moreInfoPage');
+        // sessionStorage.setItem('jwt', res.accessToken);
+        // sessionStorage.setItem('id', res.profileObj.email);
+        // sessionStorage.setItem('pw', '2222');
+        // this.props.history.push('/moreInfoPage');
+        const _id = res.profileObj.email;
+        const _pw = '2222';
+
+        try {
+            const ress = await axios({
+              method: "get",
+              url: `${_url}/member/isExist/${_id}`,
+              responseType: "json"
+            });
+            // alert(JSON.stringify(res.data, null, 2));
+            if (ress.data.state === "SUCCESS") {
+              sessionStorage.setItem("id", _id);
+              sessionStorage.setItem("pw", _pw);
+              sessionStorage.setItem('jwt', res.accessToken);
+              // sessionStorage.setItem("jwt", res.data.jwt);
+              this.props.history.push("/moreInfoPage");
+            } else if (ress.data.state === "FAIL") {
+              sessionStorage.clear();
+              alert("이미 존재하는 계정 입니다");
+            }
+          } catch (err) {
+            sessionStorage.clear()
+            alert(err);
+          }
     }
 
     responseFail = (err: any) => {

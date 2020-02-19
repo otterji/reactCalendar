@@ -10,7 +10,7 @@ class Loading extends Component<any> {
   goMain = () => {
     setTimeout(() => {
       this.props.history.push('/mainPage');
-    }, 6500);
+    }, 6200);
   }
 
   render() {

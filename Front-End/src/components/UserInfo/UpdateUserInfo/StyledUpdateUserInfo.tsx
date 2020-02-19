@@ -21,21 +21,32 @@ export const Form = styled.form`
 
 export const InputSet = styled.div<any>`
   label {
-    display: block;
-    background-color: black;
-    color: white;
+    display: inline-block;
+    background-color: #b2dfdb;
+    text-align: center;
+    color: #009687;
     font-size: 80%;
     font-weight: 600;
     cursor: pointer;
     border-radius: 4px;
-    width: 110px;
+    width: 100px;
     margin: 0.5rem;
     margin-top: 10px;
     margin-bottom: 20px;
     padding: 5px;
-    // &:hover {
-    //   background-color: #b2dfdb;
-    // }
+    &:hover {
+      background-color: #009687;
+      color: white;
+    }
+    ${props =>
+      props.id === 'cancel' &&
+      css`
+      background-color: #fa857d;
+      color: white;
+      &:hover {
+        background-color: #009687;
+        color: white;
+      `}
   }
 
   input {

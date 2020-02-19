@@ -153,6 +153,7 @@ class Main extends Component<any, State> {
                                   changeSubscribeChannelSch={
                                     this.changeSubscribeChannelSch
                                   }
+                                  height={this.state.winHeight}
                                 />
                               </Slide>
                             </Grid>
