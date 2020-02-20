@@ -38,13 +38,13 @@ class KakaoSignUp extends Component<any, State> {
                                     responseType: "json"
                                 });
                                 if (ress.data.state === "SUCCESS") {
-                                    console.log('성공하면 안되는데 성공했다^^')
+                                    // console.log('성공하면 안되는데 성공했다^^')
                                     sessionStorage.setItem("id", res.kakao_account.email);
                                     sessionStorage.setItem("pw", '1111');
-                                    sessionStorage.setItem('jwt', res.accessToken);
+                                    // sessionStorage.setItem('socialToken', res.accessToken);
                                     this.props.history.push("/moreInfoPage");
                                 } else if (ress.data.state === "FAIL") {
-                                    console.log('실패했다^^')
+                                    // console.log('실패했다^^')
                                     sessionStorage.clear();
                                     alert("이미 존재하는 계정 입니다");
                                 }
@@ -72,7 +72,7 @@ class KakaoSignUp extends Component<any, State> {
     render() {
         return (
             <StGgLogin>
-                <img src='/images/kakao_account_login_btn_medium_narrow.png' onClick={this.loginWithKakao} />
+                <img src='/images/kakao_account_login_btn_medium_narrow.png' alt="" onClick={this.loginWithKakao} />
             </StGgLogin>
         );
     }
@@ -81,5 +81,9 @@ const StGgLogin = styled.div`
     display: flex;
     flex-flow: column wrap;
     cursor: pointer;
+    border-radius:10px;
+    &:hover{
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
 `;
 export default withRouter(KakaoSignUp);

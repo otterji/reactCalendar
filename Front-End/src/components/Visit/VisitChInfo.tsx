@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 //
 import { url } from '../../url'
 import { visitStorage } from './VisitCh'
@@ -10,10 +11,19 @@ import { CheckCircle } from '@material-ui/icons'
 
 class VisitChInfo extends Component<any>{
 
+
   render() {
     return (<><visitStorage.Consumer>{store => {
-      return (<>
+      // console.log(store.chInfo)
+      const cate = store.chInfo.interests?.map((cate:any) => {
+        return(
+          <div className="cate" key={cate}>
+            {cate}
+          </div>
+        )
+      })
 
+      return (<>
         <Slide in={true} direction="down">
           <StVChInfoCont>
             <StLeftCont>
@@ -21,11 +31,20 @@ class VisitChInfo extends Component<any>{
                 <Avatar className="avatar" src={`${url}/${store.chInfo.img}`} />
               </div>
               <StStringCont>
+                <div className="cates">
+                  {cate}
+                </div>
                 <div className="nickname">
                   <div>
                     {store.chInfo.nickname}
                   </div>
                   <CheckCircle className="icon" fontSize="small"/>
+                </div>
+                
+                <div className="subs">
+                  <div>
+                    구독자 {store.subscribers}명
+                  </div>
                 </div>
                 {/* <div>{this.props.chInfo.interests}</div> */}
               </StStringCont>
@@ -130,7 +149,21 @@ const StStringCont = styled.div`
       margin-left: 10px;
       color: #00e6b8;
     }
-  }  
+  } 
+  .cates{
+    display: flex;
+    .cate{
+    margin: 0 0.4vw 0 0.4vw;
+    font-size: 90%;
+    font-weight: 100;
+    font-style: italic;
+    color: gray;
+  }
+
+  } 
+  .subs{
+
+  }
 `
 
 const StRightCont = styled.div`

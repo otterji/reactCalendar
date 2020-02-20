@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Button, Checkbox } from '@material-ui/core';
+import { Button, Checkbox, IconButton } from '@material-ui/core';
 
 export const StUDCont = styled.div`
   margin-top: 20px;
@@ -71,6 +71,7 @@ export const StSnsCont = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin-top: 20px;
+  /* margin-right: 10px; */
 
   .snsIcon{
     display: flex;
@@ -79,9 +80,11 @@ export const StSnsCont = styled.div`
   .sns{
     width:100%;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     font-style: italic;
     font-size: 0.9vw;
+    padding-right: 10px;
+    word-break: break-all;
   }
 `;
 
@@ -92,6 +95,8 @@ export const StMsgCont = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   margin-top: 20px;
+  /* margin-right: 10px; */
+  /* padding-right: 10px; */
 
   .msgIcon{
     display: flex;
@@ -99,6 +104,9 @@ export const StMsgCont = styled.div`
   }
   .msg{
     width:100%;
+    font-size: 1vw;
+    padding-right: 10px;
+    word-break: break-all;
   }
 `;
 
@@ -118,20 +126,7 @@ export const listDiv = styled.div`
   }
 `;
 
-export const btn = styled(Button) <any>`
-  display: none;
-  background-color: #b2dfdb;
-  color: white;
-  font-size: small;
-  font-weight: 600;
-  padding: 10px auto;
-  margin-right: 0;
-  position: absolute;
-  left: 130px;
-  &:hover {
-    background-color: #009688;
-  }
-`;
+
 
 export const checkbox = styled(Checkbox) <any>`
   ${props =>
@@ -155,7 +150,7 @@ export const div = styled.div<any>`
   overflow: auto;
   width: 90%;
   margin: 10px 5px 20px 5px;
-  border: 2px solid #00e6b8;
+  /* border: 2px solid #f1f1f1; */
   border-radius: 3px;
   padding-left: 0.5vw;
   height: ${props => (props.height - 350)}px;
@@ -188,9 +183,33 @@ export const div = styled.div<any>`
 `;
 
 export const labelHover = styled.div`
-  &:hover{
-    .bbb{
-      display: inline;
-    }
+  position: relative;
+`;
+
+// export const btn = styled(Button)<any>`
+//   position: absolute;
+//   right: 1px;
+//   background-color: #b2dfdb;
+//   color: white;
+//   font-size: small;
+//   font-weight: 600;
+//   padding: 10px auto;
+//   margin-right: 0;
+//   position: absolute;
+//   left: 130px;
+//   &:hover {
+//     background-color: #009688;
+//   }
+// `;
+
+export const StIconBtn = styled(IconButton)`
+  padding: 0;
+  background-color: inherit;
+  position: absolute;
+  right: 1px;
+  bottom: 50%;
+  transform: translateY(50%);
+  :hover{
+    color: red;
   }
 `;

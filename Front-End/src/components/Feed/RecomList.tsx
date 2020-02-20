@@ -65,18 +65,20 @@ class RecomList extends Component<any, State> {
       }
       else {
         await this.setStateAsync({
-          channels: this.state.channels.concat(resData.map((ch: any) => (
-            ch.id === window.sessionStorage.getItem('id') 
-            ?
-            null
-            :
-            <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Recom info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
-            </Slide>
-          )))
+          channels: this.state.channels.concat(resData.map((ch: any) => {
+            if(ch.id === sessionStorage.getItem('id')){
+              return null
+            }   
+            else{
+              return(
+                <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
+                  <Recom info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+                </Slide>
+              )
+            }
+          }))
         })
         .then(() => {
-          
           this.setState({
             lastCh: resData[resData.length - 1].recomNo
           })

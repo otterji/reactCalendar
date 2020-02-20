@@ -83,15 +83,12 @@ class ServicePage extends Component<any, State> {
                 // currentMode={this.state.mode}
                 />
               </Slide>
+              
+              <StCont>
               {
                 this.state.isDev
                   ? <>
-                    <Grow
-                      in={true}
-                      style={{ transformOrigin: '0 0 0' }}
-                      {...(true ? { timeout: 1800 } : {})}
-                    ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
-                    </Grow>
+                    <p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
                     {/* </StBannerCont> */}
                     <StMiniNav>
                       <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
@@ -107,12 +104,7 @@ class ServicePage extends Component<any, State> {
 
                     {this.state.isCh ?
                       <>
-                        <Grow
-                          in={true}
-                          style={{ transformOrigin: '0 0 0' }}
-                          {...(true ? { timeout: 1800 } : {})}
-                        ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
-                        </Grow>
+                        <p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
                         <StMiniNav>
                           <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
                           <StyledSpan onClick={() => this.isChannel(false)} >개인 사용자</StyledSpan>
@@ -170,12 +162,7 @@ class ServicePage extends Component<any, State> {
                       :
 
                       <>
-                        <Grow
-                          in={true}
-                          style={{ transformOrigin: '0 0 0' }}
-                          {...(true ? { timeout: 1800 } : {})}
-                        ><p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
-                        </Grow>
+                        <p style={{ color: "darkgrey" }}>Shalendar의 다양하고 차별화된 기능과 편리한 관리시스템을 소개합니다.</p>
                         <StMiniNav>
                           <StyledSpan onClick={() => this.isChannel(true)} >채널 사용자</StyledSpan>
                           <StyledSpan onClick={() => this.isChannel(false)} >개인 사용자</StyledSpan>
@@ -232,9 +219,6 @@ class ServicePage extends Component<any, State> {
                       </>
                     }
 
-
-
-
                   </>
               }
               <Grow
@@ -258,7 +242,7 @@ class ServicePage extends Component<any, State> {
                 navHeight={this.state.navHeight}
               >
               </StyledMainContainer>
-
+            </StCont>
             </>)
           }}
         </contextStorage.Consumer>
@@ -270,6 +254,14 @@ class ServicePage extends Component<any, State> {
 }
 export default ServicePage;
 
+
+const StCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 90px;
+`
 
 const StyledMainContainer = styled.div<any>`
   display: flex;

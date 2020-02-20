@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { contextStorage } from '../../App';
 import Navbar from '../Navbar/Navbar';
 import VisitUserDetail from './VisitUserDetail/VisitUserDetail';
+import VisitNoLogin from './VisitUserDetail/VisitNoLogin';
 import VisitCh from './VisitCh'
 // import { Container } from '../Calendar/Container';
 // import FeedList from '../Feed/FeedList';
@@ -79,7 +80,7 @@ class Visit extends Component<any, State> {
                           height={this.state.winHeight}
                         />
                         :
-                        <div>로그인 안되어있음</div>
+                        <VisitNoLogin/>
                       }
                     </Grid>
                     <Grid item xs={10} sm={10} lg={10}>
@@ -111,9 +112,4 @@ const StyledMainContainer = styled.div<any>`
   /* margin-top: ${props => (props.mode === 'home' ? 20 : props.navHeight)}px; */
   margin-top: 59px;
   width: ${props => (props.width < 1380 ? props.width - 100 : 1380)}px;
-`;
-
-const StyledModeContainer = styled.div<any>`
-  position: relative;
-  margin-top: 20px;
 `;

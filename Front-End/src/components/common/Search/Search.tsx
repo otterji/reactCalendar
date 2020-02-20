@@ -152,7 +152,7 @@ class Search extends Component<any, State> {
               this.state.searchAnchorEl === null ? 
               <SearchRounded />  
               :
-              <SearchRounded style={{color:"#8cebd1"}}/>
+              <SearchRounded style={{color:"#b2dfdb"}}/>
             }
             {/* <SearchRounded /> */}
           </Styled.StIconBtn>

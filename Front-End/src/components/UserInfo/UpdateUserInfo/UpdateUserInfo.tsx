@@ -1,4 +1,7 @@
 import React, { Component, ChangeEvent, KeyboardEvent } from 'react';
+import { contextStorage } from '../../../App';
+import Navbar from '../../Navbar/Navbar';
+import Footer from '../../Footer/Footer';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import DateFnsUtils from '@date-io/date-fns';
@@ -10,7 +13,9 @@ import {
   FormLabel,
   FormControlLabel,
   FormHelperText,
-  Checkbox
+  Checkbox,
+  Slide,
+  Zoom
 } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import {
@@ -29,12 +34,19 @@ import { url as _url } from '../../../url';
 import * as Styled from './StyledUpdateUserInfo';
 
 const regExp = {
-  pw: /^[A-Za-z0-9]{6,15}$/,
+  pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
   name: /^[A-Za-z가-힣]{2,}$/,
-  nickname: /^[A-Za-z0-9가-힣]{2,10}$/
+  nickname: /^[A-Za-z0-9가-힣_]{2,10}$/,
+  channelName: /^[A-Za-z0-9가-힣_]{2,}$/
 };
 
 interface State {
+  isLogin: boolean;
+  mode: string;
+  winWidth: number;
+  winHeight: number;
+  navHeight: number;
+
   page: number;
   checkPrevPw: string;
   email: string | null;
@@ -93,6 +105,12 @@ class UpdateUserInfo extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = {
+      isLogin: false,
+      mode: 'home',
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+      navHeight: 0,
+
       page: 1,
       checkPrevPw: '',
       email: window.sessionStorage.getItem('id'),
@@ -144,6 +162,7 @@ class UpdateUserInfo extends Component<any, State> {
   }
 
   async componentDidMount() {
+    window.addEventListener('resize', this.changeHeight);
     // 유저의 개인/채널 분류 확인하기
     if (this.state.email) {
       const _isChannel = await IsChannel(this.state.email);
@@ -166,7 +185,7 @@ class UpdateUserInfo extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         await this.setStateAsync({
-          prevImg: data.img ? `${_url}/${data.img}` : '',
+          prevImg: data.img ? data.img : '',
           imgBase64: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
@@ -180,6 +199,9 @@ class UpdateUserInfo extends Component<any, State> {
     } else {
       // 유저가 채널인 경우
       // id, pw, name, nickname, img, link, poster, msg, color[]
+      this.setState({
+        nicknameLabel: '*채널 이름'
+      });
       try {
         const resUserInfo = await axios({
           method: 'post',
@@ -190,7 +212,7 @@ class UpdateUserInfo extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         await this.setStateAsync({
-          prevImg: data.img ? `${_url}/${data.img}` : '',
+          prevImg: data.img ? data.img : '',
           imgBase64: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
@@ -236,6 +258,20 @@ class UpdateUserInfo extends Component<any, State> {
       alert(err);
     }
   }
+  componentWillUnmount(){
+    window.removeEventListener('resize', this.changeHeight)
+  }
+  changeHeight = () => {
+    this.setState({
+      winHeight: window.innerHeight,
+    })
+  }
+
+
+  changeMode = (_mode: string) => {
+    sessionStorage.setItem('mode', _mode);
+    this.props.history.push('/mainPage');
+  };
 
   onChangeBirth = (_date: Date | null) => {
     if (_date === null) {
@@ -284,7 +320,7 @@ class UpdateUserInfo extends Component<any, State> {
       interests: { ...this.state.interests, [_name]: _checked }
     });
     const checked = Object.values(this.state.interests).filter(v => v).length;
-    if (this.state.isChannel) {
+    if (this.state.isChannel === 'channel') {
       if (checked === 0) {
         this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
       } else if (checked >= 1) {
@@ -333,6 +369,7 @@ class UpdateUserInfo extends Component<any, State> {
       imgUpdate: !this.state.imgUpdate
     });
   };
+
   setStateAsync(state: object) {
     return new Promise(resolve => {
       this.setState(state, resolve);
@@ -395,13 +432,24 @@ class UpdateUserInfo extends Component<any, State> {
       }
     } else if (name === 'nickname') {
       await this.setStateAsync({ nickname: e.target.value });
-      if (regExp.nickname.test(this.state.nickname)) {
-        this.setState({ nicknameValid: 'valid', nicknameLabel: '닉네임' });
-      } else {
-        this.setState({
-          nicknameValid: 'invalid',
-          nicknameLabel: '한글, 영문, 숫자 포함 2~10자'
-        });
+      if (this.state.isChannel === 'member') {
+        if (regExp.nickname.test(this.state.nickname)) {
+          this.setState({ nicknameValid: 'valid', nicknameLabel: '닉네임' });
+        } else {
+          this.setState({
+            nicknameValid: 'invalid',
+            nicknameLabel: '한글, 영문, 숫자 포함 2~10자'
+          });
+        }
+      } else if (this.state.isChannel === 'channel') {
+        if (regExp.channelName.test(this.state.nickname)) {
+          this.setState({ nicknameValid: 'valid', nicknameLabel: '채널 이름' });
+        } else {
+          this.setState({
+            nicknameValid: 'invalid',
+            nicknameLabel: '한글, 영문, 숫자 포함 2자 이상'
+          });
+        }
       }
     } else if (name === 'link') {
       this.setState({ link: e.target.value });
@@ -455,7 +503,7 @@ class UpdateUserInfo extends Component<any, State> {
   };
 
   onCancelUpload = async () => {
-    const data = this.state.prevImg ? this.state.prevImg : '';
+    const data = this.state.prevImg ? `${_url}/${this.state.prevImg}` : '';
     this.setState({
       imgBase64: data,
       imgFile: ''
@@ -481,7 +529,7 @@ class UpdateUserInfo extends Component<any, State> {
       } catch (err) {
         alert(err);
       }
-    } else {
+    } else if (this.state.page === 2) {
       let res: any = null;
       try {
         // birth, id, img, link, msg, name, nickname, pw
@@ -492,7 +540,7 @@ class UpdateUserInfo extends Component<any, State> {
             data: {
               id: this.state.email,
               pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
-              img: null,
+              img: this.state.prevImg,
               name: this.state.name,
               birth: this.state.birth,
               nickname: this.state.nickname,
@@ -501,7 +549,7 @@ class UpdateUserInfo extends Component<any, State> {
               interests: this.initList()
             }
           });
-        } else {
+        } else if (this.state.isChannel === 'channel') {
           // id, pw, name, nickname, img, link, poster, msg, color[]
           res = await axios({
             method: 'put',
@@ -509,7 +557,7 @@ class UpdateUserInfo extends Component<any, State> {
             data: {
               id: this.state.email,
               pw: this.state.pw ? this.state.pw : this.state.checkPrevPw,
-              img: null,
+              img: this.state.prevImg,
               name: 'channel',
               nickname: this.state.nickname,
               link: this.state.link,
@@ -524,254 +572,311 @@ class UpdateUserInfo extends Component<any, State> {
           if (this.state.imgFile) {
             const formData = new FormData();
             formData.append('file', this.state.imgFile);
-            // TODO: 만약 formData에 아무 데이터도 안들어오면? 기존 이미지를 유지해야함
             try {
-              let resImg = await axios({
+              await axios({
                 method: 'post',
                 url: `${_url}/${this.state.isChannel}/uploadImage/${this.state.email}`,
                 data: formData,
                 headers: { 'content-Type': 'multipart/form-data' }
               });
-              if (resImg.data.state === 'SUCCESS') {
-                this.props.history.push('/mainPage');
-              }
             } catch (err) {
               alert(err);
             }
           }
+          this.props.history.push('/mainPage');
         }
       } catch (err) {
         alert(err);
       }
     }
   };
+  onCancle = () => {
+    window.location.href = '/mainPage';
+  }
 
   render() {
     let renderList = this.renderInterest();
-    return (
-      <>
-        {this.state.page === 1 ? (
-          <div>
-            <p>회원정보 확인/수정을 위해 비밀번호를 입력해주세요.</p>
-            <Styled.STextField
-              name="checkPrevPw"
-              type="password"
-              label="비밀번호"
-              value={this.state.checkPrevPw}
-              onKeyPress={this.pressEnter}
-              onChange={this.handleOnChange}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <Lock />
-                  </InputAdornment>
-                )
-              }}
-            />
-            <Styled.BtnContainer>
-              <Styled.Btn onClick={this.onSubmit}>확인</Styled.Btn>
-            </Styled.BtnContainer>
-          </div>
-        ) : (
-          <Styled.Form autoComplete="on" onKeyPress={this.pressEnter}>
-            {this.state.email}(
-            {this.state.isChannel === 'channel' ? '채널' : '멤버'})
-            <Avatar
-              src={this.state.imgBase64}
-              style={{ width: '100px', height: '100px' }}
-            />
-            {!this.state.imgUpdate ? (
-              <Styled.InputSet>
-                <label onClick={this.handleImageUpdate} id="cancel">
-                  이미지 수정
-                </label>{' '}
-              </Styled.InputSet>
-            ) : (
-              <Styled.InputSet>
-                {this.state.prevImg ? (
-                  <label onClick={this.onDeletePrevImg} id="cancel">
-                    기존 사진 삭제
-                  </label>
-                ) : null}
-                <label htmlFor="imageUpload">사진 업로드</label>
-                <input
-                  id="imageUpload"
-                  type="file"
-                  onChange={this.onChangePreview}
-                />
-                {this.state.imgFile ? (
-                  <label onClick={this.onCancelUpload}>업로드 취소</label>
-                ) : null}
-              </Styled.InputSet>
-            )}
-            {!this.state.updatePw ? (
-              <Styled.InputSet>
-                <label onClick={this.handleAddPw}>비밀번호 변경</label>
-              </Styled.InputSet>
-            ) : (
-              <>
-                <Styled.CancelBtn>
-                  <CloseRounded onClick={this.handleAddPw} />
-                </Styled.CancelBtn>
-                <Styled.STextField
-                  name="pw"
-                  type="password"
-                  validate={this.state.pwValid}
-                  label={this.state.pwLabel}
-                  onChange={this.handleOnChange}
-                  variant="outlined"
-                  margin="dense"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {this.state.pwValid === 'valid' ? (
-                          <CheckCircle />
-                        ) : (
-                          <Lock />
-                        )}
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <Styled.STextField
-                  name="pwCheck"
-                  type="password"
-                  validate={this.state.pwCheckValid}
-                  label={this.state.pwCheckValidLabel}
-                  onChange={this.handleOnChange}
-                  variant="outlined"
-                  margin="dense"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        {this.state.pwCheckValid === 'valid' ? (
-                          <CheckCircle />
-                        ) : (
-                          <EnhancedEncryption />
-                        )}
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                {/* <Styled.Btn onClick={this.handleAddPw}>
-                기존 비밀번호 유지
-              </Styled.Btn> */}
-              </>
-            )}
-            {this.state.isChannel === 'channel' ? null : (
-              <>
-                <Styled.STextField
-                  name="name"
-                  validate={this.state.nameValid}
-                  label={this.state.nameLabel}
-                  onChange={this.handleOnChange}
-                  value={this.state.name}
-                  variant="outlined"
-                  margin="dense"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <Face />
-                      </InputAdornment>
-                    )
-                  }}
-                />
-                <ThemeProvider theme={Styled.defaultMaterialTheme}>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <Styled.DatePicker
-                      autoOk
-                      openTo="year"
-                      variant="inline"
+    // window.scrollTo(0, 0);
+    return (<>
+
+        <contextStorage.Consumer>
+          {store => {
+            return (<>
+
+                {/* 네이게이션바 */}
+                <Slide in={true} direction="down">
+                  <Navbar
+                    isLogin={store.isLogin}
+                    changeMode={(comm: string) => {
+                      this.changeMode(comm);
+                    }}
+                    // currentMode={this.state.mode}
+                  />
+                </Slide>
+
+
+                <Zoom in={true}>
+                <Styled.StCont page={this.state.page} height={this.state.winHeight}>
+                {this.state.page === 1 ? (
+                  <>
+                    <p>회원정보 확인/수정을 위해 비밀번호를 입력해주세요.</p>
+                    <Styled.STextField
+                      name="checkPrevPw"
+                      type="password"
+                      label="비밀번호"
+                      value={this.state.checkPrevPw}
+                      onKeyPress={this.pressEnter}
+                      onChange={this.handleOnChange}
+                      variant="outlined"
                       margin="dense"
-                      inputVariant="outlined"
-                      invalidDateMessage=""
-                      invalidLabel=""
-                      maxDateMessage=""
-                      minDateMessage=""
-                      orientation="landscape"
-                      format="yyyy.MM.dd"
-                      InputAdornmentProps={{ position: 'end' }}
-                      label={this.state.birthLabel}
-                      value={this.state.birth}
-                      onChange={this.onChangeBirth}
-                      validate={this.state.birthValid}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <Lock />
+                          </InputAdornment>
+                        )
+                      }}
                     />
-                  </MuiPickersUtilsProvider>
-                </ThemeProvider>
-              </>
-            )}
-            <Styled.STextField
-              name="nickname"
-              value={this.state.nickname}
-              validate={this.state.nicknameValid}
-              label={this.state.nicknameLabel}
-              onChange={this.handleOnChange}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <TagFaces />
-                  </InputAdornment>
-                )
-              }}
-            />
-            <Styled.STextField
-              name="link"
-              value={this.state.link}
-              validate={this.state.linkValid}
-              label={this.state.isChannel === 'channel' ? '관련 페이지' : 'SNS'}
-              onChange={this.handleOnChange}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {this.state.isChannel ? <Link /> : <Instagram />}
-                  </InputAdornment>
-                )
-              }}
-            />
-            <Styled.STextField
-              name="msg"
-              value={this.state.msg}
-              validate={this.state.msgValid}
-              label={this.state.msgLabel}
-              onChange={this.handleOnChange}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <CreateRounded />
-                  </InputAdornment>
-                )
-              }}
-            />
-            {this.state.isChannel ? (
-              <Styled.InterestContainer validate={this.state.interestsValid}>
-                <FormLabel component="label">{`${this.state.interestsLabel}카테고리`}</FormLabel>
-                <Styled.SFormGroup row={true}>{renderList}</Styled.SFormGroup>
-                <FormHelperText>1개 이상 체크해 주세요</FormHelperText>
-              </Styled.InterestContainer>
-            ) : (
-              <Styled.InterestContainer validate={this.state.interestsValid}>
-                <FormLabel component="label">{`${this.state.interestsLabel}관심사`}</FormLabel>
-                <Styled.SFormGroup row={true}>{renderList}</Styled.SFormGroup>
-                <FormHelperText>2개 이상 체크해 주세요</FormHelperText>
-              </Styled.InterestContainer>
-            )}
-            <Styled.BtnContainer>
-              <Styled.Btn disabled={!this.isValid()} onClick={this.onSubmit}>
-                수정완료
-              </Styled.Btn>
-            </Styled.BtnContainer>
-          </Styled.Form>
-        )}
-      </>
-    );
+                    <Styled.BtnContainer>
+                      <Styled.Btn onClick={this.onSubmit}>확인</Styled.Btn>
+                    </Styled.BtnContainer>
+                    
+                  </>
+                  
+                ) : (
+                  <Slide in={true} direction="left" timeout={500}>
+                  <Styled.Form autoComplete="on" onKeyPress={this.pressEnter}>
+                    <div style={{fontSize: "200%",}}>{this.state.email}</div>
+                    ({this.state.isChannel === 'channel' ? '채널' : '멤버'})
+                    <Avatar
+                      src={this.state.imgBase64 ? this.state.imgBase64 : ''}
+                      style={{ marginTop:"20px", width: '100px', height: '100px' }}
+                    />
+                    {!this.state.imgUpdate ? (
+                      <Styled.InputSet>
+                        <label onClick={this.handleImageUpdate}>
+                          이미지 수정
+                        </label>{' '}
+                      </Styled.InputSet>
+                    ) : (
+                      <Styled.InputSet>
+                        {this.state.prevImg ? (
+                          <label onClick={this.onDeletePrevImg}>
+                            기존 사진 삭제
+                          </label>
+                        ) : null}
+                        {this.state.imgFile ? (
+                          <label onClick={this.onCancelUpload}>
+                            업로드 취소
+                          </label>
+                        ) : (
+                          <>
+                            <label htmlFor="imageUpload">사진 업로드</label>
+                            <input
+                              id="imageUpload"
+                              type="file"
+                              onChange={this.onChangePreview}
+                            />
+                          </>
+                        )}
+                      </Styled.InputSet>
+                    )}
+                    {!this.state.updatePw ? (
+                      <Styled.InputSet>
+                        <label onClick={this.handleAddPw}>비밀번호 변경</label>
+                      </Styled.InputSet>
+                    ) : (
+                      <>
+                        <Styled.CancelBtn>
+                          <CloseRounded onClick={this.handleAddPw} />
+                        </Styled.CancelBtn>
+                        <Styled.STextField
+                          name="pw"
+                          type="password"
+                          validate={this.state.pwValid}
+                          label={this.state.pwLabel}
+                          onChange={this.handleOnChange}
+                          variant="outlined"
+                          margin="dense"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {this.state.pwValid === 'valid' ? (
+                                  <CheckCircle />
+                                ) : (
+                                  <Lock />
+                                )}
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                        <Styled.STextField
+                          name="pwCheck"
+                          type="password"
+                          validate={this.state.pwCheckValid}
+                          label={this.state.pwCheckValidLabel}
+                          onChange={this.handleOnChange}
+                          variant="outlined"
+                          margin="dense"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                {this.state.pwCheckValid === 'valid' ? (
+                                  <CheckCircle />
+                                ) : (
+                                  <EnhancedEncryption />
+                                )}
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                        {/* <Styled.Btn onClick={this.handleAddPw}>기존 비밀번호 유지</Styled.Btn> */}
+                      </>
+                    )}
+                    {this.state.isChannel === 'channel' ? null : (
+                      <>
+                        <Styled.STextField
+                          name="name"
+                          validate={this.state.nameValid}
+                          label={this.state.nameLabel}
+                          onChange={this.handleOnChange}
+                          value={this.state.name}
+                          variant="outlined"
+                          margin="dense"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Face />
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                        <ThemeProvider theme={Styled.defaultMaterialTheme}>
+                          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <Styled.DatePicker
+                              autoOk
+                              openTo="year"
+                              variant="inline"
+                              margin="dense"
+                              inputVariant="outlined"
+                              invalidDateMessage=""
+                              invalidLabel=""
+                              maxDateMessage=""
+                              minDateMessage=""
+                              orientation="landscape"
+                              format="yyyy.MM.dd"
+                              InputAdornmentProps={{ position: 'end' }}
+                              label={this.state.birthLabel}
+                              value={this.state.birth}
+                              onChange={this.onChangeBirth}
+                              validate={this.state.birthValid}
+                            />
+                          </MuiPickersUtilsProvider>
+                        </ThemeProvider>
+                      </>
+                    )}
+                    <Styled.STextField
+                      name="nickname"
+                      value={this.state.nickname}
+                      validate={this.state.nicknameValid}
+                      label={this.state.nicknameLabel}
+                      onChange={this.handleOnChange}
+                      variant="outlined"
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <TagFaces />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <Styled.STextField
+                      name="link"
+                      value={this.state.link}
+                      validate={this.state.linkValid}
+                      label={
+                        this.state.isChannel === 'channel'
+                          ? '관련 페이지'
+                          : 'SNS'
+                      }
+                      onChange={this.handleOnChange}
+                      variant="outlined"
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            {this.state.isChannel === 'channel' ? <Link /> : <Instagram />}
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    <Styled.STextField
+                      name="msg"
+                      value={this.state.msg}
+                      validate={this.state.msgValid}
+                      label={this.state.msgLabel}
+                      onChange={this.handleOnChange}
+                      variant="outlined"
+                      margin="dense"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <CreateRounded />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                    {this.state.isChannel === 'channel' ? (
+                      <Styled.InterestContainer
+                        validate={this.state.interestsValid}
+                      >
+                        <FormLabel component="label">{`${this.state.interestsLabel}카테고리`}</FormLabel>
+                        <Styled.SFormGroup row={true}>
+                          {renderList}
+                        </Styled.SFormGroup>
+                        <FormHelperText>1개 이상 체크해 주세요</FormHelperText>
+                      </Styled.InterestContainer>
+                    ) : (
+                      <Styled.InterestContainer
+                        validate={this.state.interestsValid}
+                      >
+                        <FormLabel component="label">{`${this.state.interestsLabel}관심사`}</FormLabel>
+                        <Styled.SFormGroup row={true}>
+                          {renderList}
+                        </Styled.SFormGroup>
+                        <FormHelperText>2개 이상 체크해 주세요</FormHelperText>
+                      </Styled.InterestContainer>
+                    )}
+                    <Styled.BtnContainer>
+                      <Styled.Btn
+                        disabled={!this.isValid()}
+                        onClick={this.onSubmit}
+                      >
+                        수정완료
+                      </Styled.Btn>
+                      <Styled.Btn onClick={this.onCancle}>취소</Styled.Btn>
+                    </Styled.BtnContainer>
+                    <br/>
+                  </Styled.Form>
+                  </Slide>
+                )}
+                {/* <Styled.MainContainer
+                  className="Main"
+                  mode={this.state.mode}
+                  width={this.state.winWidth}
+                  navHeight={this.state.navHeight}
+                ></Styled.MainContainer> */}
+                </Styled.StCont>
+                </Zoom>
+
+            </>);
+          }}
+        </contextStorage.Consumer>
+
+        {/* footer */}
+        <Footer />
+      </>);
   }
 }
 export default withRouter(UpdateUserInfo);

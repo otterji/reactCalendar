@@ -11,7 +11,6 @@ export const NavBar = styled.nav<any>`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background: white; */
 
   box-sizing: border-box;
   width: 100%;
@@ -19,7 +18,7 @@ export const NavBar = styled.nav<any>`
   border-bottom: 2px solid #009689;
   /* padding: 0 10px 0 10px; */
   padding: 0 5vw 0 5vw;
-  z-index:1;
+  z-index: 100;
   a {
     color: black;
     text-decoration: none;
@@ -30,39 +29,35 @@ export const StBtnCont = styled.div<any>`
   display: flex;
   flex-wrap: nowrap;
   justify-content: center;
-  align-items:center;
+  align-items: center;
 
-  button{
+  button {
     color: black;
     &:hover {
       background-color: inherit;
-      color: #8cebd1;
+      color: #b2dfdb;
     }
 
-    ${(props) => {return (props.mode === 'visit') ? 
-    css`
-      &{
-        color: black;
-      }
-    `
-    :
-    css`
+    ${props => {
+      return props.mode === 'visit'
+        ? css`
+            & {
+              color: black;
+            }
+          `
+        : css`
       &[class$=${props.mode}]{
-        color: #8cebd1;
+        color: #b2dfdb;
       }
-    `
+    `;
     }}
   }
 `;
 
 export const StBtn = styled(Button)`
-  /* background-color: black;   */
-  /* font-size: 100%; */
-  /* font-weight: 100; */
   margin-left: 2px;
-  
-  &:hover{
-    /* background-color: #8cebd1; */
+
+  &:hover {
     background-color: lightgray;
   }
 `;
@@ -89,8 +84,8 @@ export const StyledMenu = withStyles({
 
 export const StyledMenuItem = withStyles(theme => ({
   root: {
-    '& .MuiTypography-body1':{
-      fontSize: "1vw"
+    '& .MuiTypography-body1': {
+      fontSize: '1vw'
     },
     '&:hover': {
       backgroundColor: '#80cbc4',
@@ -120,35 +115,3 @@ export const StIconBtn = styled(IconButton)`
   padding-bottom: 0;
   background-color: inherit;
 `;
-
-// export const Ul = styled.ul`
-//   display: flex;
-//   flex-wrap: nowrap;
-//   overflow-x: auto;
-//   -webkit-overflow-scrolling: touch;
-// `;
-
-// export const Li = styled.li`
-//   flex: 0 0 auto;
-//   -webkit-box-align: center;
-//   -webkit-box-pack: center;
-//   -webkit-tap-highlight-color: transparent;
-//   align-items: center;
-//   color: #999;
-//   height: 100%;
-//   justify-content: center;
-//   text-decoration: none;
-//   -webkit-box-align: center;
-//   -webkit-box-pack: center;
-//   -webkit-tap-highlight-color: transparent;
-//   align-items: center;
-//   color: #999;
-//   display: flex;
-//   font-size: 14px;
-//   height: 70px;
-//   justify-content: center;
-//   line-height: 16px;
-//   margin: 0 10px;
-//   text-decoration: none;
-//   white-space: nowrap;
-// `;

@@ -128,7 +128,8 @@ class Banner extends Component<any, State> {
  
   render(){
     return (
-      <StBannerCont navHeight={this.props.navHeight}>
+      // <StBannerCont navHeight={this.props.navHeight}>
+      <StBannerCont>
         {
           this.state.banner[this.state.idx]
         }
@@ -153,7 +154,7 @@ const StBannerCont = styled.div<any>`
   align-items: center;
 
   width: 100%;
-  margin-top: ${props => (props.navHeight)}px;
+  margin-top: 59px;
   overflow: hidden;
 `;
 

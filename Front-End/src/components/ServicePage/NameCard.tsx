@@ -25,13 +25,12 @@ const NameCard: any = () => {
           <div className="teamMember"><h3>S</h3><h2></h2><h3 className="nameCard">이정훈<br />Back-End</h3></div>
         </div>
         <div className="teamShalendarBack">
-          <div className="tmHover">
-          <div className="square"></div></div>
-          <div className="tmHover"><div className="square"></div></div>
-          <div className="tmHover"><div className="square"></div></div>
-          <div className="tmHover"><div className="square"></div></div>
-          <div className="tmHover"><div className="square"></div></div>
-          <div className="tmHover"><div className="square"></div></div>
+          <div className="tmHover"><a href="http://www.github.com/EXTC27/MyJavaScript"><div className="square"></div></a></div>
+          <div className="tmHover"><a href="http://www.github.com/otterji"><div className="square"></div></a></div>
+          <div className="tmHover"><a href="http://www.github.com/DongjoonPark"><div className="square"></div></a></div>
+          <div className="tmHover"><a href="http://www.github.com/ssyup4259"><div className="square"></div></a></div>
+          <div className="tmHover"><a href="http://www.github.com/sooyun429"><div className="square"></div></a></div>
+          <div className="tmHover"><a href="http://www.github.com/jhlee-algo"><div className="square"></div></a></div>
         </div>
       </div>
     </StIntroMemberCont>
@@ -54,11 +53,13 @@ height: 570px;
 
 .logoTextTop{
   font-size: 100px;
+  animation: mymove 5s infinite;
 }
 
 .logoTextBottom{
   font-size: 100px;
   padding-left: 300px;
+  animation: mymove 5s infinite;
 }
 
 .teamShalendar {
@@ -144,56 +145,50 @@ h3 {
   z-index: 10;
 }
 
-.tmHover > h2 {
-  color: white(26, 25, 25);
-  font-size: 5rem;
-  transform: rotateZ(-90deg) translateX(-150%) translateY(-25%);
-  transition-duration: 0.6s;
-}
-
 .tmHover:hover {
   opacity: 1;
-}
-
-.tmHover:hover > h2 {
-  transform: rotateZ(-90deg) translateX(-50%) translateY(-25%);
 }
 
 .tmHover:nth-child(1) {
   background: url(images/SinJae.jpg);
   background-size: cover;
-  background-position: 50% 85%;
+  background-position: 90% 30%;
+  transform : rotateZ(5deg)
 }
 
 .tmHover:nth-child(2) {
   background: url(images/YoungGee.jpg);
   background-size: cover;
   background-position: 50% 0;
+  transform : rotateZ(-5deg)
 }
 
 .tmHover:nth-child(3) {
-  background: url(images/DongJoon.jpg);
+  background: url(images/DongJoon.png);
   background-size: cover;
-  background-repeat: no-repeat;
   background-position: 90% 60%;
+  transform : rotateZ(5deg)
 }
 
 .tmHover:nth-child(4) {
   background: url(images/SangYeop.jpg);
   background-size: cover;
   background-position: 50% 85%;
+  transform : rotateZ(-5deg)
 }
 
 .tmHover:nth-child(5) {
   background: url(images/DoHee.jpg);
   background-size: cover;
   background-position: 50% 85%;
+  transform : rotateZ(5deg)
 }
 
 .tmHover:nth-child(6) {
   background: url(images/JungHoon.jpg);
   background-size: cover;
   background-position: 50% 85%;
+  transform : rotateZ(-5deg)
 }
 
 .nameCard{
@@ -241,4 +236,8 @@ h3 {
     border-radius: 5px;
 }
 
+@keyframes mymove {
+  from {color: #009689;}
+  to {color: white;}
+}
 `;

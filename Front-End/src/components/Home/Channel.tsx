@@ -113,8 +113,13 @@ class Channel extends Component<any, State>{
                 :
                 null
             }
-            <StLink to={`/visitPage/${this.state.info.nickname}`} className="title"
-              onClick={this.countUp}>{this.state.info.nickname}</StLink>
+            {
+              this.state.info.id === sessionStorage.getItem('id') ? 
+              <u className="title" style={{color: "white"}}>{this.state.info.nickname}</u>
+              :
+              <StLink to={`/visitPage/${this.state.info.nickname}`} className="title"
+                onClick={this.countUp}>{this.state.info.nickname}</StLink>
+            }
             {
               (this.props.isLogin && !this.props.isChannel && this.state.hover) ?
                 <>
@@ -143,6 +148,7 @@ class Channel extends Component<any, State>{
           </div>
         </div>
       </StChTile>
+
     </>)
   }
 }

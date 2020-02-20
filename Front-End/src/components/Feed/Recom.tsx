@@ -37,6 +37,10 @@ class Recom extends Component<any, State>{
 
   render() {
     return (<>
+    {/* {
+      this.state.info.id === sessionStorage.getItem('id') ? 
+      null
+      : */}
       <StChCont>
         <div className="avatarCont">
           <Avatar className="avatar" src={`${url}/${this.state.info.img}`}/>
@@ -50,6 +54,7 @@ class Recom extends Component<any, State>{
           </Link>
         </div>
       </StChCont>
+    {/* } */}
     </>)
   }
 }

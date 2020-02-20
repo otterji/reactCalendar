@@ -86,11 +86,18 @@ class ChannelList extends Component<any, State> {
       }
       else {
         await this.setStateAsync({
-          channels: this.state.channels.concat(resData.map((ch: any) => (
-            <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Channel info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
-            </Slide>
-          )))
+          channels: this.state.channels.concat(resData.map((ch: any) => {
+            if(this.props.className === 'recom' && ch.id === sessionStorage.getItem('id')){
+              return null;
+            }
+            else{
+              return(
+                <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
+                  <Channel info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+                </Slide>
+              )
+            }
+          }))
         })
         .then(() => {
           this.setState({
@@ -104,16 +111,6 @@ class ChannelList extends Component<any, State> {
       // alert(err);
     }
   }
-
-  // tempReq = async () => {
-  //   await this.setStateAsync({
-  //     channels: this.state.channels.concat(templist.map((temp: any) => (
-  //       <Slide key={temp.ch_no} in={true} direction="left" timeout={500}>
-  //         <Channel info={temp} isLogin={this.props.isLogin}/>
-  //       </Slide>
-  //     )))
-  //   })
-  // }
 
   scrollLeft = () => {
     document.getElementsByClassName(`${this.props.className}`)[0].scrollLeft -= 400;

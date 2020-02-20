@@ -41,13 +41,11 @@ class SignupPage extends Component<any, State> {
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <a href="/">아이디</a>
+                <a href="/" style={{textDecoration: "none"}}>아이디</a>
                 <span> / </span>
-                <a href="/">비밀번호</a>
-                <span> 찾기</span>
-              </Grid>
-              <Grid item xs={12}>
-                <Link to="/loginPage">로그인</Link>
+                <a href="/" style={{textDecoration: "none"}}>비밀번호</a>
+                <span> 찾기 | </span>
+                <Link to="/loginPage" style={{textDecoration: "none"}}>로그인</Link>
               </Grid>
             </Grid>
           </Styled.div>

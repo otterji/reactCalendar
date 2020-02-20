@@ -14,6 +14,7 @@ interface State {
 
   chName: string;
   chInfo: any;
+  subscribers: number;
   isSubscribe: boolean;
 
   mode: string;
@@ -29,6 +30,7 @@ class VisitCh extends Component<any, State>{
 
       chName: this.props.chName,
       chInfo: {},
+      subscribers:  0,
       isSubscribe: false,
 
       mode: 'calendar',
@@ -55,6 +57,23 @@ class VisitCh extends Component<any, State>{
     }
     catch(err){
       alert(err);
+    }
+    try{
+      const _id = this.state.chInfo.id
+      axios({
+        method: 'get',
+        url: `${url}/member/getCountOfMySubscriber/${_id}`
+      })
+      .then((res) => {
+        const resData = res.data
+        // console.log(resData)
+        this.setState({
+          subscribers: resData.count
+        })
+      })
+    }
+    catch(err){
+      alert(err)
     }
   }
   isSubscribe = async () => {
@@ -135,7 +154,11 @@ class VisitCh extends Component<any, State>{
     return(<>
     <visitStorage.Provider value={this.state}>
       <StVChCont>
-        <VisitChInfo onSubscribe={this.onSubscribe} unSubscribe={this.unSubscribe} changeMode={this.changeMode}/>
+        <VisitChInfo 
+          changeMode={this.changeMode} 
+          onSubscribe={this.onSubscribe} 
+          unSubscribe={this.unSubscribe} 
+        />
 
         <StContentCont>
           {/* <ModeBar changeMode={this.changeMode}/> */}

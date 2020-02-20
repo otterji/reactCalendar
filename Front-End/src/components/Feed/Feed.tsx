@@ -6,9 +6,9 @@ import { url } from '../../url'
 import { contextStorage } from '../../App';
 //style
 import styled from 'styled-components'
-import { TextField, InputBase, Avatar, Slide, Zoom } from '@material-ui/core'
+import { InputBase, Avatar, Slide, } from '@material-ui/core'
 import {
-  Event, StarBorderRounded, StarRounded,
+  StarBorderRounded, StarRounded,
   AddRounded, AddCircleRounded, DeleteForeverOutlined
 } from '@material-ui/icons'
 
@@ -86,7 +86,7 @@ class Feed extends Component<any, State>{
   }
 
   countUp = async () => {
-    try{
+    try {
       await axios({
         method: 'put',
         url: `${url}/channel/updateSearchFrequency/${this.state.info.srDto.id}`
@@ -94,7 +94,7 @@ class Feed extends Component<any, State>{
         sessionStorage.setItem('isVisit', 'true');
       })
     }
-    catch(err){
+    catch (err) {
       alert(err);
     }
   }
@@ -104,31 +104,68 @@ class Feed extends Component<any, State>{
     return (<>
       <Slide direction="up" in={true} timeout={500}>
         <StFeedCont>
+          <StTopCont>
+            <StLeftCont>
+              <StUserCont>
+                <h3 className="title">
+                  {this.props.info.schedules.title}
+                </h3>
 
-          <StUserCont>
-            <h3 className="title">
-              {this.props.info.schedules.title}
-            </h3>
-            <div className="logoPlusNickName">
-              <Avatar className="avatar" src={`${url}/${this.state.info.srDto.img}`} />
-              <StLink to={`/visitPage/${this.state.info.srDto.nickName}`}
-                onClick={this.countUp}>{this.state.info.srDto.nickName}</StLink>
-            </div>
-          </StUserCont>
+              </StUserCont>
+
+              <StDatePlaceCont>
+                <StTFCont>
+                  <div style={{ display: "flex" }}>
+                    <div style={{ marginRight: "10px" }}>시작:</div>
+                    <StTF
+                      margin="dense"
+                      defaultValue={this.state.startDate}
+                      inputProps={{ 'aria-label': '시작' }} />
+                  </div>
+                  <div style={{ display: "flex" }}>
+                    <div style={{ marginRight: "10px" }}>종료:</div>
+                    <StTF
+                      margin="dense"
+                      defaultValue={this.state.endDate}
+                      inputProps={{ 'aria-label': '종료' }} />
+                  </div>
+                </StTFCont>
+
+                <div className="place">
+                  {
+                    this.props.info.schedules.place &&
+                    (<>{`장소: ${this.props.info.schedules.place}`}</>)
+                  }
+                </div>
+              </StDatePlaceCont>
+            </StLeftCont>
+
+            <StRightCont>
+              <div className="logoPlusNickName">
+                <Avatar className="avatar" src={`${url}/${this.state.info.srDto.img}`} />
+                {
+                  sessionStorage.getItem('isChannel') === 'channel' ?
+                  <StName>{this.state.info.srDto.nickName}</StName>
+                  :
+                  <StLink to={`/visitPage/${this.state.info.srDto.nickName}`}
+                  onClick={this.countUp}>{this.state.info.srDto.nickName}</StLink>
+                }
+                {/* <StLink to={`/visitPage/${this.state.info.srDto.nickName}`}
+                  onClick={this.countUp}>{this.state.info.srDto.nickName}</StLink> */}
+              </div>
+            </StRightCont>
+          </StTopCont>
 
           <StContentCont>
             <div className="contents" style={{ borderBottom: "1px dotted black", paddingBottom: "10px" }} >
-              {this.props.info.schedules.contents?.split('\n').map((line :any, idx: any) => {
-                    return (<span key={idx}>{line}<br /></span>)
-                  })}
+              {this.props.info.schedules.contents?.split('\n').map((line: any, idx: any) => {
+                return (<span key={idx}>{line}<br /></span>)
+              })}
             </div>
-            <div className="contents" style={{paddingTop:"5px"}}>
+            <div className="contents" style={{ paddingTop: "5px" }}>
               {this.props.info.content?.split('\n').map((line: any, idx: any) => {
-                    return (<span key={idx}>{line}<br /></span>)
-                  })}
-            </div>
-            <div className="place">
-              {`장소: ${this.props.info.schedules.place}`}
+                return (<span key={idx}>{line}<br /></span>)
+              })}
             </div>
             {
               this.state.info.img && <img className="img" src={`${url}/${this.state.info.img}`} alt="" />
@@ -140,26 +177,9 @@ class Feed extends Component<any, State>{
                 </video>
               )
             }
-
-
           </StContentCont>
 
           <StBtnCont>
-
-            <StDateCont>
-              <Event className="calendar" />
-              <StTFCont>
-                시작:
-                <StTF
-                  defaultValue={this.state.startDate}
-                  inputProps={{ 'aria-label': '시작' }} />
-                종료:
-                <StTF
-                  defaultValue={this.state.endDate}
-                  inputProps={{ 'aria-label': '종료' }} />
-              </StTFCont>
-            </StDateCont>
-
             <div >
               {
                 this.state.isAdd ?
@@ -206,23 +226,38 @@ const StFeedCont = styled.div`
   background-color: #eff5f5;
   box-sizing: border-box;
 `;
-
-const StUserCont = styled.div`
+const StTopCont = styled.div`
   display: flex;
-  justify-content: space-between;
-  .MuiAvatar-root{
-    margin-right: 5px;
-  }
+  /* justify-content: space-between; */
+  align-items: center;
+`
+const StLeftCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 3;
+`
+const StRightCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
   .logoPlusNickName{
     text-align: center;
   }
   .avatar{
     margin: auto;
+    width: 4vw;
+    height: 4vw;
   }
-`;
-
+`
 const StLink = styled(Link)`
-  color: black;
+
+`
+const StUserCont = styled.div`
+  display: flex;
+  /* justify-content: space-between; */
+  
 `;
 
 const StContentCont = styled.div`
@@ -249,34 +284,43 @@ const StContentCont = styled.div`
     font-weight: 500;
   }
 
-  .place {
-    margin-top: 10px;
-    font-size: 80%;
-    font-style: italic;
-    font-weight: thin;
-  }
-
-  .img, .video {
+  .img, .video{
     width: 100%;
     height: auto;
   }
 `;
 
-const StDateCont = styled.div`
-
+const StDatePlaceCont = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .place {
+    /* margin-top: 10px; */
+    font-size: 80%;
+    font-style: italic;
+    font-weight: thin;
+  }
 `
+
+const StName = styled.div`
+  color: black;
+`;
+
 const StTFCont = styled.div`
   display: flex;
-  flex-direction: vertical;
-
+  flex-direction: column;
 `
 const StTF = styled(InputBase)`
-  border-width: 0;
+  /* .MuiInputBase-marginDense{
+    margin-left: 10px;
+  } */
+  /* border-width: 0; */
 `
 
 const StBtnCont = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   *{
     margin: 0 4px 0 4px;

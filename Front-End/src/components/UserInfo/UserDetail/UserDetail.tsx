@@ -1,13 +1,18 @@
 import React, { Component, ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Grid,
   Avatar,
   ListItem,
-  ListItemAvatar,
   FormControlLabel,
-  Slide
+  Tooltip,
+  Zoom
 } from '@material-ui/core';
-import { Instagram, CheckCircle, EmojiPeopleOutlined, CategoryOutlined } from '@material-ui/icons';
+import {
+  Instagram,
+  CheckCircle,
+  EmojiPeopleOutlined,
+  NotificationsOff, Public
+} from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
 // import ItemList from "../../common/ItemList/ItemList";
 import axios from 'axios';
@@ -34,7 +39,7 @@ interface State {
 
   interOrCate: any;
   subscribers: number;
-  onButton: boolean;
+  onButton: string;
 }
 
 // Main UserDetail part
@@ -62,7 +67,7 @@ class UserDetail extends Component<any, State> {
 
       interOrCate: [],
       subscribers: 0,
-      onButton: false,
+      onButton: 'init',
     };
   }
   setStateAsync(state: object) {
@@ -93,7 +98,7 @@ class UserDetail extends Component<any, State> {
         });
         const data = resUserInfo.data.info;
         this.setState({
-          imgFile: `${_url}/${data.img}?${Date.now()}`,
+          imgFile: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -113,8 +118,9 @@ class UserDetail extends Component<any, State> {
           }
         });
         const data = resUserInfo.data.info;
+        console.log(data.img, '??');
         await this.setStateAsync({
-          imgFile: `${_url}/${data.img}?${Date.now()}`,
+          imgFile: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -249,57 +255,42 @@ class UserDetail extends Component<any, State> {
     }
   };
 
-  getInterOrCate = async (_type:string) => {
-    try{
+  getInterOrCate = async (_type: string) => {
+    try {
       const _id = this.state.id;
       await axios({
         method: 'get',
         url: `${_url}/${_type}/getMyInterests/${_id}`
-      })
-      .then((res) => {
+      }).then(res => {
         const resData = res.data;
-        console.log(resData)
+        console.log(resData);
         this.setState({
-          interOrCate: resData.map((res:any) => {
-            return(<div key={res}>{res}</div>)
+          interOrCate: resData.map((res: any) => {
+            return <div key={res}>{res}</div>;
           })
-        })
-      })
-    }
-    catch(err){
+        });
+      });
+    } catch (err) {
       alert(err);
     }
-  }
+  };
 
   getSubscribers = async () => {
-    try{
-      const _id = this.state.id
+    try {
+      const _id = this.state.id;
       axios({
         method: 'get',
         url: `${_url}/member/getCountOfMySubscriber/${_id}`
-      })
-      .then((res) => {
-        const resData = res.data
+      }).then(res => {
+        const resData = res.data;
         this.setState({
           subscribers: resData.count
-        })
-      })
+        });
+      });
+    } catch (err) {
+      alert(err);
     }
-    catch(err){
-      alert(err)
-    }
-  }
-
-  onMouseOver = () => {
-    this.setState({
-      onButton: true,
-    })
-  }
-  onMouseLeave = () => {
-    this.setState({
-      onButton: false,
-    })
-  }
+  };
 
   render() {
     return (
@@ -313,81 +304,76 @@ class UserDetail extends Component<any, State> {
             />
           </div>
 
-        <Styled.profileName>
-          {
-            this.state.isChannel === 'member' ? (<>
-              {this.state.nickname}
-            </>) : (<>
-              <div className="nick">
-                {this.state.nickname}
+          <Styled.profileName>
+            {this.state.isChannel === 'member' ? (
+              <>{this.state.nickname}</>
+            ) : (
+              <>
+                <div className="nick">{this.state.nickname}</div>
+                <div className="official">
+                  <CheckCircle className="icon" fontSize="small" />
+                </div>
+              </>
+            )}
+          </Styled.profileName>
+
+          {this.state.isChannel === 'channel' && (
+            <>
+              <Styled.StICCont>{this.state.interOrCate}</Styled.StICCont>
+
+              <Styled.StSubersCont>
+                구독자 {this.state.subscribers}명
+              </Styled.StSubersCont>
+
+              <br />
+              <hr style={{ width: '90%' }} />
+            </>
+          )}
+
+          {this.state.link === '' ? null : (
+            <Styled.StSnsCont>
+              {
+                this.state.isChannel === 'channel' ? 
+                <div className="snsIcon">
+                  <Public fontSize="small" />
+                </div>
+                :
+                <div className="snsIcon">
+                  <Instagram fontSize="small" />
+                </div>
+              }
+              
+              <div className="sns">
+                <Link to="#" onClick={()=>{window.open(this.state.link, '_blank')}}>
+                  {this.state.link}
+                </Link>
               </div>
-              <div className="official">
-                <CheckCircle className="icon" fontSize="small"/>
+            </Styled.StSnsCont>
+          )}
+
+          {this.state.msg === '' ? null : (
+            <Styled.StMsgCont>
+              <div className="msgIcon">
+                <EmojiPeopleOutlined fontSize="small" />
               </div>
-            </>)
-          }
-        </Styled.profileName>
-
-        {
-          this.state.isChannel === "channel" &&
-          (<>
-            <Styled.StICCont>
-              {this.state.interOrCate}
-            </Styled.StICCont>
-
-            <Styled.StSubersCont>
-              구독자  {this.state.subscribers}명 
-            </Styled.StSubersCont>
-            
-            <br/>
-            <hr style={{width: "90%"}}/>
-          </>)
-        }
-        
-
-        {
-          this.state.link === '' ? 
-          null
-          :
-          <Styled.StSnsCont>
-            <div className="snsIcon">
-              <Instagram fontSize="small"/>
-            </div>
-            <div className="sns">
-              <a href={`${this.state.link}`}>{this.state.link}</a>
-            </div>
-          </Styled.StSnsCont>
-        } 
-        
-
-        {
-          this.state.msg === '' ? 
-          null
-          :
-          <Styled.StMsgCont>
-            <div className="msgIcon">
-              <EmojiPeopleOutlined fontSize="small"/>
-            </div>
-            <div className="msg">
-              <div>{this.state.msg}</div>
-            </div>
-          </Styled.StMsgCont>
-        }
-        
-
+              <div className="msg">
+                <div>{this.state.msg}</div>
+              </div>
+            </Styled.StMsgCont>
+          )}
 
         {this.state.isChannel === 'member' && sessionStorage.getItem('mode') === 'calendar' ? (<>
           <br/>
           <hr style={{width: "90%"}}/>
           <Styled.StListLabel>구독 리스트</Styled.StListLabel>
-          <Styled.div height={this.props.height} onMouseOver={this.onMouseOver} onMouseLeave={this.onMouseLeave}>
+          <hr style={{width: "90%"}}/>
+          <Styled.div height={this.props.height} >
             {this.state.subscribes.length >= 1
               ? this.state.subscribes.map((channel: any) => {
                 return (
-                  <Styled.labelHover>
+                  <Styled.labelHover key={channel.id}>
                     <ListItem
                       dense
-                      key={channel.id}
                       button
                       // style={{ padding: '5px', width: '200px' }}
                     >
@@ -400,24 +386,27 @@ class UserDetail extends Component<any, State> {
                             name={channel.id}
                             onChange={this.handleChannelFilter}
                             value={channel.id}
+                            
                           />
                         }
                         label={channel.nickName}
                       />
                       </ListItem>
-                    {
-                      this.state.onButton ? 
-                      <Styled.btn onClick={this.unsubscribe.bind(this, channel.id)}>
+                      {/* <Styled.btn className='btn' onClick={this.unsubscribe.bind(this, channel.id)}>
                         구독 취소
-                      </Styled.btn>
-                      :
-                      null
-                      
-                    }
+                      </Styled.btn> */}
+                      <Tooltip title="구독 취소">
+                        <Styled.StIconBtn 
+                          onClick={this.unsubscribe.bind(this, channel.id)}
+                        >
+                          <NotificationsOff fontSize="small"/>
+                        </Styled.StIconBtn>
+                      </Tooltip>
                   </Styled.labelHover>
                 );
               })
-              : '구독 중인 채널이 없습니다.'}
+              // : '구독 중인 채널이 없습니다.'}
+              : <Zoom in={true}><div style={{display:"flex", justifyContent:"center", marginTop:"20px"}}>구독 중인 채널이 없습니다.</div></Zoom>}
           </Styled.div>
       </>) : null}
       </Styled.StUDCont>

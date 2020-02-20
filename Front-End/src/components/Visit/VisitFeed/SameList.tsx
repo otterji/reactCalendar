@@ -57,11 +57,18 @@ class SameList extends Component<any, State> {
       }
       else {
         await this.setStateAsync({
-          channels: this.state.channels.concat(resData.map((ch: any) => (
-            <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Same info={ch} onChangeCh={this.props.onChangeCh}/>
-            </Slide>
-          )))
+          channels: this.state.channels.concat(resData.map((ch: any) => {
+            if(ch.id === sessionStorage.getItem('id') || ch.id === this.props.id ){
+              return null
+            }   
+            else{
+              return(
+                <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
+                  <Same info={ch} onChangeCh={this.props.onChangeCh}/>
+                </Slide>
+              )
+            }
+         }))
         })
         .then(() => {
           this.setState({

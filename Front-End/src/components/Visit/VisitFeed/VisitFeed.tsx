@@ -5,7 +5,7 @@ import { url } from '../../../url'
 //style
 import styled from 'styled-components'
 import { InputBase, Avatar, Slide } from '@material-ui/core'
-import { Event, StarBorderRounded, StarRounded, AddRounded, AddCircleRounded, } from '@material-ui/icons'
+import {  StarBorderRounded, StarRounded, AddRounded, AddCircleRounded, FullscreenExit, } from '@material-ui/icons'
 
 interface State {
   isAdd: boolean;
@@ -96,16 +96,49 @@ class VisitFeed extends Component<any, State>{
     return (<>
       <Slide direction="up" in={true} timeout={500}>
         <StFeedCont>
+          <StTopCont>
+            <StLeftCont>
+              <StUserCont>
+                <h3 className="title">
+                  {this.props.feedInfo.schedules.title}
+                </h3>
+              </StUserCont>
 
-          <StUserCont>
-            <h3 className="title">
-              {this.props.feedInfo.schedules.title}
-            </h3>
-            <div className="logoPlusNickName">
-              <Avatar className="avatar" src={`${url}/${this.state.feedInfo.srDto.img}`} />
-              <StName>{this.state.feedInfo.srDto.nickName}</StName>
-            </div>
-          </StUserCont>
+              <StDatePlaceCont>
+                <StTFCont>
+                  <div style={{display: "flex"}}>
+                  <div style={{marginRight: "10px"}}>시작:</div>
+                  <StTF
+                    margin="dense"
+                    defaultValue={this.state.startDate}
+                    inputProps={{ 'aria-label': '시작' }} />
+                  </div>
+                  <div style={{display: "flex"}}>
+                  <div style={{marginRight: "10px"}}>종료:</div>
+                  <StTF
+                    margin="dense"
+                    defaultValue={this.state.endDate}
+                    inputProps={{ 'aria-label': '종료' }} />
+                  </div>
+                </StTFCont>
+
+                <div className="place">
+                  {
+                    this.props.feedInfo.schedules.place &&
+                    (<>{`장소: ${this.props.feedInfo.schedules.place}`}</>)
+                  }
+                </div>
+              </StDatePlaceCont>
+            </StLeftCont>
+            
+            <StRightCont>
+              <div className="logoPlusNickName">
+                <Avatar className="avatar" src={`${url}/${this.state.feedInfo.srDto.img}`} />
+                <StName>{this.state.feedInfo.srDto.nickName}</StName>
+              </div>
+            </StRightCont>
+          </StTopCont>
+
 
           <StContentCont>
             <div className="contents" style={{ borderBottom: "1px dotted black", paddingBottom: "10px" }} >
@@ -118,9 +151,6 @@ class VisitFeed extends Component<any, State>{
                     return (<span key={idx}>{line}<br /></span>)
                   })}
             </div>
-            <div className="place">
-              {`장소: ${this.props.feedInfo.schedules.place}`}
-            </div>
             {
               this.state.feedInfo.img && <img className="img" src={`${url}/${this.state.feedInfo.img}`} alt="" />
             }
@@ -131,26 +161,9 @@ class VisitFeed extends Component<any, State>{
                 </video>
               )
             }
-
-
           </StContentCont>
 
           <StBtnCont>
-
-            <StDateCont>
-              <Event className="calendar" />
-              <StTFCont>
-                시작:
-                <StTF
-                  defaultValue={this.state.startDate}
-                  inputProps={{ 'aria-label': '시작' }} />
-                종료:
-                <StTF
-                  defaultValue={this.state.endDate}
-                  inputProps={{ 'aria-label': '종료' }} />
-              </StTFCont>
-            </StDateCont>
-
             <div >
               {
                 this.state.isAdd ?
@@ -167,8 +180,8 @@ class VisitFeed extends Component<any, State>{
               }
 
             </div>
-
           </StBtnCont>
+
         </StFeedCont>
       </Slide>
     </>)
@@ -187,18 +200,36 @@ const StFeedCont = styled.div`
   box-sizing: border-box;
 `;
 
-const StUserCont = styled.div`
+const StTopCont = styled.div`
   display: flex;
-  justify-content: space-between;
-  .MuiAvatar-root{
-    margin-right: 5px;
-  }
+  /* justify-content: space-between; */
+  align-items: center;
+`
+
+const StLeftCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 3;
+`
+const StRightCont = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
   .logoPlusNickName{
     text-align: center;
   }
   .avatar{
     margin: auto;
+    width: 4vw;
+    height: 4vw;
   }
+`
+const StUserCont = styled.div`
+  display: flex;
+  /* justify-content: space-between; */
+  
 `;
 
 const StName = styled.div`
@@ -229,34 +260,39 @@ const StContentCont = styled.div`
     font-weight: 500;
   }
 
-  .place {
-    margin-top: 10px;
-    font-size: 80%;
-    font-style: italic;
-    font-weight: thin;
-  }
-
   .img, .video{
     width: 100%;
     height: auto;
   }
 `;
 
-const StDateCont = styled.div`
-
+const StDatePlaceCont = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .place {
+    /* margin-top: 10px; */
+    font-size: 80%;
+    font-style: italic;
+    font-weight: thin;
+  }
 `
+
 const StTFCont = styled.div`
   display: flex;
-  flex-direction: vertical;
-
+  flex-direction: column;
 `
 const StTF = styled(InputBase)`
-  border-width: 0;
+  /* .MuiInputBase-marginDense{
+    margin-left: 10px;
+  } */
+  /* border-width: 0; */
 `
 
 const StBtnCont = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   *{
     margin: 0 4px 0 4px;

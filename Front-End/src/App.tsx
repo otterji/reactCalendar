@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 //
 import Loading from './Loading';
 import Main from './Main';
@@ -32,10 +32,10 @@ class App extends Component<any, State> {
     };
   }
   componentDidMount() {
-    // console.log('did mount APP')
+    console.log('did mount APP')
   }
   componentDidUpdate() {
-    // console.log('did update APP')
+    console.log('did update APP')
   }
   setStateAsync(state: object) {
     return new Promise(resolve => {

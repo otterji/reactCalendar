@@ -65,12 +65,12 @@ class VisitMode extends Component<any, State> {
           // 채널 피드
           <StFeedSameCont>
           <Grid container spacing={1}>
-            <Grid item xs={10} sm={10} lg={10}>
+            <Grid item xs={9} sm={9} lg={9}>
             <div className="feed">
               <VisitFeedList id={store.chInfo.id} height={this.state.height}/>
             </div>
             </Grid>
-            <Grid item xs={2} sm={2} lg={2}>
+            <Grid item xs={3} sm={3} lg={3}>
             <div className='same'>
               <SameList id={store.chInfo.id} height={this.state.height} onChangeCh={this.onChangeCh} />
             </div>
@@ -95,5 +95,7 @@ const StFeedSameCont = styled.div`
     position: relative;
     /* flex-grow: 1; */
     margin-top: 20px;
+    margin-left: 2vw;
+    margin-right: 2vw;
   }
 `

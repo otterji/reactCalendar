@@ -13,10 +13,8 @@ import Footer from './components/Footer/Footer';
 //style
 import styled from 'styled-components';
 import {
-  Box,
   Grid,
   Slide,
-  Fade,
 } from '@material-ui/core';
 
 
@@ -25,7 +23,7 @@ interface State {
   mode: string;
   winWidth: number;
   winHeight: number;
-  navHeight: number;
+  // navHeight: number;
   _yymm: string;
   subscribeChannelSch: Array<Array<Object>>;
   toggle: boolean;
@@ -39,7 +37,7 @@ class Main extends Component<any, State> {
       mode: 'home',
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
-      navHeight: 0,
+      // navHeight: 0,
       _yymm: `${new Date().getFullYear()}-0${new Date().getMonth() + 1}`,
       subscribeChannelSch: [[{}]],
       toggle: false
@@ -49,15 +47,12 @@ class Main extends Component<any, State> {
     // console.log('did mount MAIN', this.props.match.params.nickname)
 
     window.addEventListener('resize', this.changeSize);
-    this.setState({ navHeight: 59 });
+    // this.setState({ navHeight: 59 });
 
     const _mode = sessionStorage.getItem('mode');
     if (_mode) {
       this.setState({ mode: _mode });
     }
-  }
-  componentDidUpdate() {
-    // console.log('did update MAIN', this.props.match.params.nickname)
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.changeSize);
@@ -87,7 +82,6 @@ class Main extends Component<any, State> {
     this.setState({ _yymm: mm })
   };
 
-
   renderByMode = () => {
     // console.log(this.state._yymm)
     if (this.state.mode === 'calendar') {
@@ -97,7 +91,10 @@ class Main extends Component<any, State> {
         subscribeSch = {this.state.subscribeChannelSch}
       />;
     } else if (this.state.mode === 'feed') {
-      return <FeedList winHeight={this.state.winHeight} toggleRender={this.toggleRender}/>;
+      return <FeedList 
+              winHeight={this.state.winHeight} 
+              toggleRender={this.toggleRender}            
+            />;
     }
   };
 
@@ -125,7 +122,8 @@ class Main extends Component<any, State> {
 
                 {
                   this.state.mode === 'home' ? 
-                  <Banner navHeight={this.state.navHeight}/>
+                  // <Banner navHeight={this.state.navHeight}/>
+                  <Banner/>
                   :
                   null
                 }
@@ -134,7 +132,7 @@ class Main extends Component<any, State> {
                   className="Main"
                   mode={this.state.mode}
                   width={this.state.winWidth}
-                  navHeight={this.state.navHeight}
+                  // navHeight={this.state.navHeight}
                 >
                   {/* <Grid item xs={12} sm={12} lg={12}> */}
                   {store.isLogin ? (
@@ -217,7 +215,8 @@ export default Main;
 const StyledMainContainer = styled.div<any>`
   display: flex;
   flex-direction: column;
-  margin-top: ${props => (props.mode === 'home' ? 20 : props.navHeight)}px;
+  /* margin-top: ${props => (props.mode === 'home' ? 20 : props.navHeight)}px; */
+  margin-top: 59px;
   width: ${props => (props.width < 1380 ? props.width - 100 : 1380)}px;
   .feedClass{
     margin-right: 20px;

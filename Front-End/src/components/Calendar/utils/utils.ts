@@ -128,12 +128,7 @@ const fetchData = async (params: {
     console.info('SERVER_ERR!!!', e);
   }
 
-  // @ts-ignore
-  // console.log('realSubsSch[0][0]' , subscribeSch[0][0])
-  // console.log('시험시험', reqRet)
   if (subscribeSch !== undefined) {
-    // console.log('realSubsSch[0][0]' , subscribeSch)
-    // console.log('fetch 안의 if문을 돈다')
     subscribeSch.map((e:any, idx:number) => {
       e.map((e2:any, idx2: number) => {
         reqRet.push(e2)

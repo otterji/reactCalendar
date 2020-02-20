@@ -79,9 +79,11 @@ export const StSnsCont = styled.div`
   .sns{
     width:100%;
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     font-style: italic;
     font-size: 0.9vw;
+    padding-right: 10px;
+    word-break: break-all;
   }
 `;
 
@@ -99,6 +101,9 @@ export const StMsgCont = styled.div`
   }
   .msg{
     width:100%;
+    font-size: 1vw;
+    padding-right: 10px;
+    word-break: break-all;
   }
 `;
 
@@ -155,7 +160,7 @@ export const div = styled.div<any>`
   overflow: auto;
   width: 90%;
   margin: 10px 5px 20px 5px;
-  border: 2px solid #00e6b8;
+  /* border: 2px solid #00e6b8; */
   border-radius: 3px;
   padding-left: 0.5vw;
   height: ${props => (props.height - 350)}px;

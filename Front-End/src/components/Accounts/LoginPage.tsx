@@ -73,14 +73,11 @@ class LoginPage extends Component<any, State> {
                 </div>
               </Grid>
               <Grid item xs={12}>
-                <a href="/">아이디</a>
+                <a href="/" style={{textDecoration: "none"}}>아이디</a>
                 <span> / </span>
-                <a href="/">비밀번호</a>
-                <span> 찾기</span>
-              </Grid>
-
-              <Grid item xs={12}>
-                <Link to="/signupPage">회원 가입</Link>
+                <a href="/" style={{textDecoration: "none"}}>비밀번호</a>
+                <span> 찾기 | </span>
+                <Link to="/signupPage" style={{textDecoration: "none"}}>회원 가입</Link>
               </Grid>
 
             </Grid>

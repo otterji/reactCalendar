@@ -175,7 +175,7 @@ class FeedList extends Component<any, State> {
         url: `${url}/feed/delete/${_feedNo}`
       });
       this.props.toggleRender();
-      window.location.reload(false);
+      // window.location.reload(false);
     }
     catch(err){
       alert(err);

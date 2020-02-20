@@ -1,13 +1,9 @@
-import React, { Component, ChangeEvent } from 'react';
+import React, { Component, } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Grid,
   Avatar,
-  ListItem,
-  ListItemAvatar,
-  FormControlLabel,
-  Slide
 } from '@material-ui/core';
-import { Instagram, CheckCircle, EmojiPeopleOutlined, CategoryOutlined } from '@material-ui/icons';
+import { Instagram, CheckCircle, EmojiPeopleOutlined, Public, } from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
 // import ItemList from "../../common/ItemList/ItemList";
 import axios from 'axios';
@@ -123,7 +119,7 @@ class UserDetail extends Component<any, State> {
       })
       .then((res) => {
         const resData = res.data;
-        console.log(resData)
+        // console.log(resData)
         this.setState({
           interOrCate: resData.map((res:any) => {
             return(<div key={res}>{res}</div>)
@@ -203,12 +199,31 @@ class UserDetail extends Component<any, State> {
           this.state.link === '' ? 
           null
           :
+          // <Styled.StSnsCont>
+          //   <div className="snsIcon">
+          //     <Instagram fontSize="small"/>
+          //   </div>
+          //   <div className="sns">
+          //     <a href={`${this.state.link}`}>{this.state.link}</a>
+          //   </div>
+          // </Styled.StSnsCont>
           <Styled.StSnsCont>
-            <div className="snsIcon">
-              <Instagram fontSize="small"/>
-            </div>
+            {
+              this.state.isChannel === 'channel' ? 
+              <div className="snsIcon">
+                <Public fontSize="small" />
+              </div>
+              :
+              <div className="snsIcon">
+                <Instagram fontSize="small" />
+              </div>
+            }
+            
             <div className="sns">
-              <a href={`${this.state.link}`}>{this.state.link}</a>
+              <Link to="#"
+              onClick={()=>{window.open(this.state.link, '_blank')}}>
+                {this.state.link}
+              </Link>
             </div>
           </Styled.StSnsCont>
         } 

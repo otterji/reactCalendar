@@ -135,7 +135,7 @@ class Navbar extends Component<any, State> {
                     {this.state.anchorEl === null ? (
                       <AccountCircleRounded />
                     ) : (
-                      <AccountCircleRounded style={{ color: '#8cebd1' }} />
+                      <AccountCircleRounded style={{ color: '#b2dfdb' }} />
                     )}
                   </Styled.StIconBtn>
                 </Tooltip>
@@ -148,37 +148,37 @@ class Navbar extends Component<any, State> {
                   onClose={this.handleClick}
                   disableScrollLock={true} //이거 안하면 메뉴 열었을 때 스크롤바 없어져서 너비가 바뀜
                 >
-                  <Styled.StyledMenuItem>
-                    <ListItemIcon>
-                      <EditRounded fontSize="small" />
-                    </ListItemIcon>
-                    <Link
-                      to="/updateUserInfo"
-                      style={{
-                        fontWeight: 300,
-                        textDecoration: 'none',
-                        color: 'black'
-                      }}
-                    >
-                      <ListItemText primary="정보 수정" />
-                    </Link>
-                  </Styled.StyledMenuItem>
+                  <Link
+                    to="/updateUserInfo"
+                    style={{
+                      fontWeight: 300,
+                      textDecoration: 'none',
+                      color: 'black'
+                    }}
+                  >
+                    <Styled.StyledMenuItem>
+                      <ListItemIcon>
+                        <EditRounded fontSize="small" />
+                      </ListItemIcon>
+                        <ListItemText primary="정보 수정" />
+                    </Styled.StyledMenuItem>
+                  </Link>
 
-                  <Styled.StyledMenuItem>
-                    <ListItemIcon>
-                      <AssignmentOutlined fontSize="small" />
-                    </ListItemIcon>
-                    <Link
-                      to="/ServicePage"
-                      style={{
-                        fontWeight: 300,
-                        textDecoration: 'none',
-                        color: 'black'
-                      }}
-                    >
-                      <ListItemText primary="서비스 소개" />
-                    </Link>
-                  </Styled.StyledMenuItem>
+                  <Link
+                    to="/ServicePage"
+                    style={{
+                      fontWeight: 300,
+                      textDecoration: 'none',
+                      color: 'black'
+                    }}
+                  >
+                    <Styled.StyledMenuItem>
+                      <ListItemIcon>
+                        <AssignmentOutlined fontSize="small" />
+                      </ListItemIcon>
+                        <ListItemText primary="서비스 소개" />
+                    </Styled.StyledMenuItem>
+                  </Link>
 
                   <Styled.StyledMenuItem onClick={this.onLogout}>
                     <ListItemIcon>

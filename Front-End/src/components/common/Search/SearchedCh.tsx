@@ -18,7 +18,7 @@ class SearchedCh extends Component<any, State> {
     }
   }
 
-  countUp = async () => {
+  countUp = async (e:any) => {
     try{
       await axios({
         method: 'put',
@@ -30,6 +30,7 @@ class SearchedCh extends Component<any, State> {
     catch(err){
       alert(err);
     }
+    e.preventDefault();
   }
 
   render(){
@@ -39,12 +40,11 @@ class SearchedCh extends Component<any, State> {
           <Avatar className="avatar" src={`${url}/${this.state.info.img}`}/>
         </div>
         <div className="link">
-          <Link 
-            to={`/visitPage/${this.state.info.nickname}`} 
+          <a href={`/visitPage/${this.state.info.nickname}`} 
             onClick={this.countUp}
           >
             {this.state.info.nickname}
-          </Link>
+          </a>
         </div>
       </StChCont>
     </>)

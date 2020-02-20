@@ -8,6 +8,19 @@ import {
 } from '@material-ui/core';
 import { KeyboardDatePicker } from '@material-ui/pickers';
 
+export const StCont = styled.div<any>`
+  /* height: ${props => (props.height - 200 - 59)}px; */
+  margin-top: 59px;
+  padding: 20vh 0 20vh 0;
+  ${props => (props.page === 2 && css`padding: 0;`)}
+  
+  /* margin: 10vh 0 10vh 0; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`
+
 export const Form = styled.form`
   align-items: center;
   border: 0.1rem solid gray;
@@ -38,15 +51,6 @@ export const InputSet = styled.div<any>`
       background-color: #009687;
       color: white;
     }
-    ${props =>
-      props.id === 'cancel' &&
-      css`
-      background-color: #fa857d;
-      color: white;
-      &:hover {
-        background-color: #009687;
-        color: white;
-      `}
   }
 
   input {
@@ -66,6 +70,7 @@ export const InterestContainer = styled(FormControl)<any>`
   margin-left: 3rem;
   margin-right: 3rem;
   padding: 1rem;
+  border: 0.05rem solid #bfbfbf;
   border-radius: 5px;
 
   .MuiFormLabel-root {
@@ -294,5 +299,16 @@ export const CancelBtn = styled(Button)<any>`
   &:hover {
     // background-color: #b2dfdb;
     color: white;
+  }
+`;
+
+export const MainContainer = styled.div<any>`
+  display: flex;
+  flex-direction: column;
+  margin-top: ${props => (props.mode === 'home' ? 20 : props.navHeight)}px;
+  width: ${props => (props.width < 1380 ? props.width - 100 : 1380)}px;
+  .feedClass {
+    margin-right: 20px;
+    margin-left: 20px;
   }
 `;
