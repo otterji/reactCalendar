@@ -59,7 +59,7 @@ const ShareForm: FunctionComponent<ModalProps> = props => {
           file: selectedImgFile
         }
 
-        // await axios.post(`${_url}/feed/uploadImage/${feedNo}`, imgReqData);
+          ;
       }
 
       if (selectedVideoFile !== '') {
