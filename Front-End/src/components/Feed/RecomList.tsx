@@ -4,32 +4,9 @@ import axios from 'axios'
 import { url } from '../../url'
 import Recom from './Recom'
 //style
-import styled, { css } from 'styled-components'
-import { GridList, Fab, Zoom, Slide, } from '@material-ui/core'
-import { KeyboardArrowUp, Autorenew } from "@material-ui/icons";
-
-const templist = [
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-  {ch_no:0, subscribe:true}, 
-  {ch_no:1, subscribe:false}, 
-  {ch_no:2, subscribe:false}, 
-  {ch_no:3, subscribe:true}, 
-  {ch_no:4, subscribe:false}, 
-  {ch_no:5, subscribe:true}, 
-  {ch_no:6, subscribe:false}, 
-  {ch_no:7, subscribe:true}, 
-  {ch_no:8, subscribe:true}, 
-  {ch_no:9, subscribe:true}, 
-];
+import styled from 'styled-components'
+import { Fab, Zoom, Slide, } from '@material-ui/core'
+import { KeyboardArrowUp, } from "@material-ui/icons";
 
 interface State {
   labelHeight: number;
@@ -39,7 +16,6 @@ interface State {
   lastCh: number;
   noCh: boolean;
 }
-
 class RecomList extends Component<any, State> {
   constructor(props: any) {
     super(props);
@@ -59,18 +35,16 @@ class RecomList extends Component<any, State> {
       labelHeight: _labelHeight,
     })
     // this.tempReq();
-    this.axiosReq();
+    this.getRecoms();
   }
   componentDidUpdate() {
-
   }
   setStateAsync(state: object) {
     return new Promise((resolve) => {
       this.setState(state, resolve)
     });
   }
-
-  axiosReq = async () => {
+  getRecoms = async () => {
     try {
       let _url;
       const _id = sessionStorage.getItem('id');      
@@ -91,33 +65,33 @@ class RecomList extends Component<any, State> {
       }
       else {
         await this.setStateAsync({
-          channels: this.state.channels.concat(resData.map((ch: any) => (
-            <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
-              <Recom info={ch} isLogin={this.props.isLogin}/>
-            </Slide>
-          )))
+          channels: this.state.channels.concat(resData.map((ch: any) => {
+            if(ch.id === sessionStorage.getItem('id')){
+              return null
+            }   
+            else{
+              return(
+                <Slide key={ch.ch_no} in={true} direction="left" timeout={500}>
+                  <Recom info={ch} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
+                </Slide>
+              )
+            }
+          }))
         })
         .then(() => {
           this.setState({
             lastCh: resData[resData.length - 1].recomNo
           })
         })
-        console.log(this.state.lastCh, this.state.channels);
+        // console.log(this.state.lastCh, this.state.channels);
       }
     }
     catch (err) {
       // alert(err);
     }
+    
   }
-
-  tempReq = async () => {
-    await this.setStateAsync({
-      channels: this.state.channels.concat(templist.map((temp: any) => (
-        <Recom info={temp} isLogin={this.props.isLogin} isChannel={this.props.isChannel}/>
-      )))
-    })
-  }
-
+  
   onScroll = () => {
     if (!this.state.isBottom) {
       const _scrollHeight = document.getElementsByName("channelContainer")[0]
@@ -126,29 +100,30 @@ class RecomList extends Component<any, State> {
         .scrollTop;
       const _clientHeight = document.getElementsByName("channelContainer")[0]
         .clientHeight;
-
       if (this.state.isTop && _clientHeight <= _scrollTop) {
         this.setState({ isTop: false });
       } else if (!this.state.isTop && _clientHeight > _scrollTop) {
         this.setState({ isTop: true });
       }
-
       if (_scrollHeight - _scrollTop < _clientHeight + 1) {
         this.setState({ isBottom: true });
       }
+      
     }
   };
-
   scrollToTop = () => {
     document.getElementsByName("channelContainer")[0].scrollTop = 0;
+    this.setState({
+      isTop: true,
+      isBottom: false,
+    })
   };
-
   render() {
+    
     return (<>
       <Slide in={true} direction="left" timeout={500}>
         <StLabel className="label">추천 채널</StLabel>
       </Slide> 
-
       <Slide in={true} direction="left" timeout={1000}>
         <StChListCont
         name="channelContainer"
@@ -173,20 +148,17 @@ class RecomList extends Component<any, State> {
           </StFab>
         </Zoom>
       )}
-
     
     </>)
   }
 }
-
 export default RecomList;
-
 const StLabel = styled.div`
   text-align: center;
   font-size: 120%;
   font-weight: bold;
+  color: #009689;
 `
-
 const StChListCont = styled.div<any>`
   z-index: 1;
   border-radius: 10px;
@@ -197,8 +169,8 @@ const StChListCont = styled.div<any>`
     display: none;
   }
   scroll-behavior: smooth;
-`;
 
+`;
 const StFab = styled(Fab)<any>`
   position: absolute;
   background-color: black;
@@ -207,6 +179,6 @@ const StFab = styled(Fab)<any>`
   right: 5%;
 
   &:hover{
-    background-color: #8cebd1;
+    background-color: #8CEBD1;
   }
 `;

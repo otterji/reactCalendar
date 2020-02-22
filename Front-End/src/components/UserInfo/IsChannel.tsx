@@ -11,7 +11,7 @@ export const IsChannel = async (_id: string) => {
         id: _id
       }
     });
-    const data = resIsChannel.data.count;
+    const data = resIsChannel.data.result;
     _isChannel = data ? "channel" : "member";
   } catch (err) {
     console.log(err);

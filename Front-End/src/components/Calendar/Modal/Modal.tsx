@@ -10,7 +10,6 @@ const Modal = (params: ModalProps) => {
   const { close, data, openModal } = params;
   const { type } = data;
 
-
   const typeObj = useMemo(() => ({
     [TYPE_DETAIL]: <DetailScheduleModal close={close} data={data} openModal={openModal} />,
     [TYPE_ADD]: <AddForm close={close} dayData={data.days} openModal={openModal} />,

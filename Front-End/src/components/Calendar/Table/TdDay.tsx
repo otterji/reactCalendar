@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react';
 import { OpenModal } from '../_types/calendar';
-import { StyledTdDay } from '../style';
+import { StyledTdDay, HoveredStyledTdDay } from '../style';
 import { TYPE_ADD } from '../utils/CONST'
 
 type TdDayProps = {
@@ -9,24 +9,24 @@ type TdDayProps = {
   onMouseHover: any;
 }
 
-const TdDay: FunctionComponent<TdDayProps> = props => {
-  const { days, openModal, onMouseHover } = props;
+const TdDay: FunctionComponent<TdDayProps & any> =(props) => {
+  const { days, openModal, hoverRange } = props;
   const onClickHandler = () => {
     openModal({ days, schedules: [], type: TYPE_ADD });
   }
 
-  const [hoverDay, setHoverDay] = useState([] as any);
+
   const isHover = (e: any) => {
-    // 범위 안에 있으면
-    return true
+    return hoverRange[0] <= e && e <= hoverRange[1] ? true : false
   }
+
 
   return (
     isHover((days as Date).getDate())
       ?
-      <StyledTdDay onClick={onClickHandler} >{
+      <HoveredStyledTdDay onClick={onClickHandler} >{
         (days as Date).getDate()
-      }</StyledTdDay>
+      }</HoveredStyledTdDay>
       :
       <StyledTdDay onClick={onClickHandler} >{
         (days as Date).getDate()

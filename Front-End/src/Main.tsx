@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 //
-import { loginState } from './App';
+import { contextStorage } from './App';
 import Navbar from './components/Navbar/Navbar';
+import Banner from './components/Home/Banner'
 import UserDetail from './components/UserInfo/UserDetail/UserDetail';
 import { Container } from './components/Calendar/Container';
 import FeedList from './components/Feed/FeedList';
@@ -12,20 +13,20 @@ import Footer from './components/Footer/Footer';
 //style
 import styled from 'styled-components';
 import {
-  Box,
   Grid,
-  // Zoom,
-  Slide
+  Slide,
 } from '@material-ui/core';
+
 
 interface State {
   isLogin: boolean;
   mode: string;
   winWidth: number;
   winHeight: number;
-  navHeight: number;
+  // navHeight: number;
   _yymm: string;
   subscribeChannelSch: Array<Array<Object>>;
+  toggle: boolean;
 }
 
 class Main extends Component<any, State> {
@@ -36,39 +37,35 @@ class Main extends Component<any, State> {
       mode: 'home',
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
-      navHeight: 0,
+      // navHeight: 0,
       _yymm: `${new Date().getFullYear()}-0${new Date().getMonth() + 1}`,
-      subscribeChannelSch: [[{}]]
+      subscribeChannelSch: [[{}]],
+      toggle: false
     };
   }
   componentDidMount() {
-    // console.log('main did mount')
+    // console.log('did mount MAIN', this.props.match.params.nickname)
+
     window.addEventListener('resize', this.changeSize);
-    const _height = document.getElementsByTagName('nav')[0].offsetHeight;
-    this.setState({ navHeight: _height });
-    const _mode = sessionStorage.getItem('mainMode');
+    // this.setState({ navHeight: 59 });
+
+    const _mode = sessionStorage.getItem('mode');
     if (_mode) {
       this.setState({ mode: _mode });
     }
-    else {
-      this.setState({ mode: 'home' })
-    }
-  }
-  componentDidUpdate() {
-    // console.log('main did update')
-    sessionStorage.setItem('mainMode', this.state.mode);
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.changeSize);
   }
-
+  
   changeSize = () => {
     this.setState({ winWidth: window.innerWidth });
     this.setState({ winHeight: window.innerHeight });
   };
 
-  changeMode = (command: string) => {
-    this.setState({ mode: command });
+  changeMode = (_mode: string) => {
+    sessionStorage.setItem('mode', _mode);
+    this.setState({ mode: _mode });
   };
 
   changeSubscribeChannelSch = (list: Array<Array<Object>>) => {
@@ -85,29 +82,37 @@ class Main extends Component<any, State> {
     this.setState({ _yymm: mm })
   };
 
-
   renderByMode = () => {
+    // console.log(this.state._yymm)
     if (this.state.mode === 'calendar') {
+      // console.log('YYMM', this.state._yymm)
       return <Container
-        changeYYMM={this.changeYYMM}
-        subscribeSch={this.state.subscribeChannelSch}
+        changeYYMM = {this.changeYYMM}
+        subscribeSch = {this.state.subscribeChannelSch}
       />;
     } else if (this.state.mode === 'feed') {
-      return <FeedList winHeight={this.state.winHeight} />;
+      return <FeedList 
+              winHeight={this.state.winHeight} 
+              toggleRender={this.toggleRender}            
+            />;
     }
   };
+
+  toggleRender = () => {
+    console.log('toggle setState 됨')
+    this.setState({toggle: !this.state.toggle})
+  }
 
   render() {
     return (
       <>
-        <loginState.Consumer>
+        <contextStorage.Consumer>
           {store => {
-            return (
-              <>
+            return (<>
+                {/* 네이게이션바 */}
                 <Slide in={true} direction="down">
-                  <Navbar
+                  <Navbar                    
                     isLogin={store.isLogin}
-                    onLogout={store.actions?.onLogout}
                     changeMode={(comm: string) => {
                       this.changeMode(comm);
                     }}
@@ -115,45 +120,56 @@ class Main extends Component<any, State> {
                   />
                 </Slide>
 
+                {
+                  this.state.mode === 'home' ? 
+                  // <Banner navHeight={this.state.navHeight}/>
+                  <Banner/>
+                  :
+                  null
+                }
+                
                 <StyledMainContainer
                   className="Main"
+                  mode={this.state.mode}
                   width={this.state.winWidth}
-                  navHeight={this.state.navHeight}
+                  // navHeight={this.state.navHeight}
                 >
                   {/* <Grid item xs={12} sm={12} lg={12}> */}
                   {store.isLogin ? (
                     <>
                       {this.state.mode === 'home' ? (
+                        //로그인 된 상태의 홈
                         <Home isLogin={store.isLogin} isChannel={store.isChannel} />
                       ) : (
+                        //로그인 된 상태일 때 유저정보
                           <Grid container spacing={1}>
                             {/* user */}
-                            <Grid item xs={3} sm={3} lg={3}>
-                              <Box
-                                border={2}
-                                borderColor="white"
-                                textAlign="center"
-                              >
+                            <Grid item xs={2} sm={2} lg={2}>
+                              <Slide in={true} direction="right" timeout={1000}>
                                 <UserDetail
                                   yymm={this.state._yymm}
                                   changeSubscribeChannelSch={
                                     this.changeSubscribeChannelSch
                                   }
+                                  height={this.state.winHeight}
                                 />
-                              </Box>
+                              </Slide>
                             </Grid>
 
+                            {/* 달력과 피드 */}
                             {/* calendar or feed */}
                             {this.state.mode === 'calendar' ? (
-                              <Grid item xs={9} sm={9} lg={9}>
+                              //달력
+                              <Grid item xs={10} sm={10} lg={10}>
                                 <StyledModeContainer>
                                   {this.renderByMode()}
                                 </StyledModeContainer>
                               </Grid>
                             ) : (
+                              //피드
                                 <>
-                                  <Grid item xs={7} sm={7} lg={7}>
-                                    <StyledModeContainer>
+                                  <Grid item xs={8} sm={8} lg={8}>
+                                    <StyledModeContainer className="feedClass">
                                       {this.renderByMode()}
                                     </StyledModeContainer>
                                   </Grid>
@@ -165,25 +181,29 @@ class Main extends Component<any, State> {
                                       />
                                     </StChannelListCont>
                                   </Grid>
-
-
                                 </>
                               )}
+
+                            
                           </Grid>
                         )}
                     </>)
                     :
+                    //로그인 안된 상태의 홈
                     <Home isLogin={store.isLogin} isChannel={store.isChannel} />
                   }
 
                   {/* </Grid> */}
                 </StyledMainContainer>
-              </>
-            )
+              
+
+
+            </>)
           }}
 
-        </loginState.Consumer>
-
+        </contextStorage.Consumer>
+        
+        {/* footer */}
         <Footer />
       </>
     );
@@ -195,8 +215,13 @@ export default Main;
 const StyledMainContainer = styled.div<any>`
   display: flex;
   flex-direction: column;
-  margin-top: ${props => props.navHeight * 1.5}px;
+  /* margin-top: ${props => (props.mode === 'home' ? 20 : props.navHeight)}px; */
+  margin-top: 59px;
   width: ${props => (props.width < 1380 ? props.width - 100 : 1380)}px;
+  .feedClass{
+    margin-right: 20px;
+    margin-left: 20px;
+  }
 `;
 
 const StyledModeContainer = styled.div<any>`
@@ -207,7 +232,4 @@ const StyledModeContainer = styled.div<any>`
 const StChannelListCont = styled.div<any>`
   position: relative;
   margin-top: 20px;
-
-  /* border-radius: 10px; */
-  /* background-color: #ccffcc; */
 `;

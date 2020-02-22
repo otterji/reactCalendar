@@ -5,13 +5,11 @@ import { TdDay } from './TdDay';
 import { TYPE_DETAIL } from '../utils/CONST';
 import axios from 'axios';
 import { url as _url } from '../../../url';
-import { Server } from 'http';
-import color from '@material-ui/core/colors/amber';
-import { grey } from '@material-ui/core/colors';
+import { Fade } from '@material-ui/core'
 
-const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
-  const { days, schedules, openModal, reload } = props;
-  // console.log(days)
+const Td: FunctionComponent<DateData & OpenModal & Reload & any> = props => {
+  const { days, schedules, openModal, reload, setHoverRange, hoverRange } = props;
+ 
   const onClickHandler = (e: any) => {
     openModal({ days: (days as Date), schedules: [e], type: TYPE_DETAIL });
   }
@@ -54,20 +52,23 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
 
     const dayColor: any = (e: ServerData) => {
       let color = ""
-      e.csrDto ? color = e.csrDto.color[0] : color = ""
+      e.csrDto ? color = e.csrDto.color[0] : color = 'black'
       return color
     }
 
     const hoverRange: any = (e: ServerData) => {
-      // console.log('범위가나 보기', startDate, endDate)
-      // 여기서 시작-끝 에 해당하는 tdDay에 색깔을 입혀주는 효과를 내는 함수를 정의하면됨
-      console.log('reload')
+      setHoverRange([startDate, endDate])
       reload();
-      return [startDate, endDate]
+    }
+
+    const notHoverRange: any = (e: ServerData) => {
+      setHoverRange([0, 0])
+      reload();
     }
 
     return (
       <>
+      {/* <Fade in={true} timeout={2500}> */}
         <StyledScheduleLi key={idx}>
           {trueIdx.value ?
             <>
@@ -75,27 +76,28 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
               <StyledLiTitle
                 onClick={() => onClickHandler(e)}
                 onMouseOver={() => hoverRange(e)}
+                onMouseOut={() => notHoverRange(e)}
                 style={{ color: dayColor(e) }}>
                 {e.title}
               </StyledLiTitle>
-              {e.csrDto ?
-                null
-                : <>
+              {(window.sessionStorage.getItem('isChannel') ==='channel') ?
+                <>
                   <StyledClearIcon fontSize="inherit" onClick={() => deleteSchedule(e)} />
                 </>
+                : e.csrDto 
+                  ?
+                  null 
+                  :
+                  <>
+                    <StyledClearIcon fontSize="inherit" onClick={() => deleteSchedule(e)} />
+                  </>
               }
             </> : null}
         </StyledScheduleLi>
+      {/* </Fade> */}
       </>
     )
   });
-
-
-  const onMouseUpHandler: any = (e: any) => {
-    console.log(e);
-    // e.startDate <= selectedDate && selectedDate <= e.endDate ?
-    // startAt endAt 비교해서 맞는애들 css 속성 주기 / ref. REACT DOM 에 있는것의 스타일 CSS 건드리기
-  }
 
 
   return (
@@ -103,7 +105,7 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
       {days === 0 ? null
         : (
           <>
-            <TdDay days={(days) as Date} openModal={openModal} onMouseHover={null} />
+            <TdDay days={(days) as Date} openModal={openModal} hoverRange={hoverRange}/>
             <StyledScheduleUi>{scheduleList}</StyledScheduleUi>
           </>
         )
@@ -114,6 +116,12 @@ const Td: FunctionComponent<DateData & OpenModal & Reload> = props => {
 type Reload = {
   reload: () => void;
 }
+
+// type setHoverRange = {
+//   setHoverRange: () => void;
+// }
+
+
 
 type isValue = {
   is: boolean;

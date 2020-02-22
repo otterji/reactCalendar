@@ -1,12 +1,18 @@
 import React, { Component, ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 import {
-  Grid,
   Avatar,
   ListItem,
-  ListItemAvatar,
-  FormControlLabel
+  FormControlLabel,
+  Tooltip,
+  Zoom
 } from '@material-ui/core';
-import { Instagram } from '@material-ui/icons';
+import {
+  Instagram,
+  CheckCircle,
+  EmojiPeopleOutlined,
+  NotificationsOff, Public
+} from '@material-ui/icons';
 import * as Styled from './StyledUserDetail';
 // import ItemList from "../../common/ItemList/ItemList";
 import axios from 'axios';
@@ -29,7 +35,11 @@ interface State {
   link: string;
   msg: string;
   subscribes: subscribeObj[];
-  scheduleList: Array<Array<object>>;
+  totalScheduleList: Array<Array<Object>>;
+
+  interOrCate: any;
+  subscribers: number;
+  onButton: string;
 }
 
 // Main UserDetail part
@@ -53,8 +63,17 @@ class UserDetail extends Component<any, State> {
           checked: true
         }
       ],
-      scheduleList: []
+      totalScheduleList: [[{}]],
+
+      interOrCate: [],
+      subscribers: 0,
+      onButton: 'init',
     };
+  }
+  setStateAsync(state: object) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
   }
 
   async componentDidMount() {
@@ -66,18 +85,20 @@ class UserDetail extends Component<any, State> {
 
     // 유저정보 가져오기
     if (this.state.isChannel === 'channel') {
+      this.getInterOrCate('channel');
+      this.getSubscribers();
       // 유저가 채널인 경우
       try {
         const resUserInfo = await axios({
-          method: 'get',
-          url: `${_url}/${this.state.isChannel}/findChannelById/${this.state.id}`,
-          data: {
-            id: this.state.id
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/jwt_auth/findChannelById/${this.state.id}`,
+          headers: {
+            jwt: sessionStorage.getItem('jwt')
           }
         });
-        const data = resUserInfo.data;
+        const data = resUserInfo.data.info;
         this.setState({
-          imgFile: `${_url}/img/${this.state.isChannel}/${this.state.id}.jpg`,
+          imgFile: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
@@ -86,25 +107,30 @@ class UserDetail extends Component<any, State> {
         alert(err);
       }
     } else {
+      this.getInterOrCate('member');
       // 유저가 개인일 경우
       try {
         const resUserInfo = await axios({
-          method: 'get',
-          url: `${_url}/${this.state.isChannel}/findMemberById/${this.state.id}`,
-          data: {
-            id: this.state.id
+          method: 'post',
+          url: `${_url}/${this.state.isChannel}/jwt_auth/findMemberById/${this.state.id}`,
+          headers: {
+            jwt: sessionStorage.getItem('jwt')
           }
         });
-        const data = resUserInfo.data;
-        this.setState({
-          imgFile: `${_url}/multimedia/profile/${this.state.id}.jpg`,
+        const data = resUserInfo.data.info;
+        console.log(data.img, '??');
+        await this.setStateAsync({
+          imgFile: data.img ? `${_url}/${data.img}?${Date.now()}` : '',
           nickname: data.nickname,
           msg: data.msg,
           link: data.link
         });
       } catch (err) {
-        alert(err);
+        alert('세션이 만료 되었습니다.');
+        sessionStorage.clear();
+        window.location.href = '/mainPage';
       }
+
       // 구독 리스트 가져오기
       try {
         const resSubscribeList = await axios({
@@ -123,7 +149,8 @@ class UserDetail extends Component<any, State> {
       } catch (err) {
         alert(err);
       }
-      // 구독채널 일정정보 받아오기
+
+      // 구독채널 전체 일정정보 받아오기
       try {
         const tempList: any = [];
         this.state.subscribes.map(async (channel: any, idx: number) => {
@@ -133,9 +160,32 @@ class UserDetail extends Component<any, State> {
           });
           tempList.push(resSubSch.data);
         });
-        this.setState({ scheduleList: tempList });
-        // console.log('구독채널 일정정보(전체):', this.state.scheduleList); // 2차원 배열로 받음
-        this.props.changeSubscribeChannelSch(this.state.scheduleList);
+        this.setState({ totalScheduleList: tempList });
+        // console.log('구독채널 일정정보(전체):', this.state.totalScheduleList); // 2차원 배열로 받음
+        this.props.changeSubscribeChannelSch(this.state.totalScheduleList);
+      } catch (err) {
+        alert(err);
+      }
+    }
+  } // componentDidMount END
+
+  componentWillReceiveProps(nextProps: any) {
+    if (this.props.yymm !== nextProps.yymm) {
+      try {
+        const tempList: any = [];
+        const tempList2: any = [];
+        this.state.subscribes.map(async (channel: any, idx: number) => {
+          const resSubSch = await axios({
+            method: 'get',
+            url: `${_url}/getSchedules/${channel.id}/${nextProps.yymm}`
+          });
+          tempList.push(resSubSch.data);
+          if (channel['checked']) {
+            tempList2.push(resSubSch.data);
+          }
+        });
+        this.setState({ totalScheduleList: tempList });
+        this.props.changeSubscribeChannelSch(tempList2);
       } catch (err) {
         alert(err);
       }
@@ -144,21 +194,29 @@ class UserDetail extends Component<any, State> {
 
   handleChannelFilter = (e: ChangeEvent<HTMLInputElement>) => {
     const _name = e.target.name;
-    const _checked = e.target.checked;
-    const sendingList: any[] = [];
+    const tempList: any[] = [];
+    const tempList2: any[] = [];
     this.state.subscribes.map((channel: any) => {
       if (channel.id === _name) {
-        channel['checked'] = _checked;
+        channel['checked'] = !channel['checked'];
       }
-      if (channel.checked) {
-        sendingList.push(
-          this.state.scheduleList[this.state.subscribes.indexOf(channel)]
-        );
+      tempList.push(channel);
+      if (channel['checked']) {
+        this.state.totalScheduleList.map((schedule: any) => {
+          // console.log(schedule, "here")
+          if (schedule.length >= 1) {
+            if (channel.id === schedule[0].csrDto.id) {
+              // tempList2.push(this.state.totalScheduleList[this.state.subscribes.indexOf(channel)])
+              tempList2.push(schedule);
+            }
+          }
+        });
       }
-      return null;
     });
-    // console.log('구독채널 일정정보(필터링): ', sendingList);
-    this.props.changeSubscribeChannelSch(sendingList);
+    this.setState({
+      subscribes: tempList
+    });
+    this.props.changeSubscribeChannelSch(tempList2);
   };
 
   unsubscribe = (channelId: string) => {
@@ -176,6 +234,7 @@ class UserDetail extends Component<any, State> {
         alert(err);
       }
       const tempList: subscribeObj[] = [];
+      const tempList2: any[] = [];
       this.state.subscribes.map((channel: any) => {
         if (channel.id !== channelId) tempList.push(channel);
         return null;
@@ -183,88 +242,175 @@ class UserDetail extends Component<any, State> {
       this.setState({
         subscribes: tempList
       });
+
+      this.state.totalScheduleList.map((schedule: any) => {
+        if (schedule.length >= 1) {
+          if (channelId !== schedule[0].csrDto.id) {
+            // tempList2.push(this.state.totalScheduleList[this.state.subscribes.indexOf(channel)])
+            tempList2.push(schedule);
+          }
+        }
+      });
+      this.props.changeSubscribeChannelSch(tempList2);
+    }
+  };
+
+  getInterOrCate = async (_type: string) => {
+    try {
+      const _id = this.state.id;
+      await axios({
+        method: 'get',
+        url: `${_url}/${_type}/getMyInterests/${_id}`
+      }).then(res => {
+        const resData = res.data;
+        console.log(resData);
+        this.setState({
+          interOrCate: resData.map((res: any) => {
+            return <div key={res}>{res}</div>;
+          })
+        });
+      });
+    } catch (err) {
+      alert(err);
+    }
+  };
+
+  getSubscribers = async () => {
+    try {
+      const _id = this.state.id;
+      axios({
+        method: 'get',
+        url: `${_url}/member/getCountOfMySubscriber/${_id}`
+      }).then(res => {
+        const resData = res.data;
+        this.setState({
+          subscribers: resData.count
+        });
+      });
+    } catch (err) {
+      alert(err);
     }
   };
 
   render() {
     return (
-      <Grid
-        item
-        container
-        justify="center"
-        direction="column"
-        style={{ padding: '10px' }}
-      >
-        {/* profile img and nickname part */}
-        <Grid item container alignItems="center" style={{ marginTop: '50px' }}>
-          <Avatar
-            src={this.state.imgFile}
-            alt={this.state.nickname}
-            style={{ width: '70px', height: '70px' }}
-          />
+      <>
+        <Styled.StUDCont>
+          <div className="avatarCont">
+            <Avatar
+              className="avatar"
+              src={this.state.imgFile}
+              alt={this.state.nickname}
+            />
+          </div>
 
-          <Grid item>
-            <Styled.profileName>{this.state.nickname}</Styled.profileName>
-          </Grid>
-        </Grid>
+          <Styled.profileName>
+            {this.state.isChannel === 'member' ? (
+              <>{this.state.nickname}</>
+            ) : (
+              <>
+                <div className="nick">{this.state.nickname}</div>
+                <div className="official">
+                  <CheckCircle className="icon" fontSize="small" />
+                </div>
+              </>
+            )}
+          </Styled.profileName>
 
-        {/* profile content part */}
-        <Grid item>
-          <Styled.content>
-            <Instagram style={{ fontSize: '40px', margin: '10px' }} />
-            {this.state.link}
-          </Styled.content>
-        </Grid>
-        <Grid item>
-          <Styled.content>{this.state.msg}</Styled.content>
-        </Grid>
+          {this.state.isChannel === 'channel' && (
+            <>
+              <Styled.StICCont>{this.state.interOrCate}</Styled.StICCont>
 
-        {/* Subscribe list */}
-        {this.state.isChannel === 'member' ? (
-          <Grid item>
-            <Styled.div style={{ width: '300px' }}>
-              {this.state.subscribes.length >= 1
-                ? this.state.subscribes.map((channel: any) => {
-                    return (
-                      <ListItem
-                        key={channel.id}
-                        button
-                        style={{ padding: '5px' }}
-                      >
-                        <FormControlLabel
-                          style={{ width: '200px' }}
-                          control={
-                            <Styled.checkbox
-                              checked={channel.checked}
-                              colordark={channel.color[0]}
-                              colorlight={channel.color[1]}
-                              name={channel.id}
-                              onChange={this.handleChannelFilter}
-                              value={channel.id}
-                            />
-                          }
-                          label={channel.nickName}
-                        />
-                        {/* <ListItemAvatar>
-                          <Avatar
-                            alt={channel.nickName}
-                            src={`${_url}/img/channel/${channel.img}.jpg`}
+              <Styled.StSubersCont>
+                구독자 {this.state.subscribers}명
+              </Styled.StSubersCont>
+
+              <br />
+              <hr style={{ width: '90%' }} />
+            </>
+          )}
+
+          {this.state.link === '' ? null : (
+            <Styled.StSnsCont>
+              {
+                this.state.isChannel === 'channel' ? 
+                <div className="snsIcon">
+                  <Public fontSize="small" />
+                </div>
+                :
+                <div className="snsIcon">
+                  <Instagram fontSize="small" />
+                </div>
+              }
+              
+              <div className="sns">
+                <Link to="#" onClick={()=>{window.open(this.state.link, '_blank')}}>
+                  {this.state.link}
+                </Link>
+              </div>
+            </Styled.StSnsCont>
+          )}
+
+          {this.state.msg === '' ? null : (
+            <Styled.StMsgCont>
+              <div className="msgIcon">
+                <EmojiPeopleOutlined fontSize="small" />
+              </div>
+              <div className="msg">
+                <div>{this.state.msg}</div>
+              </div>
+            </Styled.StMsgCont>
+          )}
+
+        {this.state.isChannel === 'member' && sessionStorage.getItem('mode') === 'calendar' ? (<>
+          <br/>
+          <hr style={{width: "90%"}}/>
+          <Styled.StListLabel>구독 리스트</Styled.StListLabel>
+          <hr style={{width: "90%"}}/>
+          <Styled.div height={this.props.height} >
+            {this.state.subscribes.length >= 1
+              ? this.state.subscribes.map((channel: any) => {
+                return (
+                  <Styled.labelHover key={channel.id}>
+                    <ListItem
+                      dense
+                      button
+                      // style={{ padding: '5px', width: '200px' }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Styled.checkbox
+                            checked={channel.checked}
+                            colordark={channel.color[0]}
+                            colorlight={channel.color[1]}
+                            name={channel.id}
+                            onChange={this.handleChannelFilter}
+                            value={channel.id}
+                            
                           />
-                        </ListItemAvatar> */}
-                        <Styled.btn
+                        }
+                        label={channel.nickName}
+                      />
+                      </ListItem>
+                      {/* <Styled.btn className='btn' onClick={this.unsubscribe.bind(this, channel.id)}>
+                        구독 취소
+                      </Styled.btn> */}
+                      <Tooltip title="구독 취소">
+                        <Styled.StIconBtn 
                           onClick={this.unsubscribe.bind(this, channel.id)}
                         >
-                          구독 취소
-                        </Styled.btn>
-                      </ListItem>
-                    );
-                  })
-                : '구독 중인 채널이 없습니다.'}
-            </Styled.div>
-          </Grid>
-        ) : null}
-      </Grid>
-    );
+                          <NotificationsOff fontSize="small"/>
+                        </Styled.StIconBtn>
+                      </Tooltip>
+                  </Styled.labelHover>
+                );
+              })
+              // : '구독 중인 채널이 없습니다.'}
+              : <Zoom in={true}><div style={{display:"flex", justifyContent:"center", marginTop:"20px"}}>구독 중인 채널이 없습니다.</div></Zoom>}
+          </Styled.div>
+      </>) : null}
+      </Styled.StUDCont>
+    </>);
   }
 }
 

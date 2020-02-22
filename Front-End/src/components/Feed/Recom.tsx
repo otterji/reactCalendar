@@ -1,91 +1,101 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
 //
 import { url } from '../../url'
 //style
 import styled from 'styled-components'
-import { Button, Avatar } from '@material-ui/core'
+import { Avatar } from '@material-ui/core'
 
 
 interface State {
-  isLogin: boolean;
   info: any;
+  subscribe: boolean;
 }
-
 class Recom extends Component<any, State>{
-  constructor(props:any){
+  constructor(props: any) {
     super(props);
     this.state = {
-      isLogin: this.props.isLogin,
       info: this.props.info,
+      subscribe: this.props.info.subscribe
     }
   }
 
-  render(){
-    return(<>
-    <StChTile>
-      <StCh>
-        {/* <div>채널이름{this.props.info.ch_no}</div> */}
-        <LeftImg src={`${url}/${this.state.info.img}`}></LeftImg>
-        <StLink to="/" >채널이름 No.{this.state.info.ch_no}</StLink>
-        {
-          (this.props.isLogin && !this.props.isChannel) ? 
-          <>
-          {/*{*/}
-          {/*  this.state.info.subscribe ?*/}
-          {/*  <StBtn size="small">구독 취소</StBtn>*/}
-          {/*  :*/}
-          {/*  <StBtn size="small">구독</StBtn>*/}
-          {/*}*/}
-          </>
-          :
-          null
-        }
-        
-      </StCh>
-    </StChTile>
+  countUp = async () => {
+    try{
+      await axios({
+        method: 'put',
+        url: `${url}/channel/updateSearchFrequency/${this.state.info.id}`
+      }).then(() => {
+        sessionStorage.setItem('isVisit', 'true');
+      })
+    }
+    catch(err){
+      alert(err);
+    }
+  }
+
+  render() {
+    return (<>
+    {/* {
+      this.state.info.id === sessionStorage.getItem('id') ? 
+      null
+      : */}
+      <StChCont>
+        <div className="avatarCont">
+          <Avatar className="avatar" src={`${url}/${this.state.info.img}`}/>
+        </div>
+        <div className="link">
+          <Link 
+            to={`/visitPage/${this.state.info.nickname}`} 
+            onClick={this.countUp}
+          >
+            {this.state.info.nickname}
+          </Link>
+        </div>
+      </StChCont>
+    {/* } */}
     </>)
   }
 }
-
 export default Recom;
 
 
-const StChTile = styled.div<any>`
-  /* background-color: white; */
-  background: url(${props => (props.imgUrl)});
-  height: 50px;
-  margin: 10px;
-  border: 5px solid gray;
-  border-radius: 10px;
-  &:hover{
-    background-color: gray; 
-  }
-`
-const StCh = styled.div`
-  /* width: 100%;
-  height: 100px; */
-  
+const StChCont = styled.div`
   display: flex;
-
-`
-
-const StLink = styled(Link)`
-  text-decoration: none;
-`
-
-const StBtn = styled(Button)`
-  background-color: gray;  
-  color: white;
-  font-size: 100%;
-  
-  &:hover{
-    background-color: #8cebd1;
+  justify-content: start;
+  border-bottom: 1px dotted gray;
+  margin: 10px 10px 0 10px;
+  :hover{
+    border-radius: 8px;
+    border-bottom: 1px solid white;
+    background-color: #99ffcc; 
+    .link a{
+      color: white;
+      text-shadow: 5px 5px 10px gray;
+    }
   }
-`;
-
-const LeftImg = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 7px;
+  .avatarCont{
+    .avatar{
+      margin: 0.2em;
+      width: 1.8em;
+      height: 1.8em;
+    }
+  }
+  .lin{
+    width: 100%;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+  }
+  .link{
+    font-size: 0.9vw;
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    a{
+      color: black;
+      text-decoration: none;
+    }
+  }
 `;

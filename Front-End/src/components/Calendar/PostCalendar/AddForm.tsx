@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Modal.scss';
 import '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import {
-  createMuiTheme,
+    createMuiTheme,
 } from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { DateTimePicker } from "@material-ui/pickers";
+import {ThemeProvider} from "@material-ui/styles";
+import {MuiPickersUtilsProvider} from '@material-ui/pickers';
+import {DateTimePicker} from "@material-ui/pickers";
 import axios from "axios";
-import { url as _url } from '../../../url';
+import {url as _url} from '../../../url';
 
 
 type ReqData = {
-  contents: string,
-  attendants: string,
-  place: string,
-  title: string,
-  startAt: Date,
-  endAt: Date,
-  id: any,
+    contents: string,
+    attendants: string,
+    place: string,
+    title: string,
+    startAt: Date,
+    endAt: Date,
+    id: any,
 };
 
 const AddForm = ({ close, dayData, rerenderHandler }: any) => {

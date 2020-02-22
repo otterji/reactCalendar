@@ -10,7 +10,7 @@ class Loading extends Component<any> {
   goMain = () => {
     setTimeout(() => {
       this.props.history.push('/mainPage');
-    }, 6500);
+    }, 6200);
   }
 
   render() {
@@ -34,6 +34,7 @@ class Loading extends Component<any> {
 export default Loading;
 
 const Animation = styled.div`
+  font-weight: bold;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row-reverse;
@@ -101,7 +102,7 @@ const Animation = styled.div`
     }
     .word:nth-child(4) {
       color: white;
-      font-weight: bold;
+      
       animation-delay: 4.5s;
     }
   }

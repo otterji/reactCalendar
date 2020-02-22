@@ -1,11 +1,11 @@
-import React, { Component, ChangeEvent, KeyboardEvent } from "react";
-import { withRouter } from "react-router-dom";
-import axios from "axios";
-import DateFnsUtils from "@date-io/date-fns";
+import React, { Component, ChangeEvent, KeyboardEvent } from 'react';
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+import DateFnsUtils from '@date-io/date-fns';
 //mycomp
-import { url as _url } from "../../url";
+import { url as _url } from '../../url';
 //styles
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components';
 import {
   Button,
   TextField,
@@ -20,8 +20,8 @@ import {
   Checkbox,
   RadioGroup,
   Radio
-} from "@material-ui/core";
-import { ThemeProvider } from "@material-ui/styles";
+} from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
 import {
   Email,
   Lock,
@@ -31,18 +31,19 @@ import {
   Link,
   CheckCircle,
   EnhancedEncryption
-} from "@material-ui/icons";
+} from '@material-ui/icons';
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
-} from "@material-ui/pickers";
+} from '@material-ui/pickers';
 
 const regExp = {
   email: /^(([^<>()\\[\].,;:\s@"]+(\.[^<>()\\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
-  // pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
-  pw: /^[A-Za-z0-9]{6,15}$/,
+  pw: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{6,15}$/,
+  // pw: /^[A-Za-z0-9]{6,15}$/,
   name: /^[A-Za-z가-힣]{2,}$/,
-  nickname: /^[A-Za-z0-9가-힣]{2,10}$/
+  nickname: /^[A-Za-z0-9가-힣_]{2,10}$/,
+  channelname: /^[A-Za-z0-9가-힣_]{2,}$/
 };
 
 interface State {
@@ -73,6 +74,10 @@ interface State {
   nicknameValid: string;
   nicknameLabel: string;
 
+  channelname: string;
+  channelnameValid: string;
+  channelnameLabel: string;
+
   link: string;
   linkValid: string;
 
@@ -90,51 +95,54 @@ class AccountsForm extends Component<any, State> {
   constructor(props: any) {
     super(props);
     this.state = {
-      email: "",
-      emailValid: "init",
-      emailLabel: "이메일",
+      email: '',
+      emailValid: 'init',
+      emailLabel: '이메일',
 
-      pw: "",
-      pwValid: "init",
-      pwLabel: "비밀번호",
+      pw: '',
+      pwValid: 'init',
+      pwLabel: '비밀번호',
 
-      pwCheck: "",
-      pwCheckValid: "init",
-      pwCheckLabel: "비밀번호 확인",
+      pwCheck: '',
+      pwCheckValid: 'init',
+      pwCheckLabel: '비밀번호 확인',
 
-      imgBase64: "",
+      imgBase64: '',
       imgFile: null,
 
       birth: null,
-      birthValid: "init",
-      birthLabel: "*생년월일",
+      birthValid: 'init',
+      birthLabel: '*생년월일',
 
-      name: "",
-      nameValid: "init",
-      nameLabel: "*이름",
+      name: '',
+      nameValid: 'init',
+      nameLabel: '*이름',
 
-      nickname: "",
-      nicknameValid: "init",
-      nicknameLabel: "*닉네임",
+      nickname: '',
+      nicknameValid: 'init',
+      nicknameLabel: '*닉네임',
 
-      link: "",
-      linkValid: "init",
+      channelname: '',
+      channelnameValid: 'init',
+      channelnameLabel: '*채널 이름',
+
+      link: '',
+      linkValid: 'init',
 
       interests: {},
-      interestsValid: "init",
-      interestsLabel: "*",
+      interestsValid: 'init',
+      interestsLabel: '*',
 
-      member: "personal",
+      member: 'personal',
       isChannel: false
     };
   }
-  
-  componentDidMount(){
+
+  componentDidMount() {
     // console.log('will mount')
-    if(this.props.moreInfo){
-      this.getAllInterests()
-      .then(()=>{
-        this.setState({ interests: initList })
+    if (this.props.moreInfo) {
+      this.getAllInterests().then(() => {
+        this.setState({ interests: initList });
       });
     }
   }
@@ -142,11 +150,11 @@ class AccountsForm extends Component<any, State> {
   getAllInterests = async () => {
     try {
       const res = await axios({
-        method: "get",
+        method: 'get',
         url: `${_url}/interest/getAllInterests`,
-        responseType: "json"
+        responseType: 'json'
       });
-      console.log(res);
+      // console.log(res);
       initList = res.data;
     } catch (err) {
       // alert(err);
@@ -157,23 +165,27 @@ class AccountsForm extends Component<any, State> {
   initState = async () => {
     await this.setStateAsync({
       birth: null,
-      birthValid: "init",
-      birthLabel: "*생년월일",
+      birthValid: 'init',
+      birthLabel: '*생년월일',
 
-      name: "",
-      nameValid: "init",
-      nameLabel: "*이름",
+      name: '',
+      nameValid: 'init',
+      nameLabel: '*이름',
 
-      nickname: "",
-      nicknameValid: "init",
-      nicknameLabel: "*닉네임",
+      nickname: '',
+      nicknameValid: 'init',
+      nicknameLabel: '*닉네임',
 
-      link: "",
-      linkValid: "init",
+      channelname: '',
+      channelnameValid: 'init',
+      channelnameLabel: '*채널 이름',
+
+      link: '',
+      linkValid: 'init',
 
       interests: initList,
-      interestsValid: "init",
-      interestsLabel: "*"
+      interestsValid: 'init',
+      interestsLabel: '*'
     });
   };
 
@@ -185,76 +197,96 @@ class AccountsForm extends Component<any, State> {
 
   checkValid = async (e: ChangeEvent<HTMLInputElement>) => {
     const name = e.target.name;
-    if (name === "email") {
+    if (name === 'email') {
       await this.setStateAsync({ email: e.target.value });
-      if (this.state.email === "") {
-        this.setState({ emailValid: "init", emailLabel: "이메일" });
+      if (this.state.email === '') {
+        this.setState({ emailValid: 'init', emailLabel: '이메일' });
       } else {
         if (regExp.email.test(this.state.email)) {
-          this.setState({ emailValid: "valid", emailLabel: "이메일" });
+          this.setState({ emailValid: 'valid', emailLabel: '이메일' });
         } else {
           this.setState({
-            emailValid: "invalid",
-            emailLabel: "이메일 양식을 맞춰 주세요"
+            emailValid: 'invalid',
+            emailLabel: '이메일 양식을 맞춰 주세요'
           });
         }
       }
-    } else if (name === "pw") {
+    } else if (name === 'pw') {
       await this.setStateAsync({ pw: e.target.value });
-      if (this.state.pw === "") {
-        this.setState({ pwValid: "init", pwLabel: "비밀번호" });
+      if (this.state.pw === '') {
+        this.setState({ pwValid: 'init', pwLabel: '비밀번호' });
       } else {
         if (regExp.pw.test(this.state.pw)) {
-          this.setState({ pwValid: "valid", pwLabel: "비밀번호" });
+          this.setState({ pwValid: 'valid', pwLabel: '비밀번호' });
         } else {
           this.setState({
-            pwValid: "invalid",
-            pwLabel: "영문, 숫자 조합 6~15자"
+            pwValid: 'invalid',
+            pwLabel: '영문, 숫자 조합 6~15자'
           });
         }
       }
-    } else if (name === "pwCheck" && this.props.signup) {
+    } else if (name === 'pwCheck' && this.props.signup) {
       await this.setStateAsync({ pwCheck: e.target.value });
-      if (this.state.pwCheck === "") {
-        this.setState({ pwCheckValid: "init", pwCheckLabel: "비밀번호 확인" });
+      if (this.state.pwCheck === '') {
+        this.setState({ pwCheckValid: 'init', pwCheckLabel: '비밀번호 확인' });
       } else {
         if (this.state.pw === this.state.pwCheck) {
           this.setState({
-            pwCheckValid: "valid",
-            pwCheckLabel: "비밀번호 확인"
+            pwCheckValid: 'valid',
+            pwCheckLabel: '비밀번호 확인'
           });
         } else {
           this.setState({
-            pwCheckValid: "invalid",
-            pwCheckLabel: "비밀번호가 일치하지 않습니다"
+            pwCheckValid: 'invalid',
+            pwCheckLabel: '비밀번호가 일치하지 않습니다'
           });
         }
       }
-    } else if (name === "name") {
+    } else if (name === 'name') {
       await this.setStateAsync({ name: e.target.value });
-      if (this.state.name === "") {
-        this.setState({ nameValid: "init", nameLabel: "*이름" });
+      if (this.state.name === '') {
+        this.setState({ nameValid: 'init', nameLabel: '*이름' });
       } else {
         if (regExp.name.test(this.state.name)) {
-          this.setState({ nameValid: "valid", nameLabel: "이름" });
+          this.setState({ nameValid: 'valid', nameLabel: '이름' });
         } else {
           this.setState({
-            nameValid: "invalid",
-            nameLabel: "정확히 기입해 주세요"
+            nameValid: 'invalid',
+            nameLabel: '정확히 기입해 주세요'
           });
         }
       }
-    } else if (name === "nickname") {
+    } else if (name === 'nickname') {
       await this.setStateAsync({ nickname: e.target.value });
-      if (this.state.nickname === "") {
-        this.setState({ nicknameValid: "init", nicknameLabel: "*닉네임" });
+      if (this.state.nickname === '') {
+        this.setState({ nicknameValid: 'init', nicknameLabel: '*닉네임' });
       } else {
         if (regExp.nickname.test(this.state.nickname)) {
-          this.setState({ nicknameValid: "valid", nicknameLabel: "닉네임" });
+          this.setState({ nicknameValid: 'valid', nicknameLabel: '닉네임' });
         } else {
           this.setState({
-            nicknameValid: "invalid",
-            nicknameLabel: "한글, 영문, 숫자 포함 2~10자"
+            nicknameValid: 'invalid',
+            nicknameLabel: "한글, 영문, 숫자, '_' 포함 2~10자"
+          });
+        }
+      }
+    } else if (name === 'channelname') {
+      await this.setStateAsync({ channelname: e.target.value });
+      if (this.state.channelname === '') {
+        this.setState({
+          channelnameValid: 'init',
+          channelnameLabel: '*채널 이름'
+        });
+      } else {
+        if (regExp.channelname.test(this.state.channelname)) {
+          this.setState({
+            channelnameValid: 'valid',
+            channelnameLabel: '채널 이름'
+          });
+        } else {
+          this.setState({
+            channelnameValid: 'invalid',
+            channelnameLabel: "한글, 영문, 숫자, '_' 포함 2자 이상"
           });
         }
       }
@@ -262,29 +294,20 @@ class AccountsForm extends Component<any, State> {
   };
 
   checkDuple = async () => {
-    const _nickname = this.state.nickname;
-    if (_nickname !== "" && this.state.isChannel) {
+    const _channelname = this.state.channelname;
+    if (_channelname !== '' && this.state.isChannel) {
       try {
         let res = await axios({
-          method: "get",
-          url: `${_url}/channel/isExistingNickName/${_nickname}`
+          method: 'get',
+          url: `${_url}/channel/isExistingNickName/${_channelname}`
         });
         // alert(JSON.stringify(res.data, null ,2))
-        if (res.data.state === "FAIL") {
+        if (res.data.state === 'FAIL') {
           this.setState({
-            nicknameValid: "invalid",
-            nicknameLabel: "닉네임이 중복됩니다."
+            channelnameValid: 'invalid',
+            channelnameLabel: '채널 이름이 중복됩니다.'
           });
         }
-
-        // res = await axios({
-        //   method: 'get',
-        //   url: `${_url}/channel/isExistingNickName/${_nickname}`,
-        // })
-        // // alert(JSON.stringify(res.data, null ,2))
-        // if(res.data.state === 'FAIL'){
-        //   this.setState({ nicknameValid: 'invalid', nicknameLabel: '닉네임이 중복됩니다.' });
-        // }
       } catch (err) {
         alert(err);
       }
@@ -293,25 +316,25 @@ class AccountsForm extends Component<any, State> {
 
   isValid = (): boolean => {
     if (this.props.login) {
-      return this.state.emailValid === "valid" && this.state.pwValid === "valid"
+      return this.state.emailValid === 'valid' && this.state.pwValid === 'valid'
         ? true
         : false;
     } else if (this.props.signup) {
-      return this.state.emailValid === "valid" &&
-        this.state.pwValid === "valid" &&
-        this.state.pwCheckValid === "valid"
+      return this.state.emailValid === 'valid' &&
+        this.state.pwValid === 'valid' &&
+        this.state.pwCheckValid === 'valid'
         ? true
         : false;
     } else if (this.props.moreInfo && this.state.isChannel) {
-      return this.state.nicknameValid === "valid" &&
-        this.state.interestsValid === "valid"
+      return this.state.channelnameValid === 'valid' &&
+        this.state.interestsValid === 'valid'
         ? true
         : false;
     } else if (this.props.moreInfo && !this.state.isChannel) {
-      return this.state.birthValid === "valid" &&
-        this.state.nameValid === "valid" &&
-        this.state.nicknameValid === "valid" &&
-        this.state.interestsValid === "valid"
+      return this.state.birthValid === 'valid' &&
+        this.state.nameValid === 'valid' &&
+        this.state.nicknameValid === 'valid' &&
+        this.state.interestsValid === 'valid'
         ? true
         : false;
     }
@@ -319,7 +342,7 @@ class AccountsForm extends Component<any, State> {
   };
 
   pressEnter = (e: KeyboardEvent) => {
-    if (e.key === "Enter" && this.isValid()) {
+    if (e.key === 'Enter' && this.isValid()) {
       this.onSubmit();
     }
   };
@@ -328,119 +351,121 @@ class AccountsForm extends Component<any, State> {
     if (this.props.login) {
       const _id = this.state.email;
       const _pw = this.state.pw;
-      try {
-        const res = await axios({
-          method: "post",
-          url: `${_url}/member/login`,
-          data: {
-            id: _id,
-            pw: _pw
-          }
-        });
-        // console.log(JSON.stringify(res.data, null, 2))
-        if (res.data.status) {
-          sessionStorage.setItem("id", _id);
-          sessionStorage.setItem("jwt", res.data.jwt);
-          if(this.state.isChannel){
-            sessionStorage.setItem("isChannel", "channel");
-          }
-          else{
-            sessionStorage.setItem("isChannel", "member");
-          }
 
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
-        } else {
-          alert(
-            "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
-          );
-        }
-      } catch (err) {
-        alert(err);
-      }
+      await this.onLogin(_id, _pw);
+
+      // try {
+      //   const res = await axios({
+      //     method: "post",
+      //     url: `${_url}/member/login`,
+      //     data: {
+      //       id: _id,
+      //       pw: _pw
+      //     }
+      //   });
+      //   // console.log(JSON.stringify(res.data, null, 2))
+      //   const resData = res.data;
+      //   if (resData.status) {
+      //     sessionStorage.setItem("id", _id);
+      //     sessionStorage.setItem("jwt", resData.jwt);
+      //     console.log(resData)
+      //     if(resData.data.name === 'channel'){
+      //       sessionStorage.setItem("isChannel", "channel");
+      //     }
+      //     else{
+      //       sessionStorage.setItem("isChannel", "member");
+      //     }
+      //     this.props.onLogin();
+      //     this.props.history.push('/mainPage');
+      //   } else {
+      //     alert(
+      //         "계정이 존재하지 않습니다.\n\n 이메일 혹은 비밀번호를 확인해 주세요."
+      //     );
+      //   }
+      // } catch (err) {
+      //   alert(err);
+      // }
     } else if (this.props.signup) {
       const _id = this.state.email;
       const _pw = this.state.pw;
 
       try {
         const res = await axios({
-          method: "get",
+          method: 'get',
           url: `${_url}/member/isExist/${_id}`,
-          responseType: "json"
+          responseType: 'json'
         });
         // alert(JSON.stringify(res.data, null, 2));
-        if (res.data.state === "SUCCESS") {
-          sessionStorage.setItem("id", _id);
-          sessionStorage.setItem("pw", _pw);
-          sessionStorage.setItem("jwt", res.data.jwt);
-          this.props.history.push("/moreInfoPage");
-        } else if (res.data.state === "FAIL") {
-          alert("이미 존재하는 계정 입니다");
+        if (res.data.state === 'SUCCESS') {
+          sessionStorage.setItem('id', _id);
+          sessionStorage.setItem('pw', _pw);
+          // sessionStorage.setItem("jwt", res.data.jwt);
+          this.props.history.push('/moreInfoPage');
+        } else if (res.data.state === 'FAIL') {
+          sessionStorage.clear();
+          alert('이미 존재하는 계정 입니다');
         }
       } catch (err) {
-        console.log(err);
+        sessionStorage.clear();
+        alert(err);
       }
     } else if (this.props.moreInfo && this.state.isChannel) {
-      const _id = sessionStorage.getItem("id");
-      const _pw = sessionStorage.getItem("pw");
-      sessionStorage.removeItem('pw');
+      const _id = sessionStorage.getItem('id');
+      const _pw = sessionStorage.getItem('pw');
+
       let _img = null;
 
       try {
-        if (this.state.imgBase64 !== "") {
-          const formData = new FormData();
-          formData.append("file", this.state.imgFile);
-          await axios({
-            method: "post",
-            url: `${_url}/channel/uploadImage/${_id}`,
-            data: formData,
-            headers: { "content-Type": "multipart/form-data" }
-          });
+        if (this.state.imgBase64 !== '') {
           _img = _id;
         }
-        console.log(_img);
-        const _nickname = this.state.nickname;
+        const _channelname = this.state.channelname;
         const _link = this.state.link;
-        const _msg = "";
+        const _msg = '';
         const _interests = this.initList();
 
         const res = await axios({
-          method: "post",
+          method: 'post',
           url: `${_url}/channel/signup/`,
           data: {
             id: _id,
             pw: _pw,
             img: _img,
-            name: "channel",
-            nickname: _nickname,
+            name: 'channel',
+            nickname: _channelname,
             link: _link,
             msg: _msg,
             interests: _interests
           }
         });
-        if (res.data.state === "SUCCESS") {
-          sessionStorage.setItem("isChannel", "channel");
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
+        if (this.state.imgBase64 !== '') {
+          const formData = new FormData();
+          formData.append('file', this.state.imgFile);
+          await axios({
+            method: 'post',
+            url: `${_url}/channel/uploadImage/${_id}`,
+            data: formData,
+            headers: { 'content-Type': 'multipart/form-data' }
+          });
+        }
+        // console.log(res.data);
+        if (res.data.state === 'SUCCESS') {
+          sessionStorage.removeItem('pw');
+          this.onLogin(_id, _pw);
+          // sessionStorage.setItem("isChannel", "channel");
+          // this.props.onLogin();
+          // this.props.history.push('/mainPage');
         }
       } catch (err) {
         alert(err);
       }
     } else if (this.props.moreInfo && !this.state.isChannel) {
-      const _id = sessionStorage.getItem("id");
-      const _pw = sessionStorage.getItem("pw");
+      const _id = sessionStorage.getItem('id');
+      const _pw = sessionStorage.getItem('pw');
       let _img = null;
 
       try {
-        if (this.state.imgBase64 !== "") {
-          const formData = new FormData();
-          formData.append("file", this.state.imgFile);
-          await axios({
-            method: "post",
-            url: `${_url}/member/uploadImage/${_id}`,
-            data: formData,
-            headers: { "content-Type": "multipart/form-data" }
-          });
+        if (this.state.imgBase64 !== '') {
           _img = _id;
         }
 
@@ -448,11 +473,11 @@ class AccountsForm extends Component<any, State> {
         const _birth = this.state.birth;
         const _nickname = this.state.nickname;
         const _link = this.state.link;
-        const _msg = "";
+        const _msg = '';
         const _interests = this.initList();
 
         const res = await axios({
-          method: "post",
+          method: 'post',
           url: `${_url}/member/signup/`,
           data: {
             id: _id,
@@ -466,12 +491,23 @@ class AccountsForm extends Component<any, State> {
             interests: _interests
           }
         });
-        // alert(JSON.stringify(res.data, null, 2));
         // console.log(JSON.stringify(res.data, null, 2));
-        if (res.data.state === "SUCCESS") {
-          sessionStorage.setItem("isChannel", "member");
-          this.props.onLogin();
-          this.props.history.push(`/mainPage`);
+        if (this.state.imgBase64 !== '') {
+          const formData = new FormData();
+          formData.append('file', this.state.imgFile);
+          await axios({
+            method: 'post',
+            url: `${_url}/member/uploadImage/${_id}`,
+            data: formData,
+            headers: { 'content-Type': 'multipart/form-data' }
+          });
+        }
+        if (res.data.state === 'SUCCESS') {
+          sessionStorage.removeItem('pw');
+          this.onLogin(_id, _pw);
+          // sessionStorage.setItem("isChannel", "member");
+          // this.props.onLogin();
+          // this.props.history.push('/mainPage');
         }
       } catch (err) {
         alert(err);
@@ -479,7 +515,40 @@ class AccountsForm extends Component<any, State> {
     }
   };
 
+  onLogin = async (_id: any, _pw: any) => {
+    try {
+      // console.log(_id, _pw)
+      const res = await axios({
+        method: 'post',
+        url: `${_url}/member/login`,
+        data: {
+          id: _id,
+          pw: _pw
+        }
+      });
+      // console.log(JSON.stringify(res.data, null, 2))
+      const resData = res.data;
+      if (resData.status) {
+        sessionStorage.setItem('id', _id);
+        sessionStorage.setItem('jwt', resData.jwt);
+        // console.log(resData)
+        if (resData.data.name === 'channel') {
+          sessionStorage.setItem('isChannel', 'channel');
+        } else {
+          sessionStorage.setItem('isChannel', 'member');
+        }
+        this.props.onLogin();
+        this.props.history.push('/mainPage');
+      } else {
+        alert('이메일 혹은 비밀번호를 확인해 주세요.');
+      }
+    } catch (err) {
+      alert(err);
+    }
+  };
+
   onBack = () => {
+    sessionStorage.clear();
     this.props.history.goBack();
   };
 
@@ -502,17 +571,17 @@ class AccountsForm extends Component<any, State> {
 
   onChangeBirth = (_date: Date | null) => {
     if (_date === null) {
-      this.setState({ birthValid: "init", birthLabel: "*생년월일" });
-    } else if (_date.toString() === "Invalid Date") {
+      this.setState({ birthValid: 'init', birthLabel: '*생년월일' });
+    } else if (_date.toString() === 'Invalid Date') {
       this.setState({
-        birthValid: "invalid",
-        birthLabel: "정확히 기입해 주세요"
+        birthValid: 'invalid',
+        birthLabel: '정확히 기입해 주세요'
       });
     } else {
       this.setState({
         birth: _date,
-        birthValid: "valid",
-        birthLabel: "생년월일"
+        birthValid: 'valid',
+        birthLabel: '생년월일'
       });
     }
   };
@@ -550,17 +619,17 @@ class AccountsForm extends Component<any, State> {
     const checked = Object.values(temp).filter(v => v).length;
     if (this.state.isChannel) {
       if (checked === 0) {
-        this.setState({ interestsValid: "init", interestsLabel: "*" });
+        this.setState({ interestsValid: 'init', interestsLabel: '*' });
       } else if (checked >= 1) {
-        this.setState({ interestsValid: "valid", interestsLabel: "" });
+        this.setState({ interestsValid: 'valid', interestsLabel: '' });
       }
     } else {
       if (checked === 0) {
-        this.setState({ interestsValid: "init", interestsLabel: "*" });
+        this.setState({ interestsValid: 'init', interestsLabel: '*' });
       } else if (checked === 1) {
-        this.setState({ interestsValid: "invalid", interestsLabel: "*" });
+        this.setState({ interestsValid: 'invalid', interestsLabel: '*' });
       } else if (checked >= 2) {
-        this.setState({ interestsValid: "valid", interestsLabel: "" });
+        this.setState({ interestsValid: 'valid', interestsLabel: '' });
       }
     }
   };
@@ -588,7 +657,7 @@ class AccountsForm extends Component<any, State> {
 
   onChangeLink = (e: ChangeEvent<HTMLInputElement>) => {
     const _link = e.target.value;
-    this.setState({ link: _link, linkValid: "valid" });
+    this.setState({ link: _link, linkValid: 'valid' });
   };
 
   render() {
@@ -599,9 +668,9 @@ class AccountsForm extends Component<any, State> {
           <StyledForm autoComplete="off" onKeyPress={this.pressEnter}>
             <Avatar
               src={this.state.imgBase64}
-              style={{ width: "150px", height: "150px" }}
+              style={{ width: '150px', height: '150px' }}
             />
-            <StyledInputSet isUploaded={!(this.state.imgBase64 === "")}>
+            <StyledInputSet isUploaded={!(this.state.imgBase64 === '')}>
               <label htmlFor="imageUpload">사진 업로드</label>
               <input
                 id="imageUpload"
@@ -633,7 +702,27 @@ class AccountsForm extends Component<any, State> {
               </RadioGroup>
             </StyledMemberContainer>
 
-            {this.state.isChannel ? null : (
+            {this.state.isChannel ? (
+              <>
+                <StyledTextField
+                  name="channelname"
+                  value={this.state.channelname}
+                  validate={this.state.channelnameValid}
+                  label={this.state.channelnameLabel}
+                  onChange={this.checkValid}
+                  onBlur={this.checkDuple}
+                  variant="outlined"
+                  margin="dense"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <TagFaces />
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </>
+            ) : (
               <>
                 <ThemeProvider theme={defaultMaterialTheme}>
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -649,7 +738,7 @@ class AccountsForm extends Component<any, State> {
                       minDateMessage=""
                       orientation="landscape"
                       format="yyyy.MM.dd"
-                      InputAdornmentProps={{ position: "end" }}
+                      InputAdornmentProps={{ position: 'end' }}
                       label={this.state.birthLabel}
                       value={this.state.birth}
                       onChange={this.onChangeBirth}
@@ -674,32 +763,32 @@ class AccountsForm extends Component<any, State> {
                     )
                   }}
                 />
+
+                <StyledTextField
+                  name="nickname"
+                  value={this.state.nickname}
+                  validate={this.state.nicknameValid}
+                  label={this.state.nicknameLabel}
+                  onChange={this.checkValid}
+                  onBlur={this.checkDuple}
+                  variant="outlined"
+                  margin="dense"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <TagFaces />
+                      </InputAdornment>
+                    )
+                  }}
+                />
               </>
             )}
-
-            <StyledTextField
-              name="nickname"
-              value={this.state.nickname}
-              validate={this.state.nicknameValid}
-              label={this.state.nicknameLabel}
-              onChange={this.checkValid}
-              onBlur={this.checkDuple}
-              variant="outlined"
-              margin="dense"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <TagFaces />
-                  </InputAdornment>
-                )
-              }}
-            />
 
             <StyledTextField
               name="link"
               value={this.state.link}
               validate={this.state.linkValid}
-              label={this.state.isChannel ? "관련 페이지" : "SNS"}
+              label={this.state.isChannel ? '관련 페이지' : 'SNS'}
               onChange={this.onChangeLink}
               variant="outlined"
               margin="dense"
@@ -749,7 +838,7 @@ class AccountsForm extends Component<any, State> {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {this.state.emailValid === "valid" ? (
+                    {this.state.emailValid === 'valid' ? (
                       <CheckCircle />
                     ) : (
                       <Email />
@@ -769,7 +858,7 @@ class AccountsForm extends Component<any, State> {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    {this.state.pwValid === "valid" ? (
+                    {this.state.pwValid === 'valid' ? (
                       <CheckCircle />
                     ) : (
                       <Lock />
@@ -790,7 +879,7 @@ class AccountsForm extends Component<any, State> {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      {this.state.pwCheckValid === "valid" ? (
+                      {this.state.pwCheckValid === 'valid' ? (
                         <CheckCircle />
                       ) : (
                         <EnhancedEncryption />
@@ -806,7 +895,7 @@ class AccountsForm extends Component<any, State> {
                 disabled={!this.isValid()}
                 onClick={this.onSubmit}
               >
-                {this.props.login ? "로그인" : "회원가입"}
+                {this.props.login ? '로그인' : '회원가입'}
               </StyledBtn>
             </StyledBtnContainer>
           </StyledForm>
@@ -825,13 +914,14 @@ const StyledForm = styled.form`
   justify-content: center;
   margin: 1rem;
   padding-top: 1rem;
+  font-weight: 400;
 `;
 
 const StyledInputSet = styled.div<any>`
   label {
     display: block;
-    background-color: black;
-    color: white;
+    background-color: #b2dfdb;
+    color: #009687;
     font-size: 80%;
     font-weight: 600;
     cursor: pointer;
@@ -842,13 +932,15 @@ const StyledInputSet = styled.div<any>`
     margin-bottom: 20px;
     padding: 5px;
     &:hover {
-      background-color: #8cebd1;
+      background-color: #009687;
+      color: white;
     }
 
     ${props =>
       props.isUploaded &&
       css`
-        background-color: #8cebd1;
+        background-color: #009687;
+        color: white;
       `}
   }
 
@@ -868,12 +960,12 @@ const StyledMemberContainer = styled(FormControl)`
   width: 254.4px;
   margin: 8px 0 4px 0;
   padding: 10.5px 0 0 0;
-  border: 0.05rem solid #8cebd1;
+  border: 0.05rem solid #b2dfdb;
   border-radius: 5px;
 
   .MuiFormLabel-root {
     padding: 0 14px 0 14px;
-    color: #8cebd1;
+    color: #009687;
     font-weight: 600;
   }
 
@@ -897,7 +989,7 @@ const StyledRadio = styled(FormControlLabel)<any>`
     props.checked &&
     css`
       .MuiSvgIcon-root {
-        color: #8cebd1;
+        color: #009687;
       }
     `}
 `;
@@ -931,7 +1023,7 @@ const StyledInterestContainer = styled(FormControl)<any>`
   }
 
   ${props =>
-    props.validate === "invalid" &&
+    props.validate === 'invalid' &&
     css`
       border-color: red;
 
@@ -947,18 +1039,18 @@ const StyledInterestContainer = styled(FormControl)<any>`
     `}
 
   ${props =>
-    props.validate === "valid" &&
+    props.validate === 'valid' &&
     css`
-      border-color: #8cebd1;
+      border-color: #b2dfdb;
 
       .MuiFormLabel-root {
-        color: #8cebd1;
+        color: gray;
       }
       .MuiFormHelperText-root {
-        color: #8cebd1;
+        color: #009687;
       }
       .MuiSvgIcon-root {
-        color: #8cebd1;
+        color: #009687;
       }
     `}
 `;
@@ -973,7 +1065,7 @@ const StyledFormGroup = styled(FormGroup)`
 // }
 const StyledTextField = styled(TextField)<any>`
   ${props =>
-    props.validate === "invalid" &&
+    props.validate === 'invalid' &&
     css`
     & label {
       color: red;    
@@ -999,34 +1091,34 @@ const StyledTextField = styled(TextField)<any>`
   `}
 
   ${props =>
-    props.validate === "valid" &&
+    props.validate === 'valid' &&
     css`
       & label {
-        color: #8cebd1;
+        color: gray;
       }
       & .MuiOutlinedInput-root {
         svg {
-          color: #8cebd1;
+          color: #009687;
         }
         & fieldset {
-          border-color: #8cebd1;
+          border-color: #b2dfdb;
         }
       }
     `}
 
   & label.Mui-focused {
-    color: #8cebd1;
+    color: #009687;
   }
   & .MuiOutlinedInput-root {
     &:hover fieldset {
-      border-color: #8cebd1;
+      border-color: #b2dfdb;
     }
     &.Mui-focused {
       svg {
-        color: #8cebd1;
+        color: #009687;
       }
       & fieldset {
-        border-color: #8cebd1;
+        border-color: #b2dfdb;
       }
     }
   }
@@ -1039,7 +1131,7 @@ const StyledDatePicker = styled(KeyboardDatePicker)<any>`
   }
 
   ${props =>
-    props.validate === "invalid" &&
+    props.validate === 'invalid' &&
     css`
     & label {
       color: red;    
@@ -1065,41 +1157,41 @@ const StyledDatePicker = styled(KeyboardDatePicker)<any>`
   `}
 
   ${props =>
-    props.validate === "valid" &&
+    props.validate === 'valid' &&
     css`
       & label {
-        color: #8cebd1;
+        color: gray;
       }
       & .MuiOutlinedInput-root {
         svg {
-          color: #8cebd1;
+          color: #009687;
         }
         & fieldset {
-          border-color: #8cebd1;
+          border-color: #b2dfdb;
         }
       }
     `}
 
   & label.Mui-focused {
-    color: #8cebd1;
+    color: #009687;
   }
   & .MuiOutlinedInput-root {
     &:hover fieldset {
-      border-color: #8cebd1;
+      border-color: #b2dfdb;
     }
     &.Mui-focused {
       svg {
-        color: #8cebd1;
+        color: #009687;
       }
       & fieldset {
-        border-color: #8cebd1;
+        border-color: #b2dfdb;
       }
     }
   }
 `;
 const defaultMaterialTheme = createMuiTheme({
   palette: {
-    primary: { main: "#8cebd1" }
+    primary: { main: '#b2dfdb' }
   }
 });
 
@@ -1112,11 +1204,11 @@ const StyledBtnContainer = styled.div`
 `;
 
 const StyledBtn = styled(Button)<any>`
-  background-color: ${props => (props.disabled ? "gray" : "black")};
-  color: white;
+  background-color: ${props => (props.disabled ? 'gray' : '#b2dfdb')};
+  color: #009687;
   font-size: 100%;
   font-weight: 600;
-  width: ${props => (props.fixedWidth ? "200px" : "34vw")};
+  width: ${props => (props.fixedWidth ? '200px' : '34vw')};
 
   /* padding-right: 80px;
   padding-left: 80px; */
@@ -1126,7 +1218,8 @@ const StyledBtn = styled(Button)<any>`
   margin: 0.5rem; */
 
   &:hover {
-    background-color: #8cebd1;
+    background-color: #009687;
+    color: white;
   }
 
   @media screen and (min-width: 600px) {
