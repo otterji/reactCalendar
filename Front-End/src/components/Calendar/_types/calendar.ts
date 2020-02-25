@@ -1,4 +1,3 @@
-// dataList
 export type DateData = {
   days: Date | number;
   schedules: ServerData[];
