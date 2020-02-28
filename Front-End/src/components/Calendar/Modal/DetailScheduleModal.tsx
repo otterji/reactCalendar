@@ -40,9 +40,6 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   // 처음 값을 detailData에 저장
   const [detailData, setDetailData] = useState(defaultData);
 
-  // 각각 바뀔 애들 state 걸어주기 -> 멍청한짓...
-  // const [editedStartDate, setEditedStartDate] = useState((detailData.startAt) as MaterialUiPickersDate);
-  // const [editedEndDate, setEditedEndDate] = useState((detailData.endAt) as MaterialUiPickersDate);
 
   // isEdit값에 따라 detailData가 defaultData로 업데이트가 됨
   useEffect(() => setDetailData(defaultData), [isEdit]);
@@ -54,11 +51,6 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
   const changeHandler = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     // @ts-ignore
     const { name, value } = e.target as HTMLElement;
-    // 멍청한 짓 22....
-    // setEditedStartDate(editedStartDate);
-    // setEditedEndDate(editedEndDate);
-    // setEditedTitle(editedTitle);
-    // 안되네..
     setDetailData({
       ...detailData,
       [name]: value
@@ -66,8 +58,6 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
     console.log(detailData)
   }
 
-  // let str = document.getElementById("content")
-  // const upgradedContents: any = detailData.contents ? detailData.contents.replace(/(\n|\r\n)/g, `${<br></br>}`) : null
 
   const shareHandler = () => {
     openModal({ days: data.days, schedules: data.schedules, type: TYPE_SHARE });
@@ -172,7 +162,7 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
             </div>
           </>
           :
-          (window.sessionStorage.getItem('isChannel') ==='channel') ? <>
+          (window.sessionStorage.getItem('isChannel') === 'channel') ? <>
             <div className="button-wrapDouble">
               <button onClick={editHandler} data-is-edit={true}>수정</button>
               <button onClick={shareHandler}>공유</button>
@@ -180,20 +170,20 @@ const DetailScheduleModal: FunctionComponent<ModalProps> = props => {
           </> :
             data.schedules[0].csrDto ?
               null
-              : (window.sessionStorage.getItem('isChannel') ==='channel') ?
+              : (window.sessionStorage.getItem('isChannel') === 'channel') ?
                 <>
                   <div className="button-wrapDouble">
                     <button onClick={editHandler} data-is-edit={true}>수정</button>
                     <button onClick={shareHandler}>공유</button>
                   </div>
                 </>
-                :<>
-                <div className="button-wrapDouble">
-                  <button onClick={editHandler} data-is-edit={true}>수정</button>
-                  <button onClick={close}>완료</button>
-                </div>
-              </>
-                }
+                : <>
+                  <div className="button-wrapDouble">
+                    <button onClick={editHandler} data-is-edit={true}>수정</button>
+                    <button onClick={close}>완료</button>
+                  </div>
+                </>
+        }
 
       </div>
       {/* </Zoom> */}
