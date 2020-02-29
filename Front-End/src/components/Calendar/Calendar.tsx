@@ -5,7 +5,7 @@ import { DateData, CalendarProps } from './_types/calendar';
 import { Td } from './Table';
 
 const Calendar: FunctionComponent<CalendarProps> = props => {
-  const { openModal, list, reload, subscribeSch} = props;
+  const { openModal, list, reload, subscribeSch } = props;
 
   // XXX: How can i fix?
   const trList: any[] = [];
@@ -14,8 +14,6 @@ const Calendar: FunctionComponent<CalendarProps> = props => {
 
   const [hoverRange, setHoverRange] = useState([0, 0]);
 
-  // console.log('Calendar.tsx 안의 subList', subscribeSch)
-  // console.log(list)
   list.map((data: DateData, idx: number) => {
     if (idx !== 0 && idx % 7 === 0) {
       trList.push(<tr key={cnt++}>{tdList.map(e => e)}</tr>);
