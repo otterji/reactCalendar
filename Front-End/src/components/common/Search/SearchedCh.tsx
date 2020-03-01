@@ -2,24 +2,23 @@ import React, { Component } from 'react'
 import { Link, } from 'react-router-dom'
 import axios from 'axios'
 //
-import {url} from '../../../url'
-//style
+import { url } from '../../../url'
 import styled from 'styled-components'
 import { Avatar, } from '@material-ui/core'
 
-interface State{
+interface State {
   info: any;
 }
 class SearchedCh extends Component<any, State> {
-  constructor(props:any){
+  constructor(props: any) {
     super(props)
     this.state = {
       info: this.props.info
     }
   }
 
-  countUp = async (e:any) => {
-    try{
+  countUp = async (e: any) => {
+    try {
       await axios({
         method: 'put',
         url: `${url}/channel/updateSearchFrequency/${this.state.info.id}`
@@ -27,20 +26,20 @@ class SearchedCh extends Component<any, State> {
         sessionStorage.setItem('isVisit', 'true');
       })
     }
-    catch(err){
+    catch (err) {
       alert(err);
     }
     e.preventDefault();
   }
 
-  render(){
-    return(<>
+  render() {
+    return (<>
       <StChCont>
         <div className="avatarCont">
-          <Avatar className="avatar" src={`${url}/${this.state.info.img}`}/>
+          <Avatar className="avatar" src={`${url}/${this.state.info.img}`} />
         </div>
         <div className="link">
-          <a href={`/visitPage/${this.state.info.nickname}`} 
+          <a href={`/visitPage/${this.state.info.nickname}`}
             onClick={this.countUp}
           >
             {this.state.info.nickname}
