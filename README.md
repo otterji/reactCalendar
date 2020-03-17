@@ -63,7 +63,3 @@ const getMonthLengthFnImproved = (year: number, month: number) => {
     return mtList[comMonth]
   };
 ```
-<<<<<<< HEAD
-=======
-
->>>>>>> 82b3030f01115f9cadcc14e60ae1ff5617bf1034
