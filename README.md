@@ -1,8 +1,7 @@
 # 내용 정리중입니다
-<<<<<<< HEAD
 ## 결과 화면
 ## Shalendar
-![대체텍스트](/Front-End/src/components/common/images/shalendar.gif "마우스 대면 나와요")
+![결과움짤](녹화_2020_02_20_14_10_58_346.gif)
 
 ## 개인 및 사용자
 ![대체텍스트](/Front-End/src/components/common/images/1.jpg "마우스 대면 나와요")
@@ -14,8 +13,6 @@
 ![대체텍스트](/Front-End/src/components/common/images/33.jpg "마우스 대면 나와요")
 ![대체텍스트](/Front-End/src/components/common/images/44.jpg "마우스 대면 나와요")
 
-=======
->>>>>>> 82b3030f01115f9cadcc14e60ae1ff5617bf1034
 
 #### 개선사항
 collection 을 이용해 동일한 속성의 데이터들을 반복적으로 비교 연산하는 부분을 줄여줌
