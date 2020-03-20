@@ -13,6 +13,9 @@
 ![대체텍스트](/Front-End/src/components/common/images/44.jpg "마우스 대면 나와요")
 
 
+#### Contributing
+
+
 #### 개선사항
 collection 을 이용해 동일한 속성의 데이터들을 반복적으로 비교 연산하는 부분을 줄여줌
 #### 이전 코드
@@ -62,3 +65,36 @@ const getMonthLengthFnImproved = (year: number, month: number) => {
     return mtList[comMonth]
   };
 ```
+
+https://dillinger.io/
+https://shields.io/
+이모지는 :
+이미지 정렬은 a태그 align property 사용
+license
+
+# Shalendar [![SSAFY #2](https://camo.githubusercontent.com/8557979850a5de4cfc5d5fca559882c121b75398/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f53534146592d322545412542382542302d626c7565)](https://www.ssafy.com/) [![IT Portfolio 2.0](https://camo.githubusercontent.com/d824c9b2c6cb80614d07d854e32977cd425e4c14/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f49542545442538462541432545442538412542382545442538462542342545422541362541432545432539382541342d322e302d626c7565)](https://docs.google.com/presentation/d/1paXAZDGyRnyS9EiZccDoD_yGR4pJ5etSK_tVZyhtf3k/edit?usp=sharing)
+
+> Shalendar
+
+
+## ⚡️ Quick start
+
+### Installation
+
+```
+$ npm install 
+```
+
+### Usage
+
+```
+$ cd 
+$ npm start
+```
+
+## 🍴 Contributing
+
+Please fork this project first and pick one of issues you can handle then shoot us your pull request.
+
+## 📄 License
+
